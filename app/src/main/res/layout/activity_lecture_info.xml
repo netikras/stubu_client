@@ -22,7 +22,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:text="Pradžia"
-        app:layout_constraintBaseline_toBaselineOf="@+id/button2"
+        app:layout_constraintBaseline_toBaselineOf="@+id/editText30"
         app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
@@ -59,27 +59,14 @@
         android:layout_marginEnd="16dp"
         android:layout_marginStart="16dp"
         android:background="@android:color/transparent"
+        android:fontFamily="sans-serif"
         android:text="PIN13"
         android:textAlignment="viewStart"
         android:textAllCaps="false"
+        android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/textView16"
+        app:layout_constraintStart_toEndOf="@+id/textView74"
         app:layout_constraintTop_toBottomOf="@+id/button4" />
-
-    <Button
-        android:id="@+id/button2"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
-        android:layout_marginStart="16dp"
-        android:background="@android:color/transparent"
-        android:elevation="0dp"
-        android:text="2017-04-12 13:40 (-2d 4:11)"
-        android:textAlignment="textStart"
-        android:textAllCaps="false"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/textView16"
-        app:layout_constraintTop_toBottomOf="@+id/button13" />
 
     <Button
         android:id="@+id/button3"
@@ -88,11 +75,13 @@
         android:layout_marginEnd="16dp"
         android:layout_marginStart="16dp"
         android:background="@android:color/transparent"
+        android:fontFamily="sans-serif"
         android:text="MIF, 217"
         android:textAlignment="textStart"
         android:textAllCaps="false"
+        android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/textView16"
+        app:layout_constraintStart_toEndOf="@+id/textView74"
         app:layout_constraintTop_toBottomOf="@+id/button6" />
 
     <Button
@@ -102,11 +91,13 @@
         android:layout_marginEnd="16dp"
         android:layout_marginStart="16dp"
         android:background="@android:color/transparent"
+        android:fontFamily="sans-serif"
         android:text="R. Janušauskienė"
         android:textAlignment="textStart"
         android:textAllCaps="false"
+        android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/textView16"
+        app:layout_constraintStart_toEndOf="@+id/textView74"
         app:layout_constraintTop_toBottomOf="@+id/button3" />
 
     <TextView
@@ -125,11 +116,13 @@
         android:layout_marginEnd="16dp"
         android:layout_marginStart="16dp"
         android:background="@android:color/transparent"
+        android:fontFamily="sans-serif"
         android:text="3"
         android:textAlignment="textStart"
         android:textAllCaps="false"
+        android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/textView16"
+        app:layout_constraintStart_toEndOf="@+id/textView74"
         app:layout_constraintTop_toBottomOf="@+id/button" />
 
     <TextView
@@ -146,12 +139,15 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
         android:background="@android:color/transparent"
+        android:fontFamily="sans-serif"
         android:text="1"
         android:textAlignment="textStart"
         android:textAllCaps="false"
-        app:layout_constraintStart_toEndOf="@+id/textView16"
-        app:layout_constraintTop_toBottomOf="@+id/button2" />
+        android:textSize="18sp"
+        app:layout_constraintStart_toEndOf="@+id/textView74"
+        app:layout_constraintTop_toBottomOf="@+id/editText32" />
 
     <Button
         android:id="@+id/button7"
@@ -159,13 +155,16 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
         android:layout_marginStart="8dp"
+        android:layout_marginTop="16dp"
         android:background="@android:color/transparent"
+        android:fontFamily="sans-serif"
         android:text="0"
         android:textAlignment="textStart"
         android:textAllCaps="false"
-        app:layout_constraintBaseline_toBaselineOf="@+id/textView22"
+        android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/textView22" />
+        app:layout_constraintStart_toEndOf="@+id/textView22"
+        app:layout_constraintTop_toBottomOf="@+id/editText32" />
 
     <TextView
         android:id="@+id/textView22"
@@ -193,11 +192,13 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
         android:background="@android:color/transparent"
+        android:fontFamily="sans-serif"
         android:text="14"
         android:textAlignment="textStart"
         android:textAllCaps="false"
+        android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/textView16"
+        app:layout_constraintStart_toEndOf="@+id/textView74"
         app:layout_constraintTop_toBottomOf="@+id/button5" />
 
     <TextView
@@ -230,11 +231,85 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
         android:background="@android:color/transparent"
+        android:fontFamily="sans-serif"
         android:text="Matematika"
         android:textAlignment="textStart"
         android:textAllCaps="false"
+        android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/textView16"
+        app:layout_constraintStart_toEndOf="@+id/textView74"
+        app:layout_constraintTop_toBottomOf="@+id/editText29" />
+
+    <TextView
+        android:id="@+id/textView74"
+        android:layout_width="90dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:text="ID"
+        app:layout_constraintBaseline_toBaselineOf="@+id/editText29"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <EditText
+        android:id="@+id/editText29"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:ems="10"
+        android:inputType="textMultiLine"
+        android:text="e9e09a66-b64e-11e7-92ca-6b88c03d686c"
+        android:focusable="false"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/textView74"
         app:layout_constraintTop_toBottomOf="@+id/imageView" />
+
+    <EditText
+        android:id="@+id/editText30"
+        android:layout_width="115dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:ems="10"
+        android:inputType="date"
+        android:text="2017-04-12"
+        android:focusable="false"
+        app:layout_constraintStart_toEndOf="@+id/textView74"
+        app:layout_constraintTop_toBottomOf="@+id/button13" />
+
+    <EditText
+        android:id="@+id/editText31"
+        android:layout_width="70dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:ems="10"
+        android:inputType="time"
+        android:text="13:25"
+        android:focusable="false"
+        app:layout_constraintStart_toEndOf="@+id/editText30"
+        app:layout_constraintTop_toBottomOf="@+id/button13" />
+
+    <EditText
+        android:id="@+id/editText32"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:layout_marginStart="16dp"
+        android:ems="10"
+        android:inputType="textMultiLine"
+        android:text="2d. 0:45"
+        android:focusable="false"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toEndOf="@+id/textView74"
+        app:layout_constraintTop_toBottomOf="@+id/editText30" />
+
+    <TextView
+        android:id="@+id/textView75"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:text="Iki pradžios"
+        app:layout_constraintBaseline_toBaselineOf="@+id/editText32"
+        app:layout_constraintStart_toStartOf="parent" />
 
 </android.support.constraint.ConstraintLayout>

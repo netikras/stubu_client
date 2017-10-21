@@ -43,7 +43,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:text="Kodas"
-        app:layout_constraintBaseline_toBaselineOf="@+id/button25"
+        app:layout_constraintBaseline_toBaselineOf="@+id/editText14"
         app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
@@ -72,26 +72,14 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
         android:background="@android:color/transparent"
+        android:fontFamily="sans-serif"
         android:text="Andrew Hopkins"
         android:textAlignment="textStart"
         android:textAllCaps="false"
+        android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/textView39"
-        app:layout_constraintTop_toBottomOf="@+id/imageView3" />
-
-    <Button
-        android:id="@+id/button25"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
-        android:layout_marginStart="16dp"
-        android:background="@android:color/transparent"
-        android:text="s0204356"
-        android:textAlignment="textStart"
-        android:textAllCaps="false"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/textView39"
-        app:layout_constraintTop_toBottomOf="@+id/button24" />
+        app:layout_constraintStart_toEndOf="@+id/textView67"
+        app:layout_constraintTop_toBottomOf="@+id/editText15" />
 
     <Button
         android:id="@+id/button26"
@@ -100,12 +88,15 @@
         android:layout_marginEnd="16dp"
         android:layout_marginStart="16dp"
         android:background="@android:color/transparent"
+        android:fontFamily="sans-serif"
         android:text="PIN 13"
         android:textAlignment="textStart"
         android:textAllCaps="false"
+        android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/textView39"
-        app:layout_constraintTop_toBottomOf="@+id/button25" />
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@+id/textView67"
+        app:layout_constraintTop_toBottomOf="@+id/editText14" />
 
     <Button
         android:id="@+id/button27"
@@ -114,11 +105,13 @@
         android:layout_marginEnd="16dp"
         android:layout_marginStart="16dp"
         android:background="@android:color/transparent"
+        android:fontFamily="sans-serif"
         android:text="VIKO"
         android:textAlignment="textStart"
         android:textAllCaps="false"
+        android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/textView39"
+        app:layout_constraintStart_toEndOf="@+id/textView67"
         app:layout_constraintTop_toBottomOf="@+id/button26" />
 
     <Button
@@ -128,11 +121,14 @@
         android:layout_marginEnd="16dp"
         android:layout_marginStart="16dp"
         android:background="@android:color/transparent"
+        android:fontFamily="sans-serif"
         android:text="EIF"
         android:textAlignment="textStart"
         android:textAllCaps="false"
+        android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/textView39"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@+id/textView67"
         app:layout_constraintTop_toBottomOf="@+id/button27" />
 
     <TextView
@@ -150,20 +146,60 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:text="Sukurtas"
-        app:layout_constraintBaseline_toBaselineOf="@+id/button29"
+        app:layout_constraintBaseline_toBaselineOf="@+id/editText17"
         app:layout_constraintStart_toStartOf="parent" />
 
-    <Button
-        android:id="@+id/button29"
+    <EditText
+        android:id="@+id/editText14"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
         android:layout_marginStart="16dp"
-        android:background="@android:color/transparent"
-        android:text="2013-04-07"
-        android:textAlignment="textStart"
-        android:textAllCaps="false"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:text="s0204356"
+        android:focusable="false"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/textView39"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@+id/textView67"
+        app:layout_constraintTop_toBottomOf="@+id/button24" />
+
+    <EditText
+        android:id="@+id/editText15"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:ems="10"
+        android:inputType="textMultiLine"
+        android:text="e9e09a66-b64e-11e7-92ca-6b88c03d686c"
+        android:focusable="false"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/textView67"
+        app:layout_constraintTop_toBottomOf="@+id/imageView3" />
+
+    <TextView
+        android:id="@+id/textView67"
+        android:layout_width="90dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:text="ID"
+        app:layout_constraintBaseline_toBaselineOf="@+id/editText15"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <EditText
+        android:id="@+id/editText17"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:layout_marginStart="16dp"
+        android:ems="10"
+        android:inputType="date"
+        android:text="2013-04-07"
+        android:focusable="false"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/textView67"
         app:layout_constraintTop_toBottomOf="@+id/button28" />
+
 </android.support.constraint.ConstraintLayout>

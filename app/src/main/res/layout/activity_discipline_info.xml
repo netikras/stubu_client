@@ -72,11 +72,13 @@
         android:layout_marginEnd="16dp"
         android:layout_marginStart="16dp"
         android:background="@android:color/transparent"
+        android:fontFamily="sans-serif"
         android:text="VIKO"
         android:textAlignment="textStart"
         android:textAllCaps="false"
+        android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/textView50"
+        app:layout_constraintStart_toEndOf="@+id/textView77"
         app:layout_constraintTop_toBottomOf="@+id/editText2" />
 
     <Button
@@ -86,12 +88,14 @@
         android:layout_marginEnd="16dp"
         android:layout_marginStart="16dp"
         android:background="@android:color/transparent"
+        android:fontFamily="sans-serif"
         android:text="4"
         android:textAlignment="textStart"
         android:textAllCaps="false"
+        android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toEndOf="@+id/textView50"
+        app:layout_constraintStart_toEndOf="@+id/textView77"
         app:layout_constraintTop_toBottomOf="@+id/button31" />
 
     <EditText
@@ -104,9 +108,10 @@
         android:ems="10"
         android:inputType="textPersonName"
         android:text="Matematika"
+        android:focusable="false"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/textView50"
-        app:layout_constraintTop_toBottomOf="@+id/imageView4" />
+        app:layout_constraintStart_toEndOf="@+id/textView77"
+        app:layout_constraintTop_toBottomOf="@+id/editText34" />
 
     <EditText
         android:id="@+id/editText3"
@@ -117,9 +122,34 @@
         android:ems="10"
         android:inputType="textMultiLine"
         android:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. "
+        android:focusable="false"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toEndOf="@+id/textView50"
+        app:layout_constraintStart_toEndOf="@+id/textView77"
         app:layout_constraintTop_toBottomOf="@+id/button33" />
+
+    <TextView
+        android:id="@+id/textView77"
+        android:layout_width="90dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:text="ID"
+        app:layout_constraintBaseline_toBaselineOf="@+id/editText34"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <EditText
+        android:id="@+id/editText34"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:ems="10"
+        android:inputType="textMultiLine"
+        android:text="e9e09a66-b64e-11e7-92ca-6b88c03d686c"
+        android:focusable="false"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/textView77"
+        app:layout_constraintTop_toBottomOf="@+id/imageView4" />
 
 </android.support.constraint.ConstraintLayout>
