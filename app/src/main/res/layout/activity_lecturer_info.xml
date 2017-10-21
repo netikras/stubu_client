@@ -7,7 +7,7 @@
     tools:context="com.netikras.studies.studentbuddy.api.client.android.lecturer.LecturerInfoActivity">
 
     <ImageView
-        android:id="@+id/imageView6"
+        android:id="@+id/img_lecturer_banner"
         android:layout_width="0dp"
         android:layout_height="150dp"
         android:scaleType="centerCrop"
@@ -17,47 +17,47 @@
         app:srcCompat="@drawable/teacher_banner" />
 
     <TextView
-        android:id="@+id/textView12"
+        android:id="@+id/txt_lecturer_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
         android:layout_marginStart="16dp"
-        android:text="Lektorius"
+        android:text="@string/title_lecturer"
         android:textColor="@android:color/holo_blue_light"
         android:textSize="24sp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="@+id/imageView6"
+        app:layout_constraintBottom_toBottomOf="@+id/img_lecturer_banner"
         app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
-        android:id="@+id/textView54"
+        android:id="@+id/txt_lbl_lecturer_name"
         android:layout_width="90dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:text="Vardas"
-        app:layout_constraintBaseline_toBaselineOf="@+id/button30"
+        android:text="@string/lbl_lecturer_name"
+        app:layout_constraintBaseline_toBaselineOf="@+id/btn_lecturer_name"
         app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
-        android:id="@+id/textView55"
+        android:id="@+id/txt_lbl_lecturer_disciplines"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:text="Disciplinos"
-        app:layout_constraintBaseline_toBaselineOf="@+id/button32"
+        android:text="@string/lbl_lecturer_disciplines"
+        app:layout_constraintBaseline_toBaselineOf="@+id/btn_lecturer_disciplines"
         app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
-        android:id="@+id/textView56"
+        android:id="@+id/txt_lbl_lecturer_degree"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:text="Laipsnis"
-        app:layout_constraintBaseline_toBaselineOf="@+id/editText4"
+        android:text="@string/lbl_lecturer_degree"
+        app:layout_constraintBaseline_toBaselineOf="@+id/txt_edit_lecturer_degree"
         app:layout_constraintStart_toStartOf="parent" />
 
     <Button
-        android:id="@+id/button30"
+        android:id="@+id/btn_lecturer_name"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
@@ -65,56 +65,56 @@
         android:layout_marginTop="16dp"
         android:background="@android:color/transparent"
         android:fontFamily="sans-serif"
-        android:text="Andrew Hopkins"
+        android:text="@string/dummy_txt_lecturer_name"
         android:textAlignment="textStart"
         android:textAllCaps="false"
         android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/textView73"
-        app:layout_constraintTop_toBottomOf="@+id/editText28" />
+        app:layout_constraintStart_toEndOf="@+id/txt_lbl_lecturer_id"
+        app:layout_constraintTop_toBottomOf="@+id/txt_edit_lecturer_id" />
 
     <Button
-        android:id="@+id/button32"
+        android:id="@+id/btn_lecturer_disciplines"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
         android:layout_marginStart="16dp"
         android:background="@android:color/transparent"
         android:fontFamily="sans-serif"
-        android:text="8"
+        android:text="@string/dummy_txt_lecturer_disciplines"
         android:textAlignment="textStart"
         android:textAllCaps="false"
         android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toEndOf="@+id/textView73"
-        app:layout_constraintTop_toBottomOf="@+id/editText4" />
+        app:layout_constraintStart_toEndOf="@+id/txt_lbl_lecturer_id"
+        app:layout_constraintTop_toBottomOf="@+id/txt_edit_lecturer_degree" />
 
     <EditText
-        android:id="@+id/editText4"
+        android:id="@+id/txt_edit_lecturer_degree"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
         android:layout_marginStart="16dp"
         android:ems="10"
         android:inputType="textMultiLine"
-        android:text="Prof. hab. dr."
+        android:text="@string/dummy_txt_lecturer_degree"
         android:focusable="false"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/textView73"
-        app:layout_constraintTop_toBottomOf="@+id/button30" />
+        app:layout_constraintStart_toEndOf="@+id/txt_lbl_lecturer_id"
+        app:layout_constraintTop_toBottomOf="@+id/btn_lecturer_name" />
 
     <TextView
-        android:id="@+id/textView57"
+        android:id="@+id/txt_lbl_lecturer_upcoming_lectures"
         android:layout_width="90dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:text="Artimiausios. paskaitos"
+        android:text="@string/dummy_txt_lecturer_upcoming_lectures"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/listView5" />
+        app:layout_constraintTop_toTopOf="@+id/list_lecturer_upcoming_lectures" />
 
     <ListView
-        android:id="@+id/listView5"
+        android:id="@+id/list_lecturer_upcoming_lectures"
         android:layout_width="0dp"
         android:layout_height="116dp"
         android:layout_marginEnd="16dp"
@@ -122,20 +122,20 @@
         android:layout_marginTop="16dp"
         android:scrollbars="vertical"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/textView73"
-        app:layout_constraintTop_toBottomOf="@+id/button32" />
+        app:layout_constraintStart_toEndOf="@+id/txt_lbl_lecturer_id"
+        app:layout_constraintTop_toBottomOf="@+id/btn_lecturer_disciplines" />
 
     <TextView
-        android:id="@+id/textView73"
+        android:id="@+id/txt_lbl_lecturer_id"
         android:layout_width="90dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:text="ID"
-        app:layout_constraintBaseline_toBaselineOf="@+id/editText28"
+        android:text="@string/lbl_lecturer_id"
+        app:layout_constraintBaseline_toBaselineOf="@+id/txt_edit_lecturer_id"
         app:layout_constraintStart_toStartOf="parent" />
 
     <EditText
-        android:id="@+id/editText28"
+        android:id="@+id/txt_edit_lecturer_id"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
@@ -143,9 +143,9 @@
         android:layout_marginTop="16dp"
         android:ems="10"
         android:inputType="textMultiLine"
-        android:text="e9e09a66-b64e-11e7-92ca-6b88c03d686c"
+        android:text="@string/dummy_txt_lecturer_id"
         android:focusable="false"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/textView73"
-        app:layout_constraintTop_toBottomOf="@+id/imageView6" />
+        app:layout_constraintStart_toEndOf="@+id/txt_lbl_lecturer_id"
+        app:layout_constraintTop_toBottomOf="@+id/img_lecturer_banner" />
 </android.support.constraint.ConstraintLayout>

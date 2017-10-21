@@ -7,7 +7,7 @@
     tools:context="com.netikras.studies.studentbuddy.api.client.android.lecture.LecturesListActivity">
 
     <ImageView
-        android:id="@+id/imageView13"
+        android:id="@+id/img_lectures_list_title"
         android:layout_width="0dp"
         android:layout_height="150dp"
         android:scaleType="centerCrop"
@@ -17,14 +17,14 @@
         app:srcCompat="@drawable/schedule_banner" />
 
     <TextView
-        android:id="@+id/textView28"
+        android:id="@+id/txt_lectures_list_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
         android:layout_marginStart="16dp"
-        android:text="Paskaitos"
+        android:text="@string/title_lectures_list"
         android:textSize="24sp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="@+id/imageView13"
+        app:layout_constraintBottom_toBottomOf="@+id/img_lectures_list_title"
         app:layout_constraintStart_toStartOf="parent" />
 </android.support.constraint.ConstraintLayout>

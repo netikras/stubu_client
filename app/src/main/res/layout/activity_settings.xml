@@ -7,7 +7,7 @@
     tools:context="com.netikras.studies.studentbuddy.api.client.android.person.SettingsActivity">
 
     <ImageView
-        android:id="@+id/imageView10"
+        android:id="@+id/img_settings_banner"
         android:layout_width="0dp"
         android:layout_height="150dp"
         android:scaleType="centerCrop"
@@ -17,53 +17,53 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/textView2"
+        android:id="@+id/txt_settings_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
         android:layout_marginEnd="16dp"
-        android:text="Nustatymai"
+        android:text="@string/title_settings"
         android:textColor="@android:color/background_light"
         android:textSize="24sp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="@+id/imageView10"
+        app:layout_constraintBottom_toBottomOf="@+id/img_settings_banner"
         app:layout_constraintEnd_toEndOf="parent" />
 
     <TextView
-        android:id="@+id/textView45"
+        android:id="@+id/txt_lbl_settings_url"
         android:layout_width="90dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:text="Adresas"
-        app:layout_constraintBaseline_toBaselineOf="@+id/editText"
+        android:text="@string/lbl_settings_url"
+        app:layout_constraintBaseline_toBaselineOf="@+id/txt_edit_settings_url"
         app:layout_constraintStart_toStartOf="parent" />
 
     <EditText
-        android:id="@+id/editText"
+        android:id="@+id/txt_edit_settings_url"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
         android:ems="10"
-        android:inputType="textPersonName"
-        android:text="http://netikras-s7e:8080/stubu"
+        android:inputType="textUri"
+        android:text="@string/dummy_txt_settings_url"
         android:textSize="14sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/textView45"
-        app:layout_constraintTop_toBottomOf="@+id/imageView10" />
+        app:layout_constraintStart_toEndOf="@+id/txt_lbl_settings_url"
+        app:layout_constraintTop_toBottomOf="@+id/img_settings_banner" />
 
     <TextView
-        android:id="@+id/textView46"
+        android:id="@+id/txt_lbl_settings_notifications_enable"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:text="Pranešimai"
-        app:layout_constraintBaseline_toBaselineOf="@+id/switch1"
+        android:text="@string/lbl_settings_notifications_enable"
+        app:layout_constraintBaseline_toBaselineOf="@+id/switch_settings_notifications_enable"
         app:layout_constraintStart_toStartOf="parent" />
 
     <Switch
-        android:id="@+id/switch1"
+        android:id="@+id/switch_settings_notifications_enable"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
@@ -71,27 +71,27 @@
         android:layout_marginTop="16dp"
         android:checked="true"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/textView45"
-        app:layout_constraintTop_toBottomOf="@+id/editText" />
+        app:layout_constraintStart_toEndOf="@+id/txt_lbl_settings_url"
+        app:layout_constraintTop_toBottomOf="@+id/txt_edit_settings_url" />
 
     <Spinner
-        android:id="@+id/spinner2"
+        android:id="@+id/spinner_settings_notifications_time_before_event"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/textView45"
-        app:layout_constraintTop_toBottomOf="@+id/switch1" />
+        app:layout_constraintStart_toEndOf="@+id/txt_lbl_settings_url"
+        app:layout_constraintTop_toBottomOf="@+id/switch_settings_notifications_enable" />
 
     <TextView
-        android:id="@+id/textView47"
+        android:id="@+id/txt_lbl_settings_notifications_time_before_event"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:text="Praneš. prieš"
+        android:text="@string/lbl_settings_notifications_time_before_event"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/spinner2" />
+        app:layout_constraintTop_toTopOf="@+id/spinner_settings_notifications_time_before_event" />
 
 </android.support.constraint.ConstraintLayout>

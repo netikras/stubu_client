@@ -7,7 +7,7 @@
     tools:context="com.netikras.studies.studentbuddy.api.client.android.person.PersonInfoActivity">
 
     <ImageView
-        android:id="@+id/imageView2"
+        android:id="@+id/img_user_banner"
         android:layout_width="0dp"
         android:layout_height="150dp"
         android:scaleType="centerCrop"
@@ -17,90 +17,90 @@
         app:srcCompat="@drawable/user_banner" />
 
     <TextView
-        android:id="@+id/textView4"
+        android:id="@+id/txt_user_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
         android:layout_marginStart="16dp"
-        android:text="Naudotojas"
+        android:text="@string/title_user"
         android:textSize="24sp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="@+id/imageView2"
+        app:layout_constraintBottom_toBottomOf="@+id/img_user_banner"
         app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
-        android:id="@+id/textView"
+        android:id="@+id/txt_lbl_user_identificator"
         android:layout_width="90dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:text="ID kodas"
-        app:layout_constraintBaseline_toBaselineOf="@+id/editText7"
+        android:text="@string/lbl_user_identificator"
+        app:layout_constraintBaseline_toBaselineOf="@+id/txt_edit_user_identification"
         app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
-        android:id="@+id/textView5"
+        android:id="@+id/txt_lbl_user_username"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:text="Slapyvardis"
-        app:layout_constraintBaseline_toBaselineOf="@+id/editText8"
+        android:text="@string/lbl_user_username"
+        app:layout_constraintBaseline_toBaselineOf="@+id/txt_edit_user_username"
         app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
-        android:id="@+id/textView6"
+        android:id="@+id/txt_lbl_user_password"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:text="Slaptažodis"
-        app:layout_constraintBaseline_toBaselineOf="@+id/editText9"
+        android:text="@string/lbl_user_password"
+        app:layout_constraintBaseline_toBaselineOf="@+id/txt_edit_user_password"
         app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
-        android:id="@+id/textView7"
+        android:id="@+id/txt_lbl_user_roles"
         android:layout_width="wrap_content"
         android:layout_height="17dp"
         android:layout_marginStart="16dp"
-        android:text="Rolės"
+        android:text="@string/lbl_user_roles"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/listView" />
+        app:layout_constraintTop_toTopOf="@+id/list_user_roles" />
 
     <ListView
-        android:id="@+id/listView"
+        android:id="@+id/list_user_roles"
         android:layout_width="0dp"
         android:layout_height="108dp"
         android:layout_marginEnd="16dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/textView64"
-        app:layout_constraintTop_toBottomOf="@+id/editText9" />
+        app:layout_constraintStart_toEndOf="@+id/txt_lbl_user_id"
+        app:layout_constraintTop_toBottomOf="@+id/txt_edit_user_password" />
 
     <TextView
-        android:id="@+id/textView8"
+        android:id="@+id/txt_lbl_user_system_roles"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:text="Leidimai"
+        android:text="@string/lbl_user_system_roles"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/listView2" />
+        app:layout_constraintTop_toTopOf="@+id/list_user_system_roles" />
 
     <ListView
-        android:id="@+id/listView2"
+        android:id="@+id/list_user_system_roles"
         android:layout_width="0dp"
         android:layout_height="121dp"
         android:layout_marginEnd="16dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/textView64"
-        app:layout_constraintTop_toBottomOf="@+id/listView" />
+        app:layout_constraintStart_toEndOf="@+id/txt_lbl_user_id"
+        app:layout_constraintTop_toBottomOf="@+id/list_user_roles" />
 
     <TextView
-        android:id="@+id/textView9"
+        android:id="@+id/txt_lbl_user_person"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:text="Asmuo"
+        android:text="@string/lbl_user_person"
         app:layout_constraintBaseline_toBaselineOf="@+id/button12"
         app:layout_constraintStart_toStartOf="parent" />
 
@@ -113,25 +113,25 @@
         android:layout_marginTop="16dp"
         android:background="@android:color/transparent"
         android:fontFamily="sans-serif"
-        android:text="Andrew Hopkins"
+        android:text="@string/dummy_txt_user_person"
         android:textAlignment="textStart"
         android:textAllCaps="false"
         android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/textView64"
-        app:layout_constraintTop_toBottomOf="@+id/editText6" />
+        app:layout_constraintStart_toEndOf="@+id/txt_lbl_user_id"
+        app:layout_constraintTop_toBottomOf="@+id/txt_edit_user_id" />
 
     <TextView
-        android:id="@+id/textView64"
+        android:id="@+id/txt_lbl_user_id"
         android:layout_width="90dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:text="ID"
-        app:layout_constraintBaseline_toBaselineOf="@+id/editText6"
+        android:text="@string/lbl_user_id"
+        app:layout_constraintBaseline_toBaselineOf="@+id/txt_edit_user_id"
         app:layout_constraintStart_toStartOf="parent" />
 
     <EditText
-        android:id="@+id/editText6"
+        android:id="@+id/txt_edit_user_id"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
@@ -140,13 +140,13 @@
         android:ems="10"
         android:focusable="false"
         android:inputType="textMultiLine"
-        android:text="e9e09a66-b64e-11e7-92ca-6b88c03d686c"
+        android:text="@string/dummy_txt_user_id"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/textView64"
-        app:layout_constraintTop_toBottomOf="@+id/imageView2" />
+        app:layout_constraintStart_toEndOf="@+id/txt_lbl_user_id"
+        app:layout_constraintTop_toBottomOf="@+id/img_user_banner" />
 
     <EditText
-        android:id="@+id/editText7"
+        android:id="@+id/txt_edit_user_identification"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
@@ -154,13 +154,13 @@
         android:ems="10"
         android:focusable="false"
         android:inputType="textPersonName"
-        android:text="s020328"
+        android:text="@string/dummy_txt_user_identification"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/textView64"
+        app:layout_constraintStart_toEndOf="@+id/txt_lbl_user_id"
         app:layout_constraintTop_toBottomOf="@+id/button12" />
 
     <EditText
-        android:id="@+id/editText8"
+        android:id="@+id/txt_edit_user_username"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
@@ -168,13 +168,13 @@
         android:ems="10"
         android:focusable="false"
         android:inputType="textPersonName"
-        android:text="netikras"
+        android:text="@string/dummy_txt_user_username"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/textView64"
-        app:layout_constraintTop_toBottomOf="@+id/editText7" />
+        app:layout_constraintStart_toEndOf="@+id/txt_lbl_user_id"
+        app:layout_constraintTop_toBottomOf="@+id/txt_edit_user_identification" />
 
     <EditText
-        android:id="@+id/editText9"
+        android:id="@+id/txt_edit_user_password"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
@@ -182,9 +182,9 @@
         android:ems="10"
         android:focusable="false"
         android:inputType="textPassword"
-        android:text="********"
+        android:text=""
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/textView64"
-        app:layout_constraintTop_toBottomOf="@+id/editText8" />
+        app:layout_constraintStart_toEndOf="@+id/txt_lbl_user_id"
+        app:layout_constraintTop_toBottomOf="@+id/txt_edit_user_username" />
 
 </android.support.constraint.ConstraintLayout>
