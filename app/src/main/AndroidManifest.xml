@@ -47,7 +47,11 @@
         <activity android:name=".location.FloorLayoutActivity" />
         <activity android:name=".SearchActivity" />
         <activity android:name=".lecture.LecturesListActivity" />
-        <activity android:name=".person.SettingsActivity"></activity>
+        <activity android:name=".person.SettingsActivity" />
+
+        <service
+            android:name=".person.PersonService"
+            android:exported="false"></service>
     </application>
 
 </manifest>

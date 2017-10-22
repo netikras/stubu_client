@@ -1,267 +1,272 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context="com.netikras.studies.studentbuddy.api.client.android.location.LocationInfoActivity">
+    android:layout_height="match_parent">
 
-    <ImageView
-        android:id="@+id/img_location_banner"
-        android:layout_width="0dp"
-        android:layout_height="150dp"
-        android:scaleType="centerCrop"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/location_banner" />
+    <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context="com.netikras.studies.studentbuddy.api.client.android.location.LocationInfoActivity">
 
-    <TextView
-        android:id="@+id/txt_location_title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
-        android:layout_marginStart="16dp"
-        android:text="@string/title_location"
-        android:textColor="?attr/colorPrimaryDark"
-        android:textSize="24sp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="@+id/img_location_banner"
-        app:layout_constraintStart_toStartOf="parent" />
+        <ImageView
+            android:id="@+id/img_location_banner"
+            android:layout_width="0dp"
+            android:layout_height="150dp"
+            android:scaleType="centerCrop"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/location_banner" />
 
-    <TextView
-        android:id="@+id/txt_lbl_location_name"
-        android:layout_width="90dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:text="@string/lbl_location_name"
-        app:layout_constraintBaseline_toBaselineOf="@+id/txt_edit_location_name"
-        app:layout_constraintStart_toStartOf="parent" />
+        <TextView
+            android:id="@+id/txt_location_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:layout_marginStart="16dp"
+            android:text="@string/title_location"
+            android:textColor="?attr/colorPrimaryDark"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="@+id/img_location_banner"
+            app:layout_constraintStart_toStartOf="parent" />
 
-    <EditText
-        android:id="@+id/txt_edit_location_name"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:ems="10"
-        android:inputType="textPersonName"
-        android:text="@string/dummy_txt_location_name"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/txt_lbl_location_buildingid"
-        app:layout_constraintTop_toBottomOf="@+id/txt_edit_location_roomid" />
+        <TextView
+            android:id="@+id/txt_lbl_location_name"
+            android:layout_width="90dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:text="@string/lbl_location_name"
+            app:layout_constraintBaseline_toBaselineOf="@+id/txt_edit_location_name"
+            app:layout_constraintStart_toStartOf="parent" />
 
-    <TextView
-        android:id="@+id/txt_lbl_location_address"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:text="@string/lbl_location_address"
-        app:layout_constraintBaseline_toBaselineOf="@+id/btn_location_address"
-        app:layout_constraintStart_toStartOf="parent" />
+        <EditText
+            android:id="@+id/txt_edit_location_name"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:ems="10"
+            android:inputType="textPersonName"
+            android:text="@string/dummy_txt_location_name"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/txt_lbl_location_buildingid"
+            app:layout_constraintTop_toBottomOf="@+id/txt_edit_location_roomid" />
 
-    <TextView
-        android:id="@+id/txt_lbl_location_building_section"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:text="@string/lbl_location_building_section"
-        app:layout_constraintBaseline_toBaselineOf="@+id/btn_location_building_section"
-        app:layout_constraintStart_toStartOf="parent" />
+        <TextView
+            android:id="@+id/txt_lbl_location_address"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:text="@string/lbl_location_address"
+            app:layout_constraintBaseline_toBaselineOf="@+id/btn_location_address"
+            app:layout_constraintStart_toStartOf="parent" />
 
-    <TextView
-        android:id="@+id/txt_lbl_location_floor"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:text="@string/lbl_location_floor"
-        app:layout_constraintBaseline_toBaselineOf="@+id/btn_location_floor"
-        app:layout_constraintStart_toStartOf="parent" />
+        <TextView
+            android:id="@+id/txt_lbl_location_building_section"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:text="@string/lbl_location_building_section"
+            app:layout_constraintBaseline_toBaselineOf="@+id/btn_location_building_section"
+            app:layout_constraintStart_toStartOf="parent" />
 
-    <TextView
-        android:id="@+id/txt_lbl_location_room"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:text="@string/lbl_location_room"
-        app:layout_constraintBaseline_toBaselineOf="@+id/btn_location_room"
-        app:layout_constraintStart_toStartOf="parent" />
+        <TextView
+            android:id="@+id/txt_lbl_location_floor"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:text="@string/lbl_location_floor"
+            app:layout_constraintBaseline_toBaselineOf="@+id/btn_location_floor"
+            app:layout_constraintStart_toStartOf="parent" />
 
-    <TextView
-        android:id="@+id/txt_lbl_location_comments"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:text="@string/lbl_location_comments"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/list_location_comments" />
+        <TextView
+            android:id="@+id/txt_lbl_location_room"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:text="@string/lbl_location_room"
+            app:layout_constraintBaseline_toBaselineOf="@+id/btn_location_room"
+            app:layout_constraintStart_toStartOf="parent" />
 
-    <Button
-        android:id="@+id/btn_location_address"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
-        android:layout_marginStart="16dp"
-        android:background="@android:color/transparent"
-        android:fontFamily="sans-serif"
-        android:text="@string/dummy_txt_location_address"
-        android:textAlignment="textStart"
-        android:textAllCaps="false"
-        android:textSize="18sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/txt_lbl_location_buildingid"
-        app:layout_constraintTop_toBottomOf="@+id/txt_edit_location_name" />
+        <TextView
+            android:id="@+id/txt_lbl_location_comments"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:text="@string/lbl_location_comments"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/list_location_comments" />
 
-    <Button
-        android:id="@+id/btn_location_building_section"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
-        android:layout_marginStart="16dp"
-        android:background="@android:color/transparent"
-        android:fontFamily="sans-serif"
-        android:text="@string/dummy_txt_location_building_section"
-        android:textAlignment="textStart"
-        android:textAllCaps="false"
-        android:textSize="18sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/txt_lbl_location_buildingid"
-        app:layout_constraintTop_toBottomOf="@+id/btn_location_address" />
+        <Button
+            android:id="@+id/btn_location_address"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:layout_marginStart="16dp"
+            android:background="@android:color/transparent"
+            android:fontFamily="sans-serif"
+            android:text="@string/dummy_txt_location_address"
+            android:textAlignment="textStart"
+            android:textAllCaps="false"
+            android:textSize="18sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/txt_lbl_location_buildingid"
+            app:layout_constraintTop_toBottomOf="@+id/txt_edit_location_name" />
 
-    <Button
-        android:id="@+id/btn_location_floor"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
-        android:layout_marginStart="16dp"
-        android:background="@android:color/transparent"
-        android:fontFamily="sans-serif"
-        android:text="@string/dummy_txt_location_floor"
-        android:textAlignment="textStart"
-        android:textAllCaps="false"
-        android:textSize="18sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/txt_lbl_location_buildingid"
-        app:layout_constraintTop_toBottomOf="@+id/btn_location_building_section" />
+        <Button
+            android:id="@+id/btn_location_building_section"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:layout_marginStart="16dp"
+            android:background="@android:color/transparent"
+            android:fontFamily="sans-serif"
+            android:text="@string/dummy_txt_location_building_section"
+            android:textAlignment="textStart"
+            android:textAllCaps="false"
+            android:textSize="18sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/txt_lbl_location_buildingid"
+            app:layout_constraintTop_toBottomOf="@+id/btn_location_address" />
 
-    <Button
-        android:id="@+id/btn_location_room"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
-        android:layout_marginStart="16dp"
-        android:background="@android:color/transparent"
-        android:fontFamily="sans-serif"
-        android:text="@string/dummy_txt_location_room"
-        android:textAlignment="textStart"
-        android:textAllCaps="false"
-        android:textSize="18sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/txt_lbl_location_buildingid"
-        app:layout_constraintTop_toBottomOf="@+id/btn_location_floor" />
+        <Button
+            android:id="@+id/btn_location_floor"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:layout_marginStart="16dp"
+            android:background="@android:color/transparent"
+            android:fontFamily="sans-serif"
+            android:text="@string/dummy_txt_location_floor"
+            android:textAlignment="textStart"
+            android:textAllCaps="false"
+            android:textSize="18sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/txt_lbl_location_buildingid"
+            app:layout_constraintTop_toBottomOf="@+id/btn_location_building_section" />
 
-    <ListView
-        android:id="@+id/list_location_comments"
-        android:layout_width="0dp"
-        android:layout_height="120dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/txt_lbl_location_buildingid"
-        app:layout_constraintTop_toBottomOf="@+id/btn_location_room" />
+        <Button
+            android:id="@+id/btn_location_room"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:layout_marginStart="16dp"
+            android:background="@android:color/transparent"
+            android:fontFamily="sans-serif"
+            android:text="@string/dummy_txt_location_room"
+            android:textAlignment="textStart"
+            android:textAllCaps="false"
+            android:textSize="18sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/txt_lbl_location_buildingid"
+            app:layout_constraintTop_toBottomOf="@+id/btn_location_floor" />
 
-    <TextView
-        android:id="@+id/txt_lbl_location_buildingid"
-        android:layout_width="90dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:text="@string/lbl_location_buildingid"
-        app:layout_constraintBaseline_toBaselineOf="@+id/txt_edit_location_buildingid"
-        app:layout_constraintStart_toStartOf="parent" />
+        <ListView
+            android:id="@+id/list_location_comments"
+            android:layout_width="0dp"
+            android:layout_height="120dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/txt_lbl_location_buildingid"
+            app:layout_constraintTop_toBottomOf="@+id/btn_location_room" />
 
-    <TextView
-        android:id="@+id/txt_lbl_location_building_sectionid"
-        android:layout_width="90dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:text="@string/lbl_location_building_sectionid"
-        app:layout_constraintBaseline_toBaselineOf="@+id/txt_edit_location_building_sectionid"
-        app:layout_constraintStart_toStartOf="parent" />
+        <TextView
+            android:id="@+id/txt_lbl_location_buildingid"
+            android:layout_width="90dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:text="@string/lbl_location_buildingid"
+            app:layout_constraintBaseline_toBaselineOf="@+id/txt_edit_location_buildingid"
+            app:layout_constraintStart_toStartOf="parent" />
 
-    <TextView
-        android:id="@+id/txt_lbl_location_floorid"
-        android:layout_width="90dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:text="@string/lbl_location_floorid"
-        app:layout_constraintBaseline_toBaselineOf="@+id/txt_edit_location_floorid"
-        app:layout_constraintStart_toStartOf="parent" />
+        <TextView
+            android:id="@+id/txt_lbl_location_building_sectionid"
+            android:layout_width="90dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:text="@string/lbl_location_building_sectionid"
+            app:layout_constraintBaseline_toBaselineOf="@+id/txt_edit_location_building_sectionid"
+            app:layout_constraintStart_toStartOf="parent" />
 
-    <TextView
-        android:id="@+id/txt_lbl_location_roomid"
-        android:layout_width="90dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:text="@string/lbl_location_roomid"
-        app:layout_constraintBaseline_toBaselineOf="@+id/txt_edit_location_roomid"
-        app:layout_constraintStart_toStartOf="parent" />
+        <TextView
+            android:id="@+id/txt_lbl_location_floorid"
+            android:layout_width="90dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:text="@string/lbl_location_floorid"
+            app:layout_constraintBaseline_toBaselineOf="@+id/txt_edit_location_floorid"
+            app:layout_constraintStart_toStartOf="parent" />
 
-    <EditText
-        android:id="@+id/txt_edit_location_buildingid"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:ems="10"
-        android:inputType="textMultiLine"
-        android:text="@string/dummy_txt_location_buildingid"
-        android:focusable="false"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/txt_lbl_location_buildingid"
-        app:layout_constraintTop_toBottomOf="@+id/img_location_banner" />
+        <TextView
+            android:id="@+id/txt_lbl_location_roomid"
+            android:layout_width="90dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:text="@string/lbl_location_roomid"
+            app:layout_constraintBaseline_toBaselineOf="@+id/txt_edit_location_roomid"
+            app:layout_constraintStart_toStartOf="parent" />
 
-    <EditText
-        android:id="@+id/txt_edit_location_building_sectionid"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
-        android:layout_marginStart="16dp"
-        android:ems="10"
-        android:inputType="textMultiLine"
-        android:text="@string/dummy_txt_location_building_sectionid"
-        android:focusable="false"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/txt_lbl_location_buildingid"
-        app:layout_constraintTop_toBottomOf="@+id/txt_edit_location_buildingid" />
+        <EditText
+            android:id="@+id/txt_edit_location_buildingid"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:ems="10"
+            android:focusable="false"
+            android:inputType="textMultiLine"
+            android:text="@string/dummy_txt_location_buildingid"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/txt_lbl_location_buildingid"
+            app:layout_constraintTop_toBottomOf="@+id/img_location_banner" />
 
-    <EditText
-        android:id="@+id/txt_edit_location_floorid"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
-        android:layout_marginStart="16dp"
-        android:ems="10"
-        android:inputType="textMultiLine"
-        android:text="@string/dummy_txt_location_floorid"
-        android:focusable="false"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/txt_lbl_location_buildingid"
-        app:layout_constraintTop_toBottomOf="@+id/txt_edit_location_building_sectionid" />
+        <EditText
+            android:id="@+id/txt_edit_location_building_sectionid"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:layout_marginStart="16dp"
+            android:ems="10"
+            android:focusable="false"
+            android:inputType="textMultiLine"
+            android:text="@string/dummy_txt_location_building_sectionid"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/txt_lbl_location_buildingid"
+            app:layout_constraintTop_toBottomOf="@+id/txt_edit_location_buildingid" />
 
-    <EditText
-        android:id="@+id/txt_edit_location_roomid"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
-        android:layout_marginStart="16dp"
-        android:ems="10"
-        android:inputType="textMultiLine"
-        android:text="@string/dummy_txt_location_roomid"
-        android:focusable="false"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/txt_lbl_location_buildingid"
-        app:layout_constraintTop_toBottomOf="@+id/txt_edit_location_floorid" />
-</android.support.constraint.ConstraintLayout>
+        <EditText
+            android:id="@+id/txt_edit_location_floorid"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:layout_marginStart="16dp"
+            android:ems="10"
+            android:focusable="false"
+            android:inputType="textMultiLine"
+            android:text="@string/dummy_txt_location_floorid"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/txt_lbl_location_buildingid"
+            app:layout_constraintTop_toBottomOf="@+id/txt_edit_location_building_sectionid" />
+
+        <EditText
+            android:id="@+id/txt_edit_location_roomid"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:layout_marginStart="16dp"
+            android:ems="10"
+            android:focusable="false"
+            android:inputType="textMultiLine"
+            android:text="@string/dummy_txt_location_roomid"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/txt_lbl_location_buildingid"
+            app:layout_constraintTop_toBottomOf="@+id/txt_edit_location_floorid" />
+    </android.support.constraint.ConstraintLayout>
+</ScrollView>

@@ -1,23 +1,29 @@
 <resources>
     <string name="app_name">StudentBuddyApp</string>
-    <string name="main_menu_settings">Settings</string>
+    <string name="main_menu_settings">Nustatymai</string>
     <string name="title_activity_settings_root">SettingsRootActivity</string>
     <string name="title_activity_login">Sign in</string>
 
     <!-- Strings related to login -->
-    <string name="prompt_username">Username</string>
-    <string name="prompt_password">Password</string>
-    <string name="action_sign_in">Sign in</string>
-    <string name="action_sign_in_short">Sign in</string>
-    <string name="error_invalid_username">Invalid credentials</string>
-    <string name="error_invalid_password">Invalid credentials</string>
-    <string name="error_incorrect_password">Invalid credentials</string>
-    <string name="error_field_required">This field is required</string>
+    <string name="prompt_username">slapyvardis</string>
+    <string name="prompt_password">slaptažodis</string>
+    <string name="action_sign_in">Prisijungti</string>
+    <string name="action_sign_in_short">Jungtis</string>
+    <string name="error_invalid_username">Neteisingi prisijungimo duomenys</string>
+    <string name="error_invalid_password">Neteisingi prisijungimo duomenys</string>
+    <string name="error_incorrect_password">Neteisingi prisijungimo duomenys</string>
+    <string name="error_field_required">Šis laukelis privalomas</string>
     <string name="permission_rationale">"Contacts permissions are needed for providing email
         completions."
     </string>
     <string name="dummy_txt_id">e9e09a66-b64e-11e7-92ca-6b88c03d686c</string>
-    <string name="main_menu_login">Log In</string>
+    <string name="lbl_id">ID</string>
+    <string name="lbl_identificator">ID kodas</string>
+    <string name="dummy_txt_identificator">s0204537</string>
+    <string name="dummy_txt_email">andhop0304@yahoo.co.uk</string>
+
+
+    <string name="main_menu_login">Prisijungti</string>
     <string name="dash">-</string>
     <string name="lbl_current_user">Current user:</string>
     <string name="title_discipline">Disciplina</string>
@@ -29,10 +35,10 @@
     <string name="dummy_txt_discipline_lecturers">4</string>
     <string name="dummy_txt_discipline_name">Matematika</string>
     <string name="dummy_txt_discipline_description">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</string>
-    <string name="lbl_discipline_id">ID</string>
+    <string name="lbl_discipline_id">@string/lbl_id</string>
     <string name="dummy_txt_discipline_id">@string/dummy_txt_id</string>
     <string name="title_floor_layout">Aukšto planas</string>
-    <string name="lbl_floor_layout_id">ID</string>
+    <string name="lbl_floor_layout_id">@string/lbl_id</string>
     <string name="dummy_txt_floor_layout_id">@string/dummy_txt_id</string>
     <string name="lbl_lecture_start_date">Pradžia</string>
     <string name="lbl_lecture_location">Vieta</string>
@@ -52,7 +58,7 @@
     <string name="title_lecture">Paskaita</string>
     <string name="lbl_lecture_name">Pavadinimas</string>
     <string name="dummy_txt_lecture_name">Matematika</string>
-    <string name="lbl_lecture_id">ID</string>
+    <string name="lbl_lecture_id">@string/lbl_id</string>
     <string name="dummy_txt_lecture_id">@string/dummy_txt_id</string>
     <string name="dummy_txt_lecture_start_date">2017-04-12</string>
     <string name="dummy_txt_lecture_start_time">13:25</string>
@@ -66,14 +72,14 @@
     <string name="dummy_txt_lecturer_name">Andrew Hopkins</string>
     <string name="dummy_txt_lecturer_degree">Prof. hab. dr.</string>
     <string name="dummy_txt_lecturer_upcoming_lectures">Artimiausios paskaitos</string>
-    <string name="lbl_lecturer_id">ID</string>
+    <string name="lbl_lecturer_id">@string/lbl_id</string>
     <string name="dummy_txt_lecturer_id">@string/dummy_txt_id</string>
     <string name="dummy_txt_user_id">@string/dummy_txt_id</string>
-    <string name="lbl_user_id">ID</string>
-    <string name="dummy_txt_user_identification">s020328</string>
+    <string name="lbl_user_id">@string/lbl_id</string>
+    <string name="dummy_txt_user_identification">@string/dummy_txt_identificator</string>
     <string name="dummy_txt_user_username">netikras</string>
     <string name="title_user">Naudotojas</string>
-    <string name="lbl_person_identificator">ID kodas</string>
+    <string name="lbl_person_identificator">@string/lbl_identificator</string>
     <string name="lbl_user_username">Slapyvardis</string>
     <string name="lbl_user_password">Slaptažodis</string>
     <string name="lbl_user_roles">Rolės</string>
@@ -88,7 +94,7 @@
     <string name="dummy_txt_students_group_school">VIKO</string>
     <string name="dummy_txt_students_group_members">24</string>
     <string name="lbl_students_group_date_created">Sukūrimo data</string>
-    <string name="lbl_students_group_id">ID</string>
+    <string name="lbl_students_group_id">@string/lbl_id</string>
     <string name="dummy_txt_students_group_name">PIN 13</string>
     <string name="dummy_txt_students_group_date_created">2013-08-27</string>
     <string name="dummy_txt_students_group_email">pin13@eif.viko.lt</string>
@@ -108,24 +114,24 @@
     <string name="lbl_student_school_department">Fakultetas</string>
     <string name="lbl_student_date_created">Sukurtas</string>
     <string name="dummy_txt_student_date_created">2013-04-07</string>
-    <string name="dummy_txt_student_identificator">s0204356</string>
-    <string name="dummy_txt_student_id">e9e09a66-b64e-11e7-92ca-6b88c03d686c</string>
-    <string name="lbl_student_id">ID</string>
+    <string name="dummy_txt_student_identificator">@string/dummy_txt_identificator</string>
+    <string name="dummy_txt_student_id">@string/dummy_txt_id</string>
+    <string name="lbl_student_id">@string/lbl_id</string>
     <string name="title_person">Asmuo</string>
     <string name="lbl_person_name">Vardas</string>
     <string name="lbl_person_surname">Pavardė</string>
     <string name="lbl_person_email">El. p.</string>
     <string name="lbl_person_phone_number">Tel. nr.</string>
-    <string name="lbl_user_identificator">ID kodas</string>
-    <string name="lbl_student_identificator">ID kodas</string>
+    <string name="lbl_user_identificator">@string/lbl_identificator</string>
+    <string name="lbl_student_identificator">@string/lbl_identificator</string>
     <string name="lbl_person_roles">Rolės</string>
-    <string name="lbl_person_id">ID</string>
-    <string name="dummy_txt_person_id">e9e09a66-b64e-11e7-92ca-6b88c03d686c</string>
+    <string name="lbl_person_id">@string/lbl_id</string>
+    <string name="dummy_txt_person_id">@string/dummy_txt_id</string>
     <string name="dummy_txt_person_name">Andrew</string>
     <string name="dummy_txt_person_surname">Hopkins</string>
-    <string name="dummy_txt_person_email">andhop0202@yahoo.co.uk</string>
+    <string name="dummy_txt_person_email">@string/dummy_txt_email</string>
     <string name="dummy_txt_person_phone_number">+37062233445</string>
-    <string name="dummy_txt_person_identificator">s0204588</string>
+    <string name="dummy_txt_person_identificator">@string/dummy_txt_identificator</string>
     <string name="lbl_person_date_created">Sukurtas</string>
     <string name="dummy_txt_person_date_created">2013-04-05</string>
     <string name="title_location">Vieta</string>
@@ -144,10 +150,17 @@
     <string name="lbl_location_building_sectionid">Korpuso ID</string>
     <string name="lbl_location_floorid">Aukšto ID</string>
     <string name="lbl_location_roomid">Patalpos ID</string>
-    <string name="dummy_txt_location_roomid">e9e09a66-b64e-11e7-92ca-6b88c03d686c</string>
-    <string name="dummy_txt_location_floorid">e9e09a66-b64e-11e7-92ca-6b88c03d686c</string>
-    <string name="dummy_txt_location_buildingid">e9e09a66-b64e-11e7-92ca-6b88c03d686c</string>
-    <string name="dummy_txt_location_building_sectionid">e9e09a66-b64e-11e7-92ca-6b88c03d686c</string>
+    <string name="dummy_txt_location_roomid">@string/dummy_txt_id</string>
+    <string name="dummy_txt_location_floorid">@string/dummy_txt_id</string>
+    <string name="dummy_txt_location_buildingid">@string/dummy_txt_id</string>
+    <string name="dummy_txt_location_building_sectionid">@string/dummy_txt_id</string>
     <string name="title_lectures_list">Paskaitos</string>
     <string name="title_search">Paieška</string>
+    <string name="menu_item_edit">Redaguoti</string>
+    <string name="menu_item_delete">Ištrinti</string>
+    <string name="menu_item_create">Naujas</string>
+    <string name="menu_item_save">Išsaugoti</string>
+    <string name="menu_item_search">Ieškoti</string>
+    <string name="menu_item_user">Naudotojas</string>
+    <string name="txt_main_menu">º º º</string>
 </resources>

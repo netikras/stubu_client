@@ -1,205 +1,211 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context="com.netikras.studies.studentbuddy.api.client.android.student.StudentInfoActivity">
+    android:layout_height="match_parent">
 
-    <ImageView
-        android:id="@+id/img_student_banner"
-        android:layout_width="0dp"
-        android:layout_height="150dp"
-        android:scaleType="centerCrop"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/student_banner" />
+    <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context="com.netikras.studies.studentbuddy.api.client.android.student.StudentInfoActivity">
 
-    <TextView
-        android:id="@+id/txt_student_title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
-        android:layout_marginEnd="16dp"
-        android:text="@string/title_student"
-        android:textSize="24sp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="@+id/img_student_banner"
-        app:layout_constraintEnd_toEndOf="parent" />
+        <ImageView
+            android:id="@+id/img_student_banner"
+            android:layout_width="0dp"
+            android:layout_height="150dp"
+            android:scaleType="centerCrop"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/student_banner" />
 
-    <TextView
-        android:id="@+id/txt_lbl_student_name"
-        android:layout_width="90dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:text="@string/lbl_student_name"
-        app:layout_constraintBaseline_toBaselineOf="@+id/btn_student_name"
-        app:layout_constraintStart_toStartOf="parent" />
+        <TextView
+            android:id="@+id/txt_student_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:layout_marginEnd="16dp"
+            android:text="@string/title_student"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="@+id/img_student_banner"
+            app:layout_constraintEnd_toEndOf="parent" />
 
-    <TextView
-        android:id="@+id/txt_lbl_student_identification"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:text="@string/lbl_student_identificator"
-        app:layout_constraintBaseline_toBaselineOf="@+id/txt_lbl_student_identificator"
-        app:layout_constraintStart_toStartOf="parent" />
+        <TextView
+            android:id="@+id/txt_lbl_student_name"
+            android:layout_width="90dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:text="@string/lbl_student_name"
+            app:layout_constraintBaseline_toBaselineOf="@+id/btn_student_name"
+            app:layout_constraintStart_toStartOf="parent" />
 
-    <TextView
-        android:id="@+id/txt_lbl_student_group"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:text="@string/lbl_student_group"
-        app:layout_constraintBaseline_toBaselineOf="@+id/btn_student_group"
-        app:layout_constraintStart_toStartOf="parent" />
+        <TextView
+            android:id="@+id/txt_lbl_student_identification"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:text="@string/lbl_student_identificator"
+            app:layout_constraintBaseline_toBaselineOf="@+id/txt_lbl_student_identificator"
+            app:layout_constraintStart_toStartOf="parent" />
 
-    <TextView
-        android:id="@+id/txt_lbl_student_school"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:text="@string/lbl_student_school"
-        app:layout_constraintBaseline_toBaselineOf="@+id/btn_student_school"
-        app:layout_constraintStart_toStartOf="parent" />
+        <TextView
+            android:id="@+id/txt_lbl_student_group"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:text="@string/lbl_student_group"
+            app:layout_constraintBaseline_toBaselineOf="@+id/btn_student_group"
+            app:layout_constraintStart_toStartOf="parent" />
 
-    <Button
-        android:id="@+id/btn_student_name"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:background="@android:color/transparent"
-        android:fontFamily="sans-serif"
-        android:text="@string/dummy_txt_student_name"
-        android:textAlignment="textStart"
-        android:textAllCaps="false"
-        android:textSize="18sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/txt_lbl_student_id"
-        app:layout_constraintTop_toBottomOf="@+id/txt_edit_student_id" />
+        <TextView
+            android:id="@+id/txt_lbl_student_school"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:text="@string/lbl_student_school"
+            app:layout_constraintBaseline_toBaselineOf="@+id/btn_student_school"
+            app:layout_constraintStart_toStartOf="parent" />
 
-    <Button
-        android:id="@+id/btn_student_group"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
-        android:layout_marginStart="16dp"
-        android:background="@android:color/transparent"
-        android:fontFamily="sans-serif"
-        android:text="@string/dummy_txt_student_group"
-        android:textAlignment="textStart"
-        android:textAllCaps="false"
-        android:textSize="18sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toEndOf="@+id/txt_lbl_student_id"
-        app:layout_constraintTop_toBottomOf="@+id/txt_lbl_student_identificator" />
+        <Button
+            android:id="@+id/btn_student_name"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:background="@android:color/transparent"
+            android:fontFamily="sans-serif"
+            android:text="@string/dummy_txt_student_name"
+            android:textAlignment="textStart"
+            android:textAllCaps="false"
+            android:textSize="18sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/txt_lbl_student_id"
+            app:layout_constraintTop_toBottomOf="@+id/txt_edit_student_id" />
 
-    <Button
-        android:id="@+id/btn_student_school"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
-        android:layout_marginStart="16dp"
-        android:background="@android:color/transparent"
-        android:fontFamily="sans-serif"
-        android:text="@string/dummy_txt_student_school"
-        android:textAlignment="textStart"
-        android:textAllCaps="false"
-        android:textSize="18sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/txt_lbl_student_id"
-        app:layout_constraintTop_toBottomOf="@+id/btn_student_group" />
+        <Button
+            android:id="@+id/btn_student_group"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:layout_marginStart="16dp"
+            android:background="@android:color/transparent"
+            android:fontFamily="sans-serif"
+            android:text="@string/dummy_txt_student_group"
+            android:textAlignment="textStart"
+            android:textAllCaps="false"
+            android:textSize="18sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toEndOf="@+id/txt_lbl_student_id"
+            app:layout_constraintTop_toBottomOf="@+id/txt_lbl_student_identificator" />
 
-    <Button
-        android:id="@+id/btn_student_school_department"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
-        android:layout_marginStart="16dp"
-        android:background="@android:color/transparent"
-        android:fontFamily="sans-serif"
-        android:text="@string/dummy_txt_student_school_department"
-        android:textAlignment="textStart"
-        android:textAllCaps="false"
-        android:textSize="18sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toEndOf="@+id/txt_lbl_student_id"
-        app:layout_constraintTop_toBottomOf="@+id/btn_student_school" />
+        <Button
+            android:id="@+id/btn_student_school"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:layout_marginStart="16dp"
+            android:background="@android:color/transparent"
+            android:fontFamily="sans-serif"
+            android:text="@string/dummy_txt_student_school"
+            android:textAlignment="textStart"
+            android:textAllCaps="false"
+            android:textSize="18sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/txt_lbl_student_id"
+            app:layout_constraintTop_toBottomOf="@+id/btn_student_group" />
 
-    <TextView
-        android:id="@+id/txt_lbl_student_school_department"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:text="@string/lbl_student_school_department"
-        app:layout_constraintBaseline_toBaselineOf="@+id/btn_student_school_department"
-        app:layout_constraintStart_toStartOf="parent" />
+        <Button
+            android:id="@+id/btn_student_school_department"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:layout_marginStart="16dp"
+            android:background="@android:color/transparent"
+            android:fontFamily="sans-serif"
+            android:text="@string/dummy_txt_student_school_department"
+            android:textAlignment="textStart"
+            android:textAllCaps="false"
+            android:textSize="18sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toEndOf="@+id/txt_lbl_student_id"
+            app:layout_constraintTop_toBottomOf="@+id/btn_student_school" />
 
-    <TextView
-        android:id="@+id/txt_lbl_student_date_created"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:text="@string/lbl_student_date_created"
-        app:layout_constraintBaseline_toBaselineOf="@+id/txt_edit_student_date_created"
-        app:layout_constraintStart_toStartOf="parent" />
+        <TextView
+            android:id="@+id/txt_lbl_student_school_department"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:text="@string/lbl_student_school_department"
+            app:layout_constraintBaseline_toBaselineOf="@+id/btn_student_school_department"
+            app:layout_constraintStart_toStartOf="parent" />
 
-    <EditText
-        android:id="@+id/txt_lbl_student_identificator"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
-        android:layout_marginStart="16dp"
-        android:ems="10"
-        android:inputType="textPersonName"
-        android:text="@string/dummy_txt_student_identificator"
-        android:focusable="false"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toEndOf="@+id/txt_lbl_student_id"
-        app:layout_constraintTop_toBottomOf="@+id/btn_student_name" />
+        <TextView
+            android:id="@+id/txt_lbl_student_date_created"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:text="@string/lbl_student_date_created"
+            app:layout_constraintBaseline_toBaselineOf="@+id/txt_edit_student_date_created"
+            app:layout_constraintStart_toStartOf="parent" />
 
-    <EditText
-        android:id="@+id/txt_edit_student_id"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:ems="10"
-        android:inputType="textMultiLine"
-        android:text="@string/dummy_txt_student_id"
-        android:focusable="false"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/txt_lbl_student_id"
-        app:layout_constraintTop_toBottomOf="@+id/img_student_banner" />
+        <EditText
+            android:id="@+id/txt_lbl_student_identificator"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:layout_marginStart="16dp"
+            android:ems="10"
+            android:focusable="false"
+            android:inputType="textPersonName"
+            android:text="@string/dummy_txt_student_identificator"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toEndOf="@+id/txt_lbl_student_id"
+            app:layout_constraintTop_toBottomOf="@+id/btn_student_name" />
 
-    <TextView
-        android:id="@+id/txt_lbl_student_id"
-        android:layout_width="90dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:text="@string/lbl_student_id"
-        app:layout_constraintBaseline_toBaselineOf="@+id/txt_edit_student_id"
-        app:layout_constraintStart_toStartOf="parent" />
+        <EditText
+            android:id="@+id/txt_edit_student_id"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:ems="10"
+            android:focusable="false"
+            android:inputType="textMultiLine"
+            android:text="@string/dummy_txt_student_id"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/txt_lbl_student_id"
+            app:layout_constraintTop_toBottomOf="@+id/img_student_banner" />
 
-    <EditText
-        android:id="@+id/txt_edit_student_date_created"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
-        android:layout_marginStart="16dp"
-        android:ems="10"
-        android:inputType="date"
-        android:text="@string/dummy_txt_student_date_created"
-        android:focusable="false"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/txt_lbl_student_id"
-        app:layout_constraintTop_toBottomOf="@+id/btn_student_school_department" />
+        <TextView
+            android:id="@+id/txt_lbl_student_id"
+            android:layout_width="90dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:text="@string/lbl_student_id"
+            app:layout_constraintBaseline_toBaselineOf="@+id/txt_edit_student_id"
+            app:layout_constraintStart_toStartOf="parent" />
 
-</android.support.constraint.ConstraintLayout>
+        <EditText
+            android:id="@+id/txt_edit_student_date_created"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:layout_marginStart="16dp"
+            android:ems="10"
+            android:focusable="false"
+            android:inputType="date"
+            android:text="@string/dummy_txt_student_date_created"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/txt_lbl_student_id"
+            app:layout_constraintTop_toBottomOf="@+id/btn_student_school_department" />
+
+    </android.support.constraint.ConstraintLayout>
+</ScrollView>

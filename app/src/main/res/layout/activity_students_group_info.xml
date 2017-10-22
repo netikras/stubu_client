@@ -1,175 +1,181 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context="com.netikras.studies.studentbuddy.api.client.android.student.StudentsGroupInfoActivity">
+    android:layout_height="match_parent">
 
-    <ImageView
-        android:id="@+id/img_students_group_banner"
-        android:layout_width="0dp"
-        android:layout_height="150dp"
-        android:scaleType="centerCrop"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/group_banner" />
+    <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context="com.netikras.studies.studentbuddy.api.client.android.student.StudentsGroupInfoActivity">
 
-    <TextView
-        android:id="@+id/txt_students_group_title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
-        android:layout_marginEnd="16dp"
-        android:text="@string/title_students_group"
-        android:textColor="@android:color/holo_green_light"
-        android:textSize="24sp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="@+id/img_students_group_banner"
-        app:layout_constraintEnd_toEndOf="parent" />
+        <ImageView
+            android:id="@+id/img_students_group_banner"
+            android:layout_width="0dp"
+            android:layout_height="150dp"
+            android:scaleType="centerCrop"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/group_banner" />
 
-    <TextView
-        android:id="@+id/txt_lbl_students_group_name"
-        android:layout_width="90dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:text="@string/lbl_students_group_name"
-        app:layout_constraintBaseline_toBaselineOf="@+id/txt_edit_students_group_name"
-        app:layout_constraintStart_toStartOf="parent" />
+        <TextView
+            android:id="@+id/txt_students_group_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:layout_marginEnd="16dp"
+            android:text="@string/title_students_group"
+            android:textColor="@android:color/holo_green_light"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="@+id/img_students_group_banner"
+            app:layout_constraintEnd_toEndOf="parent" />
 
-    <TextView
-        android:id="@+id/txt_lbl_students_group_school"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:text="@string/lbl_students_group_school"
-        app:layout_constraintBaseline_toBaselineOf="@+id/btn_students_group_school"
-        app:layout_constraintStart_toStartOf="parent" />
+        <TextView
+            android:id="@+id/txt_lbl_students_group_name"
+            android:layout_width="90dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:text="@string/lbl_students_group_name"
+            app:layout_constraintBaseline_toBaselineOf="@+id/txt_edit_students_group_name"
+            app:layout_constraintStart_toStartOf="parent" />
 
-    <TextView
-        android:id="@+id/txt_lbl_students_group_email"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:text="@string/lbl_students_group_email"
-        app:layout_constraintBaseline_toBaselineOf="@+id/txt_edit_students_group_email"
-        app:layout_constraintStart_toStartOf="parent" />
+        <TextView
+            android:id="@+id/txt_lbl_students_group_school"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:text="@string/lbl_students_group_school"
+            app:layout_constraintBaseline_toBaselineOf="@+id/btn_students_group_school"
+            app:layout_constraintStart_toStartOf="parent" />
 
-    <TextView
-        android:id="@+id/txt_lbl_students_group_members"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:text="@string/lbl_students_group_members"
-        app:layout_constraintBaseline_toBaselineOf="@+id/btn_students_group_members"
-        app:layout_constraintStart_toStartOf="parent" />
+        <TextView
+            android:id="@+id/txt_lbl_students_group_email"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:text="@string/lbl_students_group_email"
+            app:layout_constraintBaseline_toBaselineOf="@+id/txt_edit_students_group_email"
+            app:layout_constraintStart_toStartOf="parent" />
 
-    <Button
-        android:id="@+id/btn_students_group_school"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
-        android:layout_marginStart="16dp"
-        android:background="@android:color/transparent"
-        android:fontFamily="sans-serif"
-        android:text="@string/dummy_txt_students_group_school"
-        android:textAlignment="textStart"
-        android:textAllCaps="false"
-        android:textSize="18sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/txt_lbl_students_group_id"
-        app:layout_constraintTop_toBottomOf="@+id/txt_edit_students_group_name" />
+        <TextView
+            android:id="@+id/txt_lbl_students_group_members"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:text="@string/lbl_students_group_members"
+            app:layout_constraintBaseline_toBaselineOf="@+id/btn_students_group_members"
+            app:layout_constraintStart_toStartOf="parent" />
 
-    <Button
-        android:id="@+id/btn_students_group_members"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
-        android:layout_marginStart="16dp"
-        android:background="@android:color/transparent"
-        android:fontFamily="sans-serif"
-        android:text="@string/dummy_txt_students_group_members"
-        android:textAlignment="textStart"
-        android:textAllCaps="false"
-        android:textSize="18sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/txt_lbl_students_group_id"
-        app:layout_constraintTop_toBottomOf="@+id/txt_edit_students_group_email" />
+        <Button
+            android:id="@+id/btn_students_group_school"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:layout_marginStart="16dp"
+            android:background="@android:color/transparent"
+            android:fontFamily="sans-serif"
+            android:text="@string/dummy_txt_students_group_school"
+            android:textAlignment="textStart"
+            android:textAllCaps="false"
+            android:textSize="18sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/txt_lbl_students_group_id"
+            app:layout_constraintTop_toBottomOf="@+id/txt_edit_students_group_name" />
 
-    <TextView
-        android:id="@+id/txt_lbl_students_group_date_created"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:text="@string/lbl_students_group_date_created"
-        app:layout_constraintBaseline_toBaselineOf="@+id/txt_edit_students_group_date_created"
-        app:layout_constraintStart_toStartOf="parent" />
+        <Button
+            android:id="@+id/btn_students_group_members"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:layout_marginStart="16dp"
+            android:background="@android:color/transparent"
+            android:fontFamily="sans-serif"
+            android:text="@string/dummy_txt_students_group_members"
+            android:textAlignment="textStart"
+            android:textAllCaps="false"
+            android:textSize="18sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/txt_lbl_students_group_id"
+            app:layout_constraintTop_toBottomOf="@+id/txt_edit_students_group_email" />
 
-    <TextView
-        android:id="@+id/txt_lbl_students_group_id"
-        android:layout_width="90dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:text="@string/lbl_students_group_id"
-        app:layout_constraintBaseline_toBaselineOf="@+id/txt_edit_students_group_id"
-        app:layout_constraintStart_toStartOf="parent" />
+        <TextView
+            android:id="@+id/txt_lbl_students_group_date_created"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:text="@string/lbl_students_group_date_created"
+            app:layout_constraintBaseline_toBaselineOf="@+id/txt_edit_students_group_date_created"
+            app:layout_constraintStart_toStartOf="parent" />
 
-    <EditText
-        android:id="@+id/txt_edit_students_group_id"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:ems="10"
-        android:focusable="false"
-        android:inputType="textMultiLine"
-        android:text="e9e09a66-b64e-11e7-92ca-6b88c03d686c"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/txt_lbl_students_group_id"
-        app:layout_constraintTop_toBottomOf="@+id/img_students_group_banner" />
+        <TextView
+            android:id="@+id/txt_lbl_students_group_id"
+            android:layout_width="90dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:text="@string/lbl_students_group_id"
+            app:layout_constraintBaseline_toBaselineOf="@+id/txt_edit_students_group_id"
+            app:layout_constraintStart_toStartOf="parent" />
 
-    <EditText
-        android:id="@+id/txt_edit_students_group_name"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:ems="10"
-        android:inputType="textPersonName"
-        android:text="@string/dummy_txt_students_group_name"
-        android:focusable="false"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/txt_lbl_students_group_id"
-        app:layout_constraintTop_toBottomOf="@+id/txt_edit_students_group_id" />
+        <EditText
+            android:id="@+id/txt_edit_students_group_id"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:ems="10"
+            android:focusable="false"
+            android:inputType="textMultiLine"
+            android:text="e9e09a66-b64e-11e7-92ca-6b88c03d686c"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/txt_lbl_students_group_id"
+            app:layout_constraintTop_toBottomOf="@+id/img_students_group_banner" />
 
-    <EditText
-        android:id="@+id/txt_edit_students_group_email"
-        android:layout_width="0dp"
-        android:layout_height="39dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginStart="16dp"
-        android:ems="10"
-        android:inputType="textEmailAddress"
-        android:text="@string/dummy_txt_students_group_email"
-        android:focusable="false"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/txt_lbl_students_group_id"
-        app:layout_constraintTop_toBottomOf="@+id/btn_students_group_school" />
+        <EditText
+            android:id="@+id/txt_edit_students_group_name"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:ems="10"
+            android:focusable="false"
+            android:inputType="textPersonName"
+            android:text="@string/dummy_txt_students_group_name"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/txt_lbl_students_group_id"
+            app:layout_constraintTop_toBottomOf="@+id/txt_edit_students_group_id" />
 
-    <EditText
-        android:id="@+id/txt_edit_students_group_date_created"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
-        android:layout_marginStart="16dp"
-        android:ems="10"
-        android:inputType="date"
-        android:text="@string/dummy_txt_students_group_date_created"
-        android:focusable="false"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/txt_lbl_students_group_id"
-        app:layout_constraintTop_toBottomOf="@+id/btn_students_group_members" />
-</android.support.constraint.ConstraintLayout>
+        <EditText
+            android:id="@+id/txt_edit_students_group_email"
+            android:layout_width="0dp"
+            android:layout_height="39dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginStart="16dp"
+            android:ems="10"
+            android:focusable="false"
+            android:inputType="textEmailAddress"
+            android:text="@string/dummy_txt_students_group_email"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/txt_lbl_students_group_id"
+            app:layout_constraintTop_toBottomOf="@+id/btn_students_group_school" />
+
+        <EditText
+            android:id="@+id/txt_edit_students_group_date_created"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:layout_marginStart="16dp"
+            android:ems="10"
+            android:focusable="false"
+            android:inputType="date"
+            android:text="@string/dummy_txt_students_group_date_created"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/txt_lbl_students_group_id"
+            app:layout_constraintTop_toBottomOf="@+id/btn_students_group_members" />
+    </android.support.constraint.ConstraintLayout>
+</ScrollView>

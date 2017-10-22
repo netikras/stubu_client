@@ -9,43 +9,35 @@ import android.util.Log;
 
 import com.netikras.studies.studentbuddy.api.client.android.App;
 import com.netikras.studies.studentbuddy.api.client.android.Settings;
+import com.netikras.studies.studentbuddy.api.client.android.student.ExtrasPair;
+import com.netikras.studies.studentbuddy.api.user.generated.PersonApiConsumer;
 import com.netikras.studies.studentbuddy.api.user.generated.UserApiConsumer;
+import com.netikras.studies.studentbuddy.core.data.api.dto.PersonDto;
 import com.netikras.studies.studentbuddy.core.data.api.dto.meta.UserDto;
-import com.netikras.tools.common.remote.RemoteEndpointServer;
-import com.netikras.tools.common.remote.http.HttpRequest;
 
-import static com.netikras.studies.studentbuddy.api.client.android.Settings.getActionName;
 import static com.netikras.studies.studentbuddy.api.client.android.Settings.getExtraName;
 import static com.netikras.tools.common.security.IntegrityUtils.isNullOrEmpty;
 
-/**
- * An {@link IntentService} subclass for handling asynchronous task requests in
- * a service on a separate handler thread.
- * <p>
- * TODO: Customize class - update intent actions, extra parameters and static
- * helper methods.
- */
-public class UserService extends IntentService {
-    // TODO: Rename actions, choose action names that describe tasks that this
-    // IntentService can perform, e.g. ACTION_FETCH_NEW_ITEMS
-    private static final String ACTION_FOO = "com.netikras.studies.studentbuddy.api.client.android.action.FOO";
-    private static final String ACTION_BAZ = "com.netikras.studies.studentbuddy.api.client.android.action.BAZ";
 
-    // TODO: Rename parameters
-    private static final String EXTRA_PARAM1 = "com.netikras.studies.studentbuddy.api.client.android.extra.PARAM1";
-    private static final String EXTRA_PARAM2 = "com.netikras.studies.studentbuddy.api.client.android.extra.PARAM2";
+public class UserService extends IntentService {
 
 
     public enum Actions {
         ACT_LOGIN,
         ACT_LOGOUT,
-        ACT_CHNGPSWD
+        ACT_CHNGPSWD,
+        ACT_GET_USER,
+        ACT_CREATE_W_ID2
     }
 
     public static final String X_USERNAME = getExtraName("username");
     public static final String X_PASSWORD = getExtraName("password");
+    public static final String X_USER_ID = getExtraName("user_id");
+    public static final String X_PERSON_ID2 = getExtraName("person_id2");
+    public static final String X_USER_KEY = getExtraName("user_key");
 
     private UserApiConsumer userApiConsumer;
+    private App app;
 
 
     public UserService() {
@@ -55,32 +47,19 @@ public class UserService extends IntentService {
     @Override
     public void onStart(@Nullable Intent intent, int startId) {
         super.onStart(intent, startId);
+        app = App.getInstance(this);
         createConsumer();
     }
 
     private void createConsumer() {
         SharedPreferences settings = Settings.getSettings(this);
 
-        if (userApiConsumer != null && !settings.getBoolean("reset_server", false)) {
-            return;
+        if (userApiConsumer == null || settings.getBoolean("reset_server", false)) {
+            userApiConsumer = new UserApiConsumer();
         }
 
-        String address = settings.getString("address", "http://192.168.1.6");
-        int port = settings.getInt("port", 8080);
-        String rootContext = settings.getString("context", "/stubu");
-
-        RemoteEndpointServer server = RemoteEndpointServer.parse(address);
-        server.setPort(port);
-        server.setRootUrl(rootContext);
-        server.setItemId("1");
-        server.setProtocol(HttpRequest.Protocol.HTTP);
-
-        userApiConsumer = new UserApiConsumer();
-        userApiConsumer.addServer("default", server);
-        userApiConsumer.setSessionContext(Settings.getSessionContext(this));
+        app.attachConsumer(userApiConsumer);
     }
-
-
 
 
     /**
@@ -91,8 +70,8 @@ public class UserService extends IntentService {
      */
     public static void startLogin(Context context, String username, String password) {
         doStartForAction(context, Actions.ACT_LOGIN,
-                new String[]{X_USERNAME, username},
-                new String[]{X_PASSWORD, password}
+                new ExtrasPair(X_USERNAME, username),
+                new ExtrasPair(X_PASSWORD, password)
         );
     }
 
@@ -100,26 +79,33 @@ public class UserService extends IntentService {
         doStartForAction(context, Actions.ACT_LOGOUT);
     }
 
+    public static void startGetUser(Context context, String userId) {
+        doStartForAction(context, Actions.ACT_GET_USER,
+                new ExtrasPair(X_USER_ID, userId)
+        );
+    }
+
     public static void startChangePassword(Context context, String newPassword) {
         doStartForAction(context, Actions.ACT_CHNGPSWD,
-                new String[]{X_PASSWORD, newPassword}
-                );
+                new ExtrasPair(X_PASSWORD, newPassword)
+        );
     }
 
 
+    public static void startCreateUserById2(Context context, UserDto userDto, String id2) {
+        doStartForAction(context, Actions.ACT_CREATE_W_ID2,
+                new ExtrasPair(X_USER_KEY, App.getInstance(context).addToCache(userDto)),
+                new ExtrasPair(X_PERSON_ID2, id2)
+        );
+    }
 
 
-
-    private static void doStartForAction(Context context, Actions action, String[]... extras) {
+    private static void doStartForAction(Context context, Actions action, ExtrasPair... extras) {
         Intent intent = new Intent(context, UserService.class);
         intent.setAction(action.name());
         if (extras != null) {
-            for (String[] extra : extras) {
-                if (extra == null || extra.length != 2) {
-                    Log.e("UserService", "Ignoring a set of extras");
-                    continue;
-                }
-                intent.putExtra(extra[0], extra[1]);
+            for (ExtrasPair extra : extras) {
+                intent.putExtra(extra.getKey(), extra.getValue());
             }
         }
         context.startService(intent);
@@ -132,6 +118,10 @@ public class UserService extends IntentService {
 
             String username;
             String password;
+            String userId;
+            String id2;
+            UserDto userDto;
+            String key;
 
             Actions action = Actions.valueOf(intent.getAction());
             switch (action) {
@@ -146,10 +136,47 @@ public class UserService extends IntentService {
                 case ACT_CHNGPSWD:
                     password = intent.getStringExtra(X_PASSWORD);
                     handleChangePassword(password);
+                    break;
+                case ACT_GET_USER:
+                    userId = intent.getStringExtra(X_USER_ID);
+                    handleGetUser(userId);
+                    break;
+                case ACT_CREATE_W_ID2:
+                    id2 = intent.getStringExtra(X_PERSON_ID2);
+                    key = intent.getStringExtra(X_USER_KEY);
+                    userDto = (UserDto) App.getInstance(this).popFromCache(key);
+                    handleCreateUserForId2(userDto, id2);
                 default:
                     break;
             }
         }
+    }
+
+
+    private void handleCreateUserForId2(UserDto userDto, String id2) {
+        createConsumer();
+        PersonApiConsumer personApiConsumer = new PersonApiConsumer();
+        app.attachConsumer(personApiConsumer);
+        PersonDto personDto = personApiConsumer.getPersonDtoByIdentifier(id2);
+        if (personDto == null) {
+            return;
+        }
+
+        userDto.setPerson(personDto);
+        UserDto created = userApiConsumer.createUserDto(userDto);
+
+        if (created == null) {
+            return;
+        }
+
+        // FIXME drop DTO somewhere
+
+    }
+
+    private void handleGetUser(String userId) {
+        createConsumer();
+        UserDto userDto = userApiConsumer.retrieveUserDto(userId);
+        // FIXME drop DTO somewhere...
     }
 
     private void handleLogin(String username, String password) {
@@ -161,7 +188,7 @@ public class UserService extends IntentService {
             app.setCurrentUser(userDto);
         }
 
-        Log.i("Received user: ", ""+userDto);
+        Log.i("Received user: ", "" + userDto);
     }
 
     private void handleLogout() {
