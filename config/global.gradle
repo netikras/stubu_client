@@ -1,0 +1,14 @@
+apply plugin: 'com.android.application'
+
+apply from: "${rootProject.rootDir}/config/versions.gradle"
+
+ext.loadDep = { String name ->
+    apply from: "$rootProject.rootDir/config/" + name + ".gradle"
+}
+
+
+ext.loadProj = { String name ->
+    dependencies {
+        compile project(name)
+    }
+}

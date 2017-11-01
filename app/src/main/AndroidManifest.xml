@@ -3,6 +3,7 @@
     package="com.netikras.studies.studentbuddy.api.client.android">
 
     <!-- To auto-complete the email text field in the login form with the user's emails -->
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
     <uses-permission android:name="android.permission.READ_PROFILE" />
     <uses-permission android:name="android.permission.READ_CONTACTS" />
@@ -16,7 +17,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".MainActivity">
+        <activity android:name=".ui.main.view.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -25,33 +26,40 @@
         </activity>
 
         <service
-            android:name=".person.UserService"
+            android:name=".ui.person.UserService"
             android:exported="false" />
 
         <activity
-            android:name=".LoginActivity"
+            android:name=".ui.login.view.LoginActivity"
             android:label="@string/title_activity_login"
-            android:parentActivityName=".MainActivity">
+            android:parentActivityName=".ui.main.view.MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.netikras.studies.studentbuddy.api.client.android.MainActivity" />
+                android:value="com.netikras.studies.studentbuddy.api.client.android.ui.main.view.MainActivity" />
         </activity>
-        <activity android:name=".lecture.LectureInfoActivity" />
-        <activity android:name=".discipline.DisciplineInfoActivity" />
-        <activity android:name=".location.LocationInfoActivity" />
-        <activity android:name=".lecturer.LecturerInfoActivity" />
-        <activity android:name=".student.StudentInfoActivity" />
-        <activity android:name=".student.StudentsGroupInfoActivity" />
-        <activity android:name=".person.PersonInfoActivity" />
-        <activity android:name=".person.UserInfoActivity" />
-        <activity android:name=".location.FloorLayoutActivity" />
-        <activity android:name=".SearchActivity" />
-        <activity android:name=".lecture.LecturesListActivity" />
-        <activity android:name=".person.SettingsActivity" />
+        <activity android:name=".ui.lecture.LectureInfoActivity" />
+        <activity android:name=".ui.discipline.DisciplineInfoActivity" />
+        <activity android:name=".ui.location.LocationInfoActivity" />
+        <activity android:name=".ui.lecturer.LecturerInfoActivity" />
+        <activity android:name=".ui.student.StudentInfoActivity" />
+        <activity android:name=".ui.student.StudentsGroupInfoActivity" />
+        <activity android:name=".ui.person.view.PersonInfoActivity" />
+        <activity android:name=".ui.person.view.UserInfoActivity" />
+        <activity android:name=".ui.location.FloorLayoutActivity" />
+        <activity android:name=".ui.SearchActivity" />
+        <activity android:name=".ui.lecture.LecturesListActivity" />
+        <activity android:name=".ui.person.view.SettingsActivity" />
 
         <service
-            android:name=".person.PersonService"
+            android:name=".ui.person.PersonService"
+            android:exported="false" />
+        <service
+            android:name=".service.ApiService"
             android:exported="false"></service>
+
+        <meta-data
+            android:name="preloaded_fonts"
+            android:resource="@array/preloaded_fonts" />
     </application>
 
 </manifest>

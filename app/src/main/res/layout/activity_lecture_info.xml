@@ -8,7 +8,7 @@
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context="com.netikras.studies.studentbuddy.api.client.android.lecture.LectureInfoActivity">
+        tools:context=".ui.lecture.LectureInfoActivity">
 
         <ImageView
             android:id="@+id/img_lecture_banner"

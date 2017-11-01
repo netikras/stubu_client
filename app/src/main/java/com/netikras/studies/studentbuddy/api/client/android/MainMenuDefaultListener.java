@@ -4,8 +4,10 @@ import android.content.Context;
 import android.view.MenuItem;
 import android.widget.PopupMenu;
 
-import com.netikras.studies.studentbuddy.api.client.android.person.SettingsActivity;
-import com.netikras.studies.studentbuddy.api.client.android.person.UserInfoActivity;
+import com.netikras.studies.studentbuddy.api.client.android.ui.login.view.LoginActivity;
+import com.netikras.studies.studentbuddy.api.client.android.ui.SearchActivity;
+import com.netikras.studies.studentbuddy.api.client.android.ui.person.view.SettingsActivity;
+import com.netikras.studies.studentbuddy.api.client.android.ui.person.view.UserInfoActivity;
 
 public abstract class MainMenuDefaultListener implements PopupMenu.OnMenuItemClickListener {
 

@@ -1,15 +1,16 @@
 apply plugin: 'com.android.application'
 
+apply from: "${rootProject.rootDir}/config/global.gradle"
 
-def sdkVer = 26
+
+def sdkVer = sdkTargetVersion
 
 android {
     compileSdkVersion sdkVer
     buildToolsVersion '26.0.2'
     defaultConfig {
         applicationId "com.netikras.studies.studentbuddy.api.client.android"
-        minSdkVersion 24
-//        minSdkVersion 26
+        minSdkVersion sdkMinVersion
         targetSdkVersion sdkVer
         versionCode 1
         versionName "1.0"
@@ -34,12 +35,12 @@ android {
     lintOptions.abortOnError = false
 }
 
-def databindVersion = '2.8.7'
-def mapperVersion = '1.9.13'
 
-def apcLangVersion = '3.6'
+
 
 dependencies {
+//    classpath 'com.android.tools.build:gradle:3.0.0'
+
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation "com.android.support:appcompat-v7:${sdkVer}.1.0"
     implementation 'com.android.support.constraint:constraint-layout:1.0.2'
@@ -48,15 +49,25 @@ dependencies {
     androidTestImplementation 'com.android.support.test:runner:1.0.1'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
     implementation group: 'org.apache.commons', name: 'commons-lang3', version: "${apcLangVersion}"
-    // https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind
+
     implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: "${databindVersion}"
-    // https://mvnrepository.com/artifact/org.codehaus.jackson/jackson-mapper-asl
     implementation group: 'org.codehaus.jackson', name: 'jackson-mapper-asl', version: "${mapperVersion}"
-    // https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-core
     implementation group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: "${databindVersion}"
-    // https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-annotations
     implementation group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: "${databindVersion}"
+
     implementation files('libs/api-public-1.0.jar')
-    implementation group: 'com.netikras', name: 'commons', version: '1.1.2-SNAPSHOT+', changing: true
+    implementation group: 'com.netikras', name: 'commons', version: "${netikrasCommonsVersion}", changing: true
 //    implementation files('libs/common-1.0-SNAPSHOT.jar')
+
+    compile group: "com.google.dagger", name: "dagger", version: "${daggerVersion}"
+    annotationProcessor group: "com.google.dagger", name: "dagger-compiler", version: "${daggerVersion}"
+
+    compile group: 'com.jakewharton', name: 'butterknife', version: "${butterKnifeVersion}"
+    annotationProcessor group: 'com.jakewharton', name: 'butterknife-compiler', version: "${butterKnifeVersion}"
+
+
+    provided 'javax.annotation:jsr250-api:1.0'
+    compile 'javax.inject:javax.inject:1'
 }
+
+//loadDep "jackson"

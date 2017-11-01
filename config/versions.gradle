@@ -1,0 +1,14 @@
+ext.sdkMinVersion = 24
+ext.sdkTargetVersion = 26
+
+
+ext.databindVersion = '2.8.7'
+ext.mapperVersion = '1.9.13'
+
+ext.apcLangVersion = '3.6'
+
+ext.daggerVersion = '2.12'
+
+ext.butterKnifeVersion = '8.8.1'
+
+ext.netikrasCommonsVersion = '1.1.2-SNAPSHOT+'

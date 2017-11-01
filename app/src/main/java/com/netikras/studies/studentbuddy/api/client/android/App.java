@@ -8,19 +8,19 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.PopupMenu;
 
-import com.netikras.studies.studentbuddy.api.client.android.person.UserService;
-import com.netikras.studies.studentbuddy.api.user.generated.UserApiConsumer;
+import com.netikras.studies.studentbuddy.api.client.android.conf.di.DepInjector;
+import com.netikras.studies.studentbuddy.api.client.android.conf.di.component.ApplicationComponent;
+import com.netikras.studies.studentbuddy.api.client.android.ui.login.view.LoginActivity;
+import com.netikras.studies.studentbuddy.api.client.android.ui.person.UserService;
+import com.netikras.studies.studentbuddy.api.client.android.util.Settings;
 import com.netikras.studies.studentbuddy.core.data.api.dto.meta.UserDto;
 import com.netikras.tools.common.remote.RemoteEndpointServer;
 import com.netikras.tools.common.remote.http.GenericRestConsumer;
-import com.netikras.tools.common.remote.http.HttpRequest;
 import com.netikras.tools.common.remote.http.SessionContext;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
-
-import static com.netikras.tools.common.remote.RemoteEndpointServer.parse;
 
 /**
  * Created by netikras on 17.10.17.
@@ -40,18 +40,17 @@ public class App extends Application {
         return (App) context.getApplicationContext();
     }
 
+    private ApplicationComponent mApplicationComponent;
+
+    public ApplicationComponent getComponent() {
+        return mApplicationComponent;
+    }
 
     @Override
     public void onCreate() {
         super.onCreate();
-        initDevSettings();
+        mApplicationComponent = DepInjector.inject(this);
     }
-
-    private void initDevSettings() {
-        RemoteEndpointServer server = parse("http://192.168.1.6:8080/stubu");
-        servers.put("default", server);
-    }
-
 
     public UserDto getCurrentUserOrLogin() {
         if (currentUser == null) {
