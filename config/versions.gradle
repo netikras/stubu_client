@@ -11,4 +11,6 @@ ext.daggerVersion = '2.12'
 
 ext.butterKnifeVersion = '8.8.1'
 
+ext.okHttpVersion = '3.7.0'
+
 ext.netikrasCommonsVersion = '1.1.2-SNAPSHOT+'

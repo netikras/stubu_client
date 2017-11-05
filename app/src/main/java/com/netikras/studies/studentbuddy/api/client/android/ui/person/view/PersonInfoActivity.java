@@ -42,7 +42,7 @@ public class PersonInfoActivity extends BaseActivity implements PersonMvpView {
     App app;
 
     @Inject
-    PersonMvpPresenter<? extends PersonMvpView> presenter;
+    PersonMvpPresenter<PersonMvpView> presenter;
 
     private ViewFields fields;
 
@@ -164,9 +164,7 @@ public class PersonInfoActivity extends BaseActivity implements PersonMvpView {
 
         @Override
         protected Collection<TextView> getEditableFields() {
-            Collection<TextView> all = getAllFields();
-            all.remove(id);
-            return all;
+            return Arrays.asList(identificator, name, surname, email, phoneNo, dateCreated);
         }
 
         public String getId() {

@@ -2,14 +2,25 @@ package com.netikras.studies.studentbuddy.api.client.android.conf.di;
 
 import android.app.Activity;
 import android.app.Application;
-import android.app.Service;
 
+import com.netikras.studies.studentbuddy.api.client.android.conf.di.component.ActivityComponent;
 import com.netikras.studies.studentbuddy.api.client.android.conf.di.component.ApplicationComponent;
+import com.netikras.studies.studentbuddy.api.client.android.conf.di.component.DaggerActivityComponent;
 import com.netikras.studies.studentbuddy.api.client.android.conf.di.component.DaggerApplicationComponent;
+import com.netikras.studies.studentbuddy.api.client.android.conf.di.component.DaggerPresenterComponent;
+import com.netikras.studies.studentbuddy.api.client.android.conf.di.component.PresenterComponent;
+import com.netikras.studies.studentbuddy.api.client.android.conf.di.module.ActivityModule;
 import com.netikras.studies.studentbuddy.api.client.android.conf.di.module.ApplicationModule;
-import com.netikras.studies.studentbuddy.api.client.android.data.DataManager;
+import com.netikras.studies.studentbuddy.api.client.android.conf.di.module.DataModule;
+import com.netikras.studies.studentbuddy.api.client.android.conf.di.module.PresenterModule;
 import com.netikras.studies.studentbuddy.api.client.android.ui.base.MvpPresenter;
-import com.netikras.studies.studentbuddy.api.client.android.ui.base.MvpView;
+import com.netikras.studies.studentbuddy.api.client.android.ui.login.presenter.LoginPresenter;
+import com.netikras.studies.studentbuddy.api.client.android.ui.login.view.LoginActivity;
+import com.netikras.studies.studentbuddy.api.client.android.ui.main.presenter.MainPresenter;
+import com.netikras.studies.studentbuddy.api.client.android.ui.person.presenter.PersonPresenter;
+import com.netikras.studies.studentbuddy.api.client.android.ui.person.presenter.UserPresenter;
+import com.netikras.studies.studentbuddy.api.client.android.ui.person.view.PersonInfoActivity;
+import com.netikras.studies.studentbuddy.api.client.android.ui.person.view.UserInfoActivity;
 
 /**
  * Created by netikras on 17.10.30.
@@ -18,37 +29,119 @@ import com.netikras.studies.studentbuddy.api.client.android.ui.base.MvpView;
 public class DepInjector {
 
     private static ApplicationComponent applicationComponent;
+    private static ActivityComponent activityComponent;
+    private static PresenterComponent presenterComponent;
 
 
-    private static ApplicationComponent getApplicationComponent() {
+    public static ApplicationComponent getApplicationComponent() {
         if (applicationComponent == null) {
             throw new IllegalStateException("Application is not injected!");
         }
         return applicationComponent;
     }
 
-    public static ApplicationComponent inject(Application app) {
+    public static ActivityComponent getActivityComponent() {
+        if (activityComponent == null) {
+            throw new IllegalStateException("Activity is not injected");
+        }
+        return activityComponent;
+    }
+
+    public static PresenterComponent getPresenterComponent() {
+        if (presenterComponent == null) {
+            throw new IllegalStateException("Presenter is not injected");
+        }
+        return presenterComponent;
+    }
+
+
+
+
+
+    private static ApplicationComponent getApplicationComponent(Application application) {
         if (applicationComponent == null) {
             applicationComponent = DaggerApplicationComponent.builder()
-                    .applicationModule(new ApplicationModule(app))
+                    .applicationModule(new ApplicationModule(application))
                     .build();
         }
+        applicationComponent.inject(application);
         return applicationComponent;
     }
 
-    public static void inject(Service service) {
-
+    private static ActivityComponent getActivityComponent(Activity activity) {
+        if (activityComponent == null) {
+            activityComponent = DaggerActivityComponent.builder()
+                    .activityModule(new ActivityModule(activity))
+//                    .applicationComponent(getApplicationComponent())
+                    .applicationModule(new ApplicationModule(getApplicationComponent().application()))
+                    .presenterModule(new PresenterModule())
+                    .dataModule(new DataModule())
+                    .build();
+        }
+        return activityComponent;
     }
 
-    public static void inject(Activity activity) {
-
+    private static PresenterComponent getPresenterComponent(MvpPresenter presenter) {
+        if (presenterComponent == null) {
+            presenterComponent = DaggerPresenterComponent.builder()
+                    .build();
+        }
+        return presenterComponent;
     }
 
-    public static void inject(MvpView view) {
 
+
+
+
+    public static ApplicationComponent inject(Application app) {
+        getApplicationComponent(app).inject(app);
+        return getApplicationComponent();
     }
 
-    public static void inject(MvpPresenter presenter) {
-
+    public static ActivityComponent inject(Activity activity) {
+        getActivityComponent(activity).inject(activity);
+        return getActivityComponent();
     }
+
+    public static ActivityComponent inject(UserInfoActivity activity) {
+        getActivityComponent(activity).inject(activity);
+        return getActivityComponent();
+    }
+
+    public static ActivityComponent inject(PersonInfoActivity activity) {
+        getActivityComponent(activity).inject(activity);
+        return getActivityComponent();
+    }
+
+    public static ActivityComponent inject(LoginActivity activity) {
+        getActivityComponent(activity).inject(activity);
+        return getActivityComponent();
+    }
+
+
+
+
+
+    public static PresenterComponent inject(MainPresenter presenter) {
+        getPresenterComponent(presenter).inject(presenter);
+        return getPresenterComponent();
+    }
+
+    public static PresenterComponent inject(LoginPresenter presenter) {
+        getPresenterComponent(presenter).inject(presenter);
+        return getPresenterComponent();
+    }
+
+    public static PresenterComponent inject(UserPresenter presenter) {
+        getPresenterComponent(presenter).inject(presenter);
+        return getPresenterComponent();
+    }
+
+    public static PresenterComponent inject(PersonPresenter presenter) {
+        getPresenterComponent(presenter).inject(presenter);
+        return getPresenterComponent();
+    }
+
+
+
 }

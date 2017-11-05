@@ -1,6 +1,9 @@
 package com.netikras.studies.studentbuddy.api.client.android.conf.di.module;
 
 import com.netikras.studies.studentbuddy.api.client.android.data.DataManager;
+import com.netikras.studies.studentbuddy.api.client.android.ui.login.presenter.LoginMvpPresenter;
+import com.netikras.studies.studentbuddy.api.client.android.ui.login.presenter.LoginPresenter;
+import com.netikras.studies.studentbuddy.api.client.android.ui.login.view.LoginMvpView;
 import com.netikras.studies.studentbuddy.api.client.android.ui.person.presenter.PersonMvpPresenter;
 import com.netikras.studies.studentbuddy.api.client.android.ui.person.presenter.PersonPresenter;
 import com.netikras.studies.studentbuddy.api.client.android.ui.person.presenter.UserMvpPresenter;
@@ -20,18 +23,21 @@ import dagger.Provides;
 @Module
 public class PresenterModule {
 
-    @Singleton
+//    @Singleton
     @Provides
-    UserMvpPresenter<? extends UserMvpView> userMvpPresenter(DataManager dataManager) {
-        return new UserPresenter<>(dataManager);
+    UserMvpPresenter<UserMvpView> userMvpPresenter(UserPresenter<UserMvpView> userPresenter) {
+        return userPresenter;
     }
 
-    @Singleton
+//    @Singleton
     @Provides
-    PersonMvpPresenter<? extends PersonMvpView> personPresenter(DataManager dataManager) {
-        return new PersonPresenter<>(dataManager);
+    PersonMvpPresenter<PersonMvpView> personPresenter(PersonPresenter<PersonMvpView> personPresenter) {
+        return personPresenter;
     }
-
+    @Provides
+    LoginMvpPresenter<LoginMvpView> loginPresenter(LoginPresenter<LoginMvpView> loginPresenter) {
+        return loginPresenter;
+    }
 
 
 }

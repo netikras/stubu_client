@@ -4,6 +4,7 @@ import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
@@ -12,20 +13,26 @@ import android.support.annotation.StringRes;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
+import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.netikras.studies.studentbuddy.api.client.android.App;
+import com.netikras.studies.studentbuddy.api.client.android.MainMenuDefaultListener;
 import com.netikras.studies.studentbuddy.api.client.android.R;
 import com.netikras.studies.studentbuddy.api.client.android.conf.di.DepInjector;
 import com.netikras.studies.studentbuddy.api.client.android.conf.di.component.ActivityComponent;
-import com.netikras.studies.studentbuddy.api.client.android.conf.di.component.DaggerActivityComponent;
-import com.netikras.studies.studentbuddy.api.client.android.conf.di.module.ActivityModule;
 import com.netikras.studies.studentbuddy.api.client.android.ui.login.view.LoginActivity;
 import com.netikras.studies.studentbuddy.api.client.android.util.CommonUtils;
 import com.netikras.studies.studentbuddy.api.client.android.util.NetworkUtils;
+import com.netikras.studies.studentbuddy.api.client.android.util.misc.YesNoDialog;
+
+import javax.inject.Inject;
 
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
@@ -39,24 +46,24 @@ public abstract class BaseActivity extends AppCompatActivity
 
     private ProgressDialog mProgressDialog;
 
-    private ActivityComponent mActivityComponent;
-
     private Unbinder mUnBinder;
 
     private MvpView view = null;
 
+    private BaseViewFields fields;
+
+    @Inject
+    App app;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mActivityComponent = DaggerActivityComponent.builder()
-                .activityModule(new ActivityModule(this))
-                .applicationComponent(((App) getApplication()).getComponent())
-                .build();
+        DepInjector.inject(this);
 
     }
 
     public ActivityComponent getActivityComponent() {
-        return mActivityComponent;
+        return DepInjector.getActivityComponent();
     }
 
     @Override
@@ -95,8 +102,7 @@ public abstract class BaseActivity extends AppCompatActivity
         Snackbar snackbar = Snackbar.make(findViewById(android.R.id.content),
                 message, Snackbar.LENGTH_SHORT);
         View sbView = snackbar.getView();
-        TextView textView = (TextView) sbView
-                .findViewById(android.support.design.R.id.snackbar_text);
+        TextView textView = sbView.findViewById(android.support.design.R.id.snackbar_text);
         textView.setTextColor(ContextCompat.getColor(this, R.color.white));
         snackbar.show();
     }
@@ -167,9 +173,86 @@ public abstract class BaseActivity extends AppCompatActivity
     protected void onAttach(MvpView view) {
         this.view = view;
         if (Activity.class.isAssignableFrom(view.getClass())) {
-            ButterKnife.bind((Activity) view);
-            DepInjector.inject(view);
+            setUnBinder(ButterKnife.bind((Activity) view));
+//            DepInjector.inject(view);
         }
+    }
+
+    protected void addMenu() {
+        Button menuButton = findViewById(R.id.btn_user_main_menu);
+        menuButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                PopupMenu menu = app.getMainMenu(BaseActivity.this, v);
+
+                menu.setOnMenuItemClickListener(new MainMenuDefaultListener() {
+
+                    @Override
+                    protected Context getContext() {
+                        return BaseActivity.this;
+                    }
+
+                    @Override
+                    public boolean onMenuItemClick(MenuItem item) {
+                        if (super.onMenuItemClick(item)) {
+                            return true;
+                        }
+                        int itemId = item.getItemId();
+                        switch (itemId) {
+                            case R.id.main_menu_edit:
+                                menuOnClickEdit();
+                                return true;
+                            case R.id.main_menu_create:
+                                menuOnClickCreate();
+                                return true;
+                            case R.id.main_menu_save:
+                                menuOnClickSave();
+                                return true;
+                            case R.id.main_menu_delete:
+                                new YesNoDialog()
+                                        .text("Ar tikrai norite pašalinti įrašą?")
+                                        .yes("Taip", new YesNoDialog.OnClick(){
+                                            @Override
+                                            protected void onClick(DialogInterface dialog) {
+                                                menuOnClickDelete();
+                                                super.onClick(dialog);
+                                            }
+                                        })
+                                        .no("Ne", null)
+                                        .show(BaseActivity.this);
+                                return true;
+                        }
+                        return false;
+                    }
+                });
+                menu.show();
+            }
+        });
+    }
+
+
+    protected void menuOnClickEdit() {
+        fields.enableEdit(true);
+    }
+
+    protected void menuOnClickCreate() {
+        fields.enableEdit(false);
+    }
+
+    protected void menuOnClickSave() {
+        fields.enableEdit(false);
+    }
+
+    protected void menuOnClickDelete() {
+
+    }
+
+
+    protected <F extends BaseViewFields> F initFields(F fields) {
+        ButterKnife.bind(fields, this);
+        fields.enableEdit(false);
+        this.fields = fields;
+        return fields;
     }
 
     @Override

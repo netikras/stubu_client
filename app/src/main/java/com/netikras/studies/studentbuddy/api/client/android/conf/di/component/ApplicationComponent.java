@@ -21,6 +21,8 @@ public interface ApplicationComponent {
 
     void inject(App app);
 
+    void inject(Application application);
+
     @ApplicationCtx
     Context context();
 

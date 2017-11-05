@@ -68,6 +68,8 @@ dependencies {
 
     provided 'javax.annotation:jsr250-api:1.0'
     compile 'javax.inject:javax.inject:1'
+
+    implementation group: "com.squareup.okhttp3", name: "okhttp", version: "${okHttpVersion}"
 }
 
 //loadDep "jackson"

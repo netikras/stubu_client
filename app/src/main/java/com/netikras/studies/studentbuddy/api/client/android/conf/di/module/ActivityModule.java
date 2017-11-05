@@ -1,5 +1,6 @@
 package com.netikras.studies.studentbuddy.api.client.android.conf.di.module;
 
+import android.app.Activity;
 import android.support.v7.app.AppCompatActivity;
 
 import com.netikras.studies.studentbuddy.api.client.android.ui.person.presenter.UserMvpPresenter;
@@ -17,16 +18,12 @@ import dagger.Provides;
 @Module
 public class ActivityModule {
 
-    private AppCompatActivity mActivity;
+    private Activity activity;
 
-    public ActivityModule(AppCompatActivity appCompatActivity) {
-        this.mActivity = appCompatActivity;
+    public ActivityModule(Activity activity) {
+        this.activity = activity;
     }
 
-
-    @Provides
-    UserMvpPresenter<UserMvpView> userMvpPresenter(UserPresenter<UserMvpView> userPresenter) {
-        return userPresenter;
-    }
+    
 
 }

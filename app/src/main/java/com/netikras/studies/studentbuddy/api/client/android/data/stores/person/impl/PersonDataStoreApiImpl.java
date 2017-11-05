@@ -23,6 +23,10 @@ public class PersonDataStoreApiImpl extends ApiBasedDataStore<String, PersonDto>
     @Inject
     AdminPersonApiConsumer adminApiConsumer;
 
+    @Inject
+    public PersonDataStoreApiImpl() {
+    }
+
     @Override
     public void getById(String id, Subscriber<PersonDto>... subscribers) {
         orderData(new ServiceRequest<PersonDto>(){

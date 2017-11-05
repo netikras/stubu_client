@@ -15,4 +15,10 @@ public interface UserMvpPresenter <V extends UserMvpView> extends MvpPresenter <
     void showUser(UserDto userDto);
 
     void showPersonForUser(UserDto userDto);
+
+    void delete(String id);
+
+    void create(UserDto collect);
+
+    void update(UserDto collect);
 }

@@ -25,6 +25,12 @@ public class UserDataStoreApiImpl extends ApiBasedDataStore<String, UserDto> imp
     @Inject
     AdminUserApiConsumer adminApiConsumer;
 
+
+    @Inject
+    public UserDataStoreApiImpl() {
+    }
+
+
     @Override
     public void getById(String id, Subscriber<UserDto>... subscribers) {
         orderData(new ServiceRequest() {

@@ -4,12 +4,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.util.AttributeSet;
-import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 
 import com.netikras.studies.studentbuddy.api.client.android.R;
+import com.netikras.studies.studentbuddy.api.client.android.conf.di.DepInjector;
 import com.netikras.studies.studentbuddy.api.client.android.ui.base.BaseActivity;
 import com.netikras.studies.studentbuddy.api.client.android.ui.base.BaseViewFields;
 import com.netikras.studies.studentbuddy.api.client.android.ui.login.presenter.LoginMvpPresenter;
@@ -20,7 +19,6 @@ import java.util.Collection;
 import javax.inject.Inject;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 /**
@@ -30,7 +28,7 @@ public class LoginActivity extends BaseActivity implements LoginMvpView {
 
 
     @Inject
-    LoginMvpPresenter<? extends LoginMvpView> presenter;
+    LoginMvpPresenter<LoginMvpView> presenter;
 
     private ViewFields fields;
 
@@ -41,20 +39,18 @@ public class LoginActivity extends BaseActivity implements LoginMvpView {
 
     @Override
     protected void setUp() {
-
+        DepInjector.inject(this);
+        onAttach(this);
+        presenter.onAttach(this);
+        fields = initFields(new ViewFields());
+        fields.enableEdit(true);
     }
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-    }
-
-    @Override
-    public View onCreateView(View parent, String name, Context context, AttributeSet attrs) {
-        View view = super.onCreateView(parent, name, context, attrs);
-        ButterKnife.bind(view);
-        return view;
+        setUp();
     }
 
     @OnClick(R.id.btn_login_proceed)

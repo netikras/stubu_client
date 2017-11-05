@@ -3,20 +3,16 @@ package com.netikras.studies.studentbuddy.api.client.android.ui.person.view;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.PopupMenu;
 import android.widget.TextView;
 
 import com.netikras.studies.studentbuddy.api.client.android.App;
-import com.netikras.studies.studentbuddy.api.client.android.MainMenuDefaultListener;
 import com.netikras.studies.studentbuddy.api.client.android.R;
+import com.netikras.studies.studentbuddy.api.client.android.conf.di.DepInjector;
 import com.netikras.studies.studentbuddy.api.client.android.ui.base.BaseActivity;
 import com.netikras.studies.studentbuddy.api.client.android.ui.base.BaseViewFields;
-import com.netikras.studies.studentbuddy.api.client.android.ui.person.UserService;
 import com.netikras.studies.studentbuddy.api.client.android.ui.person.presenter.UserMvpPresenter;
 import com.netikras.studies.studentbuddy.core.data.api.dto.PersonDto;
 import com.netikras.studies.studentbuddy.core.data.api.dto.meta.UserDto;
@@ -29,8 +25,6 @@ import javax.inject.Inject;
 import butterknife.BindView;
 import butterknife.OnClick;
 
-import static com.netikras.tools.common.security.IntegrityUtils.isNullOrEmpty;
-
 public class UserInfoActivity extends BaseActivity implements UserMvpView {
 
     private static final String TAG = "UserInfoActivity";
@@ -38,7 +32,7 @@ public class UserInfoActivity extends BaseActivity implements UserMvpView {
     @Inject
     App app;
     @Inject
-    UserMvpPresenter<? extends UserMvpView> presenter;
+    UserMvpPresenter<UserMvpView> presenter;
 
     private ViewFields fields;
 
@@ -51,59 +45,43 @@ public class UserInfoActivity extends BaseActivity implements UserMvpView {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_info);
+        setUp();
 
         UserDto userDto = app.getCurrentUser();
-
         showUser(userDto);
-
-        Button menuButton = findViewById(R.id.btn_user_main_menu);
-        menuButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                PopupMenu menu = app.getMainMenu(UserInfoActivity.this, v);
-
-                menu.setOnMenuItemClickListener(new MainMenuDefaultListener() {
-
-                    @Override
-                    protected Context getContext() {
-                        return UserInfoActivity.this;
-                    }
-
-                    @Override
-                    public boolean onMenuItemClick(MenuItem item) {
-                        if (super.onMenuItemClick(item)) {
-                            return true;
-                        }
-                        int itemId = item.getItemId();
-                        switch (itemId) {
-                            case R.id.main_menu_edit:
-                                Log.i(TAG, "EDIT");
-                                return true;
-                            case R.id.main_menu_create:
-                                Log.i(TAG, "CREATE");
-                                return true;
-                            case R.id.main_menu_save:
-                                Log.i(TAG, "SAVE");
-                                return true;
-                            case R.id.main_menu_delete:
-                                Log.i(TAG, "DELETE");
-                                return true;
-                        }
-                        return false;
-                    }
-                });
-                menu.show();
-            }
-        });
     }
 
     @Override
     protected void setUp() {
+        DepInjector.inject(this);
+        onAttach(this);
+        presenter.onAttach(this);
+        fields = initFields(new ViewFields());
+        addMenu();
+    }
 
+    @Override
+    protected void menuOnClickDelete() {
+        super.menuOnClickDelete();
+        presenter.delete(fields.getId());
+    }
+
+    @Override
+    protected void menuOnClickCreate() {
+        super.menuOnClickCreate();
+        presenter.create(collect());
+    }
+
+    @Override
+    protected void menuOnClickSave() {
+        super.menuOnClickSave();
+        presenter.update(collect());
     }
 
     @Override
     public void showUser(UserDto userDto) {
+        fields.enableEdit(false);
+
         if (userDto == null) {
             userDto = new UserDto();
         }
@@ -120,6 +98,7 @@ public class UserInfoActivity extends BaseActivity implements UserMvpView {
         fields.setUsername(userDto.getName());
         fields.setId(userDto.getId());
     }
+
 
     @OnClick(R.id.btn_user_person)
     void showPerson() {
@@ -160,10 +139,7 @@ public class UserInfoActivity extends BaseActivity implements UserMvpView {
 
         @Override
         protected Collection<TextView> getEditableFields() {
-            Collection<TextView> all = getAllFields();
-            all.remove(id);
-            all.remove(personName);
-            return all;
+            return Arrays.asList(identification, username, password);
         }
 
         public String getId() {

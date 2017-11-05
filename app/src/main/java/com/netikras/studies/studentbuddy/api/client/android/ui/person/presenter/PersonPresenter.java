@@ -20,7 +20,7 @@ import javax.inject.Inject;
  * Created by netikras on 17.10.31.
  */
 
-public class PersonPresenter<V extends PersonMvpView> extends BasePresenter<PersonInfoActivity> implements PersonMvpPresenter<PersonInfoActivity> {
+public class PersonPresenter<V extends PersonMvpView> extends BasePresenter<V> implements PersonMvpPresenter<V> {
 
     @Inject
     public PersonPresenter(DataManager dataManager) {
@@ -43,7 +43,7 @@ public class PersonPresenter<V extends PersonMvpView> extends BasePresenter<Pers
                 getMvpView().showPerson(response);
             }
         });
-        getDataStore().processOrders(getMvpView());
+        getDataStore().processOrders(getContext());
     }
 
     @Override
@@ -55,7 +55,7 @@ public class PersonPresenter<V extends PersonMvpView> extends BasePresenter<Pers
                 getMvpView().getFields().enableEdit(false);
             }
         });
-        getDataStore().processOrders(getMvpView());
+        getDataStore().processOrders(getContext());
     }
 
     @Override
@@ -67,7 +67,7 @@ public class PersonPresenter<V extends PersonMvpView> extends BasePresenter<Pers
                 getMvpView().getFields().enableEdit(false);
             }
         });
-        getDataStore().processOrders(getMvpView());
+        getDataStore().processOrders(getContext());
     }
 
     @Override
@@ -79,7 +79,7 @@ public class PersonPresenter<V extends PersonMvpView> extends BasePresenter<Pers
                 getMvpView().showPerson(response);
             }
         });
-        getDataStore().processOrders(getMvpView());
+        getDataStore().processOrders(getContext());
     }
 
 

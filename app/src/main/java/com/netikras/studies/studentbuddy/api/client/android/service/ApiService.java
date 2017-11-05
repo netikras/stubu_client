@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.Context;
 import android.support.annotation.Nullable;
 
+import com.netikras.studies.studentbuddy.api.client.android.conf.di.DepInjector;
 import com.netikras.tools.common.exception.ErrorsCollection;
 import com.netikras.tools.common.exception.FriendlyExceptionBase;
 
@@ -15,10 +16,12 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 public class ApiService extends IntentService {
 
 
+
+
     private static Queue<ServiceRequest> requestsQueue = new ConcurrentLinkedQueue<>();
 
-    public ApiService(String name) {
-        super(name);
+    public ApiService() {
+        super("ApiService");
     }
 
 
@@ -40,6 +43,7 @@ public class ApiService extends IntentService {
     @Override
     public void onCreate() {
         super.onCreate();
+//        DepInjector.inject(this)
     }
 
     @Override
@@ -56,7 +60,7 @@ public class ApiService extends IntentService {
 
 
     private void processRequests() {
-        while (requestsQueue.isEmpty()) {
+        while (!requestsQueue.isEmpty()) {
             ServiceRequest request = requestsQueue.poll();
             if (request != null) {
                 try {

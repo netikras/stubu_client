@@ -19,12 +19,10 @@ package com.netikras.studies.studentbuddy.api.client.android.ui.base;
  * Created by janisharali on 27/01/17.
  */
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 
 import com.netikras.studies.studentbuddy.api.client.android.data.DataManager;
-import com.netikras.studies.studentbuddy.api.client.android.service.ApiService;
 import com.netikras.studies.studentbuddy.api.client.android.service.ServiceRequest.Subscriber;
 import com.netikras.tools.common.exception.ErrorBody;
 import com.netikras.tools.common.exception.ErrorsCollection;
@@ -45,8 +43,6 @@ public class BasePresenter<V extends MvpView> implements MvpPresenter<V> {
 
     private V mMvpView;
 
-    @Inject
-    ApiService apiService;
 
     @Inject
     public BasePresenter(DataManager dataManager) {
@@ -70,6 +66,10 @@ public class BasePresenter<V extends MvpView> implements MvpPresenter<V> {
 
     public V getMvpView() {
         return mMvpView;
+    }
+
+    public Context getContext() {
+        return (Context) getMvpView();
     }
 
     public void checkViewAttached() {

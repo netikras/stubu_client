@@ -8,6 +8,7 @@ import com.netikras.studies.studentbuddy.api.client.android.data.stores.user.Use
 import com.netikras.studies.studentbuddy.api.client.android.ui.base.BasePresenter;
 import com.netikras.studies.studentbuddy.api.client.android.ui.base.MvpPresenter;
 import com.netikras.studies.studentbuddy.api.client.android.ui.login.view.LoginActivity;
+import com.netikras.studies.studentbuddy.api.client.android.ui.login.view.LoginMvpView;
 import com.netikras.studies.studentbuddy.api.client.android.ui.person.presenter.UserMvpPresenter;
 import com.netikras.studies.studentbuddy.api.client.android.ui.person.view.UserMvpView;
 import com.netikras.studies.studentbuddy.core.data.api.dto.meta.UserDto;
@@ -18,12 +19,12 @@ import javax.inject.Inject;
  * Created by netikras on 17.11.1.
  */
 
-public class LoginPresenter extends BasePresenter<LoginActivity> implements LoginMvpPresenter<LoginActivity> {
+public class LoginPresenter<V extends LoginMvpView> extends BasePresenter<V> implements LoginMvpPresenter<V> {
     @Inject
     App app;
 
     @Inject
-    UserMvpPresenter<? extends UserMvpView> userPresenter;
+    UserMvpPresenter<UserMvpView> userPresenter;
 
     @Inject
     public LoginPresenter(DataManager dataManager) {
@@ -41,9 +42,10 @@ public class LoginPresenter extends BasePresenter<LoginActivity> implements Logi
             @Override
             public void onSuccess(UserDto response) {
                 app.setCurrentUser(response);
-                getLandingPresenter().startView(getMvpView());
+                getLandingPresenter().startView((Context) getMvpView());
             }
         });
+        getDatastore().processOrders((Context) getMvpView());
     }
 
     @Override

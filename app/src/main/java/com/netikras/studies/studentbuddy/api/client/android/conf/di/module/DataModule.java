@@ -1,5 +1,6 @@
 package com.netikras.studies.studentbuddy.api.client.android.conf.di.module;
 
+import com.netikras.studies.studentbuddy.api.client.android.conf.di.AllDatastores;
 import com.netikras.studies.studentbuddy.api.client.android.data.DataManager;
 import com.netikras.studies.studentbuddy.api.client.android.data.DataManagerImpl;
 import com.netikras.studies.studentbuddy.api.client.android.data.stores.BaseDataStore;
@@ -25,28 +26,40 @@ public class DataModule {
 
     private Map<Class<? extends BaseDataStore>, BaseDataStore> stores = new HashMap<>();
 
-    @Singleton
+//    @Singleton
     @Provides
-    DataManager dataManager() {
-        DataManager manager = new DataManagerImpl(stores);
+    DataManager dataManager(DataManagerImpl manager) {
+//        DataManager manager = new DataManagerImpl(stores);
+//        manager.setStores(st);
         return manager;
     }
 
 
-    @Singleton
+//    @Provides
+//    DataManagerImpl dataManager() {
+//        return new DataManagerImpl();
+//    }
+
+//    @Singleton
+    @AllDatastores
     @Provides
-    PersonDataStore personDataStore() {
-        PersonDataStore personDataStore = new PersonDataStoreApiImpl();
-        stores.put(PersonDataStore.class, personDataStore);
-        return personDataStore;
+    Map<Class<? extends BaseDataStore>, BaseDataStore> allStores() {
+
+        return stores;
     }
 
-    @Singleton
+//    @Singleton
     @Provides
-    UserDataStore userDataStore() {
-        UserDataStore dataStore = new UserDataStoreApiImpl();
-        stores.put(UserDataStore.class, dataStore);
-        return dataStore;
+    PersonDataStore personDataStore(PersonDataStoreApiImpl store) {
+//        stores.put(PersonDataStore.class, store);
+        return store;
+    }
+
+//    @Singleton
+    @Provides
+    UserDataStore userDataStore(UserDataStoreApiImpl store) {
+//        stores.put(UserDataStore.class, store);
+        return store;
     }
 
 }
