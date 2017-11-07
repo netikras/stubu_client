@@ -16,6 +16,7 @@ import com.netikras.studies.studentbuddy.api.client.android.ui.login.view.LoginM
 import com.netikras.studies.studentbuddy.api.client.android.ui.main.view.MainActivity;
 import com.netikras.studies.studentbuddy.api.client.android.ui.person.view.PersonInfoActivity;
 import com.netikras.studies.studentbuddy.api.client.android.ui.person.view.UserInfoActivity;
+import com.netikras.studies.studentbuddy.api.client.android.ui.settings.view.SettingsActivity;
 
 import javax.inject.Singleton;
 
@@ -40,6 +41,8 @@ public interface ActivityComponent {
     void inject(PersonInfoActivity activity);
 
     void inject(MainActivity activity);
+
+    void inject(SettingsActivity settingsActivity);
 
 //    LoginMvpPresenter<? extends LoginMvpView> loginPresenter();
 

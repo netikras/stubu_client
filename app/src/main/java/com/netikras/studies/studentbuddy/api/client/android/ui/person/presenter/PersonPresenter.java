@@ -75,7 +75,7 @@ public class PersonPresenter<V extends PersonMvpView> extends BasePresenter<V> i
         getDataStore().getByIdentifier(identification, new ErrorsAwareSubscriber<PersonDto>() {
             @Override
             public void onSuccess(PersonDto response) {
-                getMvpView().getFields().enableEdit(false);
+//                getMvpView().getFields().enableEdit(false);
                 getMvpView().showPerson(response);
             }
         });

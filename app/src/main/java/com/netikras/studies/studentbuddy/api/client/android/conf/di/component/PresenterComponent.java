@@ -20,6 +20,8 @@ import com.netikras.studies.studentbuddy.api.client.android.ui.person.view.Perso
 import com.netikras.studies.studentbuddy.api.client.android.ui.person.view.PersonMvpView;
 import com.netikras.studies.studentbuddy.api.client.android.ui.person.view.UserInfoActivity;
 import com.netikras.studies.studentbuddy.api.client.android.ui.person.view.UserMvpView;
+import com.netikras.studies.studentbuddy.api.client.android.ui.settings.presenter.SettingsPresenter;
+import com.netikras.studies.studentbuddy.api.client.android.ui.settings.view.SettingsActivity;
 
 import javax.inject.Singleton;
 
@@ -43,5 +45,7 @@ public interface PresenterComponent {
     void inject(UserPresenter<UserInfoActivity> presenter);
 
     void inject(PersonPresenter<PersonInfoActivity> presenter);
+
+    void inject(SettingsPresenter<SettingsActivity> presenter);
 
 }

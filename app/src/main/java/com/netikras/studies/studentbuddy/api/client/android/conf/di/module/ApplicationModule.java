@@ -30,13 +30,13 @@ public class ApplicationModule {
         return (App) application;
     }
 
-    @Singleton
+//    @Singleton
     @Provides
     Application application() {
         return application;
     }
 
-    @Singleton
+//    @Singleton
     @ApplicationCtx
     @Provides
     Context applicationContext() {

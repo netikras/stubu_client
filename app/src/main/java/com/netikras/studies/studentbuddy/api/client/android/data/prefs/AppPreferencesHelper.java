@@ -18,14 +18,15 @@ import static com.netikras.tools.common.security.IntegrityUtils.isNullOrEmpty;
  * Created by janisharali on 27/01/17.
  */
 
-@Singleton
+//@Singleton
 public class AppPreferencesHelper implements PreferencesHelper {
 
     private static final String PREF_KEY_CURRENT_USER_ID = "PREF_KEY_CURRENT_USER_ID";
     private static final String PREF_KEY_CURRENT_USER_PERSON_ID = "PREF_KEY_CURRENT_USER_PERSON_ID";
     private static final String PREF_KEY_CURRENT_USER_NAME = "PREF_KEY_CURRENT_USER_NAME";
-    private static final String PREF_KEY_CURRENT_USER_EMAIL = "PREF_KEY_CURRENT_USER_EMAIL";
-    private static final String PREF_KEY_ACCESS_TOKEN = "PREF_KEY_ACCESS_TOKEN";
+    private static final String PREF_KEY_API_SERVER_URL = "PREF_KEY_API_SERVER_URL";
+    private static final String PREF_KEY_NOTIFICATIONS_ENABLED = "PREF_KEY_NOTIFICATIONS_ENABLED";
+    private static final String PREF_KEY_LOGIN_USERNAME = "PREF_KEY_LOGIN_USERNAME";
 
     private final SharedPreferences mPrefs;
 
@@ -57,26 +58,6 @@ public class AppPreferencesHelper implements PreferencesHelper {
     @Override
     public void setCurrentUserName(String userName) {
         setPreference(PREF_KEY_CURRENT_USER_NAME, userName);
-    }
-
-    @Override
-    public String getCurrentUserEmail() {
-        return getPreference(PREF_KEY_CURRENT_USER_EMAIL, null);
-    }
-
-    @Override
-    public void setCurrentUserEmail(String email) {
-        setPreference(PREF_KEY_CURRENT_USER_EMAIL, email);
-    }
-
-    @Override
-    public String getAccessToken() {
-        return getPreference(PREF_KEY_ACCESS_TOKEN, null);
-    }
-
-    @Override
-    public void setAccessToken(String accessToken) {
-        setPreference(PREF_KEY_ACCESS_TOKEN, accessToken);
     }
 
     @Override
@@ -121,12 +102,51 @@ public class AppPreferencesHelper implements PreferencesHelper {
         return cached;
     }
 
+    @Override
+    public String getApiServerUrl() {
+        return getPreference(PREF_KEY_API_SERVER_URL, "");
+    }
+
+    @Override
+    public void setApiServerUrl(String url) {
+        setPreference(PREF_KEY_API_SERVER_URL, url);
+    }
+
+    @Override
+    public boolean isNotificationsEnabled() {
+        return getPreference(PREF_KEY_NOTIFICATIONS_ENABLED, false);
+    }
+
+    @Override
+    public void setNotificationsEnabled(boolean enabled) {
+        setPreference(PREF_KEY_NOTIFICATIONS_ENABLED, enabled);
+    }
+
+    @Override
+    public void setLoginUsername(String username) {
+        setPreference(PREF_KEY_LOGIN_USERNAME, username);
+    }
+
+    @Override
+    public String getLoginUsername() {
+        return getPreference(PREF_KEY_LOGIN_USERNAME, "");
+    }
+
     private void setPreference(String key, String value) {
         mPrefs.edit().putString(key, value).apply();
     }
 
     private String getPreference(String key, String defaultValue) {
         String value = mPrefs.getString(key, defaultValue);
+        return value;
+    }
+
+    private void setPreference(String key, boolean value) {
+        mPrefs.edit().putBoolean(key, value).apply();
+    }
+
+    private boolean getPreference(String key, boolean defaultValue) {
+        boolean value = mPrefs.getBoolean(key, defaultValue);
         return value;
     }
 }

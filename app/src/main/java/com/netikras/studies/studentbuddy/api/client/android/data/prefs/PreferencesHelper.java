@@ -13,14 +13,6 @@ public interface PreferencesHelper {
 
     void setCurrentUserName(String userName);
 
-    String getCurrentUserEmail();
-
-    void setCurrentUserEmail(String email);
-
-    String getAccessToken();
-
-    void setAccessToken(String accessToken);
-
     String getCurrentUserPersonId();
 
     void setCurrentUserPersonId(String personId);
@@ -28,5 +20,20 @@ public interface PreferencesHelper {
     void setCurrentUser(UserDto user);
 
     UserDto getCurrentUser();
+
+
+    String getApiServerUrl();
+
+    void setApiServerUrl(String url);
+
+
+    boolean isNotificationsEnabled();
+
+    void setNotificationsEnabled(boolean enabled);
+
+    void setLoginUsername(String username);
+
+    String getLoginUsername();
+
 
 }

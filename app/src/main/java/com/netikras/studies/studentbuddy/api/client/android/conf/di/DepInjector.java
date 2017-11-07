@@ -21,6 +21,8 @@ import com.netikras.studies.studentbuddy.api.client.android.ui.person.presenter.
 import com.netikras.studies.studentbuddy.api.client.android.ui.person.presenter.UserPresenter;
 import com.netikras.studies.studentbuddy.api.client.android.ui.person.view.PersonInfoActivity;
 import com.netikras.studies.studentbuddy.api.client.android.ui.person.view.UserInfoActivity;
+import com.netikras.studies.studentbuddy.api.client.android.ui.settings.presenter.SettingsPresenter;
+import com.netikras.studies.studentbuddy.api.client.android.ui.settings.view.SettingsActivity;
 
 /**
  * Created by netikras on 17.10.30.
@@ -118,6 +120,11 @@ public class DepInjector {
         return getActivityComponent();
     }
 
+    public static ActivityComponent inject(SettingsActivity activity) {
+        getActivityComponent(activity).inject(activity);
+        return getActivityComponent();
+    }
+
 
 
 
@@ -138,6 +145,11 @@ public class DepInjector {
     }
 
     public static PresenterComponent inject(PersonPresenter presenter) {
+        getPresenterComponent(presenter).inject(presenter);
+        return getPresenterComponent();
+    }
+
+    public static PresenterComponent inject(SettingsPresenter presenter) {
         getPresenterComponent(presenter).inject(presenter);
         return getPresenterComponent();
     }

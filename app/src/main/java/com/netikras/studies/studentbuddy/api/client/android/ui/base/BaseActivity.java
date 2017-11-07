@@ -178,8 +178,8 @@ public abstract class BaseActivity extends AppCompatActivity
         }
     }
 
-    protected void addMenu() {
-        Button menuButton = findViewById(R.id.btn_user_main_menu);
+    protected void addMenu(int menu) {
+        Button menuButton = findViewById(menu);
         menuButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

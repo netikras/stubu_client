@@ -10,4 +10,8 @@ import com.netikras.studies.studentbuddy.api.client.android.ui.login.view.LoginM
 public interface LoginMvpPresenter<V extends LoginMvpView> extends MvpPresenter<V> {
 
     void proceedLogin(String username, String password);
+
+    String getLastLoginUsername();
+
+    void setLastLoginUsername(String username);
 }

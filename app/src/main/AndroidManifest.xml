@@ -48,7 +48,7 @@
         <activity android:name=".ui.location.FloorLayoutActivity" />
         <activity android:name=".ui.SearchActivity" />
         <activity android:name=".ui.lecture.LecturesListActivity" />
-        <activity android:name=".ui.person.view.SettingsActivity" />
+        <activity android:name=".ui.settings.view.SettingsActivity" />
 
         <service
             android:name=".ui.person.PersonService"

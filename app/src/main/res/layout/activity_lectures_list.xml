@@ -10,6 +10,18 @@
         android:layout_height="match_parent"
         tools:context=".ui.lecture.LecturesListActivity">
 
+        <Button
+            android:id="@+id/btn_lectures_main_menu"
+            style="@style/Widget.AppCompat.Button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:layout_marginTop="16dp"
+            android:background="@color/colorTransparentWhite"
+            android:text="@string/txt_main_menu"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
         <ImageView
             android:id="@+id/img_lectures_list_title"
             android:layout_width="0dp"

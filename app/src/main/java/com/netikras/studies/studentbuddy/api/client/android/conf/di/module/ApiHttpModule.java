@@ -1,6 +1,8 @@
 package com.netikras.studies.studentbuddy.api.client.android.conf.di.module;
 
 import com.netikras.studies.studentbuddy.api.client.android.conf.di.module.carrier.RestConfig;
+import com.netikras.studies.studentbuddy.api.client.android.data.prefs.AppPreferencesHelper;
+import com.netikras.studies.studentbuddy.api.client.android.data.prefs.PreferencesHelper;
 import com.netikras.studies.studentbuddy.api.client.android.util.misc.HttpClientOkImpl;
 import com.netikras.tools.common.exception.ErrorBody;
 import com.netikras.tools.common.exception.ErrorsCollection;
@@ -29,8 +31,8 @@ public class ApiHttpModule {
 
     @Provides
     public RemoteEndpointServer server() {
-//        RemoteEndpointServer server = RemoteEndpointServer.parse("http://192.168.1.6:8080/stubu");
-        RemoteEndpointServer server = RemoteEndpointServer.parse("http://192.168.0.107:8080/stubu");
+        RemoteEndpointServer server = RemoteEndpointServer.parse("http://192.168.1.6:8080/stubu");
+//        RemoteEndpointServer server = RemoteEndpointServer.parse("http://192.168.0.107:8080/stubu");
         return server;
     }
 
@@ -94,12 +96,14 @@ public class ApiHttpModule {
 
 
     @Provides
-    public RestConfig config(RestServiceProvider serviceProvider) {
+    public RestConfig config(RestServiceProvider serviceProvider, AppPreferencesHelper preferencesHelper) {
         RestConfig config = new RestConfig();
         config.addListener("default", listener());
         config.setSessionContext(context());
 //        config.setRestServiceProvider(serviceProvider);
-        config.addServer("default", server());
+
+        RemoteEndpointServer server = RemoteEndpointServer.parse(preferencesHelper.getApiServerUrl());
+        config.addServer("default", server);
         return config;
     }
 }

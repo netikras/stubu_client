@@ -44,6 +44,7 @@ public class LoginActivity extends BaseActivity implements LoginMvpView {
         presenter.onAttach(this);
         fields = initFields(new ViewFields());
         fields.enableEdit(true);
+        fields.setUsername(presenter.getLastLoginUsername());
     }
 
     @Override
@@ -55,6 +56,7 @@ public class LoginActivity extends BaseActivity implements LoginMvpView {
 
     @OnClick(R.id.btn_login_proceed)
     public void proceed() {
+        presenter.setLastLoginUsername(fields.getUsername());
         presenter.proceedLogin(fields.getUsername(), fields.getPassword());
     }
 
@@ -68,6 +70,11 @@ public class LoginActivity extends BaseActivity implements LoginMvpView {
         @Override
         protected Collection<TextView> getAllFields() {
             return Arrays.asList(username, password);
+        }
+
+        @Override
+        public void enableEdit(boolean enable) {
+
         }
 
         public String getUsername() {

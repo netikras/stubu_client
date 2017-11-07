@@ -1,8 +1,12 @@
 package com.netikras.studies.studentbuddy.api.client.android.conf.di.module;
 
+import com.netikras.studies.studentbuddy.api.client.android.App;
 import com.netikras.studies.studentbuddy.api.client.android.conf.di.AllDatastores;
+import com.netikras.studies.studentbuddy.api.client.android.conf.di.PreferenceInfo;
 import com.netikras.studies.studentbuddy.api.client.android.data.DataManager;
 import com.netikras.studies.studentbuddy.api.client.android.data.DataManagerImpl;
+import com.netikras.studies.studentbuddy.api.client.android.data.prefs.AppPreferencesHelper;
+import com.netikras.studies.studentbuddy.api.client.android.data.prefs.PreferencesHelper;
 import com.netikras.studies.studentbuddy.api.client.android.data.stores.BaseDataStore;
 import com.netikras.studies.studentbuddy.api.client.android.data.stores.person.PersonDataStore;
 import com.netikras.studies.studentbuddy.api.client.android.data.stores.person.impl.PersonDataStoreApiImpl;
@@ -35,10 +39,10 @@ public class DataModule {
     }
 
 
-//    @Provides
-//    DataManagerImpl dataManager() {
-//        return new DataManagerImpl();
-//    }
+    @Provides
+    PreferencesHelper preferencesHelper(App app, @PreferenceInfo String prefsFileName) {
+        return new AppPreferencesHelper(app, prefsFileName);
+    }
 
 //    @Singleton
     @AllDatastores
@@ -60,6 +64,12 @@ public class DataModule {
     UserDataStore userDataStore(UserDataStoreApiImpl store) {
 //        stores.put(UserDataStore.class, store);
         return store;
+    }
+
+    @Provides
+    @PreferenceInfo
+    String prefsFileName() {
+        return "stubu_prefs";
     }
 
 }

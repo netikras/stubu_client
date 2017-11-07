@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.netikras.studies.studentbuddy.api.client.android.App;
 import com.netikras.studies.studentbuddy.api.client.android.data.DataManager;
+import com.netikras.studies.studentbuddy.api.client.android.data.prefs.PreferencesHelper;
 import com.netikras.studies.studentbuddy.api.client.android.data.stores.user.UserDataStore;
 import com.netikras.studies.studentbuddy.api.client.android.ui.base.BasePresenter;
 import com.netikras.studies.studentbuddy.api.client.android.ui.base.MvpPresenter;
@@ -27,6 +28,9 @@ public class LoginPresenter<V extends LoginMvpView> extends BasePresenter<V> imp
     UserMvpPresenter<UserMvpView> userPresenter;
 
     @Inject
+    PreferencesHelper preferences;
+
+    @Inject
     public LoginPresenter(DataManager dataManager) {
         super(dataManager);
     }
@@ -46,6 +50,16 @@ public class LoginPresenter<V extends LoginMvpView> extends BasePresenter<V> imp
             }
         });
         getDatastore().processOrders((Context) getMvpView());
+    }
+
+    @Override
+    public String getLastLoginUsername() {
+        return preferences.getLoginUsername();
+    }
+
+    @Override
+    public void setLastLoginUsername(String username) {
+        preferences.setLoginUsername(username);
     }
 
     @Override

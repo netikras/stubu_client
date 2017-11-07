@@ -57,7 +57,7 @@ public class UserInfoActivity extends BaseActivity implements UserMvpView {
         onAttach(this);
         presenter.onAttach(this);
         fields = initFields(new ViewFields());
-        addMenu();
+        addMenu(R.id.btn_user_main_menu);
     }
 
     @Override
