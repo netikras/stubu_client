@@ -165,4 +165,6 @@
     <string name="txt_main_menu">º º º</string>
     <string name="some_error">Error</string>
     <string name="txt_btn_settings_save">Išsaugoti</string>
+    <string name="txt_msg_user_has_no_person">Virtualus naudotojas neturi susieto asmens</string>
+    <string name="txt_msg_user_missing">Nenurodytas naudotojas</string>
 </resources>

@@ -22,6 +22,7 @@ package com.netikras.studies.studentbuddy.api.client.android.ui.base;
 import android.content.Context;
 import android.content.Intent;
 
+import com.netikras.studies.studentbuddy.api.client.android.App;
 import com.netikras.studies.studentbuddy.api.client.android.data.DataManager;
 import com.netikras.studies.studentbuddy.api.client.android.service.ServiceRequest.Subscriber;
 import com.netikras.tools.common.exception.ErrorBody;
@@ -35,7 +36,7 @@ import javax.inject.Inject;
  * onAttach() and onDetach(). It also handles keeping a reference to the mvpView that
  * can be accessed from the children classes by calling getMvpView().
  */
-public class BasePresenter<V extends MvpView> implements MvpPresenter<V> {
+public abstract class BasePresenter<V extends MvpView> implements MvpPresenter<V> {
 
     private static final String TAG = "BasePresenter";
 
@@ -69,7 +70,7 @@ public class BasePresenter<V extends MvpView> implements MvpPresenter<V> {
     }
 
     public Context getContext() {
-        return (Context) getMvpView();
+        return getMvpView() != null ? (Context) getMvpView() : App.getCurrent();
     }
 
     public void checkViewAttached() {

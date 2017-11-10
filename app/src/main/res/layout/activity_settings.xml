@@ -10,7 +10,7 @@
         android:id="@+id/lay_settings"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".ui.settings.view.SettingsActivity">
+        tools:context=".ui.settings.impl.view.SettingsActivity">
 
         <ImageView
             android:id="@+id/img_settings_banner"

@@ -10,8 +10,7 @@ import android.widget.PopupMenu;
 
 import com.netikras.studies.studentbuddy.api.client.android.conf.di.DepInjector;
 import com.netikras.studies.studentbuddy.api.client.android.conf.di.component.ApplicationComponent;
-import com.netikras.studies.studentbuddy.api.client.android.ui.login.view.LoginActivity;
-import com.netikras.studies.studentbuddy.api.client.android.ui.person.UserService;
+import com.netikras.studies.studentbuddy.api.client.android.ui.login.impl.view.LoginActivity;
 import com.netikras.studies.studentbuddy.api.client.android.util.Settings;
 import com.netikras.studies.studentbuddy.core.data.api.dto.meta.UserDto;
 import com.netikras.tools.common.remote.RemoteEndpointServer;
@@ -27,6 +26,8 @@ import java.util.UUID;
  */
 
 public class App extends Application {
+
+    private static App current = null;
 
     private UserDto currentUser;
     private SessionContext sessionContext = new SessionContext();
@@ -49,7 +50,12 @@ public class App extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        current = this;
         mApplicationComponent = DepInjector.inject(this);
+    }
+
+    public static App getCurrent() {
+        return current;
     }
 
     public UserDto getCurrentUserOrLogin() {
@@ -59,12 +65,6 @@ public class App extends Application {
         return currentUser;
     }
 
-    public UserDto refreshUser() {
-        if (getCurrentUser() != null) {
-            UserService.startGetUser(this, getCurrentUser().getId());
-        }
-        return null;
-    }
 
     public UserDto getCurrentUser() {
         return currentUser;

@@ -8,7 +8,7 @@
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".ui.person.view.UserInfoActivity">
+        tools:context=".ui.person.impl.view.UserInfoActivity">
 
         <Button
             android:id="@+id/btn_person_main_menu"

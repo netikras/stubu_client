@@ -8,7 +8,7 @@
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".ui.lecturer.LecturerInfoActivity">
+        tools:context=".ui.lecturer.impl.view.LecturerInfoActivity">
 
         <Button
             android:id="@+id/btn_lecturer_main_menu"

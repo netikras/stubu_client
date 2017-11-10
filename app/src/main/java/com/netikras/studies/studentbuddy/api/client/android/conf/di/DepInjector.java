@@ -14,15 +14,16 @@ import com.netikras.studies.studentbuddy.api.client.android.conf.di.module.Appli
 import com.netikras.studies.studentbuddy.api.client.android.conf.di.module.DataModule;
 import com.netikras.studies.studentbuddy.api.client.android.conf.di.module.PresenterModule;
 import com.netikras.studies.studentbuddy.api.client.android.ui.base.MvpPresenter;
-import com.netikras.studies.studentbuddy.api.client.android.ui.login.presenter.LoginPresenter;
-import com.netikras.studies.studentbuddy.api.client.android.ui.login.view.LoginActivity;
-import com.netikras.studies.studentbuddy.api.client.android.ui.main.presenter.MainPresenter;
-import com.netikras.studies.studentbuddy.api.client.android.ui.person.presenter.PersonPresenter;
-import com.netikras.studies.studentbuddy.api.client.android.ui.person.presenter.UserPresenter;
-import com.netikras.studies.studentbuddy.api.client.android.ui.person.view.PersonInfoActivity;
-import com.netikras.studies.studentbuddy.api.client.android.ui.person.view.UserInfoActivity;
-import com.netikras.studies.studentbuddy.api.client.android.ui.settings.presenter.SettingsPresenter;
-import com.netikras.studies.studentbuddy.api.client.android.ui.settings.view.SettingsActivity;
+import com.netikras.studies.studentbuddy.api.client.android.ui.discipline.impl.view.DisciplineInfoActivity;
+import com.netikras.studies.studentbuddy.api.client.android.ui.login.impl.presenter.LoginPresenter;
+import com.netikras.studies.studentbuddy.api.client.android.ui.login.impl.view.LoginActivity;
+import com.netikras.studies.studentbuddy.api.client.android.ui.main.impl.presenter.MainPresenter;
+import com.netikras.studies.studentbuddy.api.client.android.ui.person.impl.presenter.PersonPresenter;
+import com.netikras.studies.studentbuddy.api.client.android.ui.person.impl.presenter.UserPresenter;
+import com.netikras.studies.studentbuddy.api.client.android.ui.person.impl.view.PersonInfoActivity;
+import com.netikras.studies.studentbuddy.api.client.android.ui.person.impl.view.UserInfoActivity;
+import com.netikras.studies.studentbuddy.api.client.android.ui.settings.impl.presenter.SettingsPresenter;
+import com.netikras.studies.studentbuddy.api.client.android.ui.settings.impl.view.SettingsActivity;
 
 /**
  * Created by netikras on 17.10.30.
@@ -101,6 +102,11 @@ public class DepInjector {
     }
 
     public static ActivityComponent inject(Activity activity) {
+        getActivityComponent(activity).inject(activity);
+        return getActivityComponent();
+    }
+
+    public static ActivityComponent inject(DisciplineInfoActivity activity) {
         getActivityComponent(activity).inject(activity);
         return getActivityComponent();
     }

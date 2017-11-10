@@ -17,7 +17,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".ui.main.view.MainActivity">
+        <activity android:name=".ui.main.impl.view.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -25,34 +25,27 @@
             </intent-filter>
         </activity>
 
-        <service
-            android:name=".ui.person.UserService"
-            android:exported="false" />
-
         <activity
-            android:name=".ui.login.view.LoginActivity"
+            android:name=".ui.login.impl.view.LoginActivity"
             android:label="@string/title_activity_login"
-            android:parentActivityName=".ui.main.view.MainActivity">
+            android:parentActivityName=".ui.main.impl.view.MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.netikras.studies.studentbuddy.api.client.android.ui.main.view.MainActivity" />
+                android:value="com.netikras.studies.studentbuddy.api.client.android.ui.main.impl.view.MainActivity" />
         </activity>
-        <activity android:name=".ui.lecture.LectureInfoActivity" />
-        <activity android:name=".ui.discipline.DisciplineInfoActivity" />
-        <activity android:name=".ui.location.LocationInfoActivity" />
-        <activity android:name=".ui.lecturer.LecturerInfoActivity" />
-        <activity android:name=".ui.student.StudentInfoActivity" />
-        <activity android:name=".ui.student.StudentsGroupInfoActivity" />
-        <activity android:name=".ui.person.view.PersonInfoActivity" />
-        <activity android:name=".ui.person.view.UserInfoActivity" />
-        <activity android:name=".ui.location.FloorLayoutActivity" />
+        <activity android:name=".ui.lecture.impl.view.LectureInfoActivity" />
+        <activity android:name=".ui.discipline.impl.view.DisciplineInfoActivity" />
+        <activity android:name=".ui.location.impl.view.LocationInfoActivity" />
+        <activity android:name=".ui.lecturer.impl.view.LecturerInfoActivity" />
+        <activity android:name=".ui.student.impl.view.StudentInfoActivity" />
+        <activity android:name=".ui.student.impl.view.StudentsGroupInfoActivity" />
+        <activity android:name=".ui.person.impl.view.PersonInfoActivity" />
+        <activity android:name=".ui.person.impl.view.UserInfoActivity" />
+        <activity android:name=".ui.location.impl.view.FloorLayoutActivity" />
         <activity android:name=".ui.SearchActivity" />
-        <activity android:name=".ui.lecture.LecturesListActivity" />
-        <activity android:name=".ui.settings.view.SettingsActivity" />
+        <activity android:name=".ui.lecture.impl.view.LecturesListActivity" />
+        <activity android:name=".ui.settings.impl.view.SettingsActivity" />
 
-        <service
-            android:name=".ui.person.PersonService"
-            android:exported="false" />
         <service
             android:name=".service.ApiService"
             android:exported="false"></service>

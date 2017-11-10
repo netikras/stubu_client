@@ -8,7 +8,7 @@
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".ui.location.LocationInfoActivity">
+        tools:context=".ui.location.impl.view.LocationInfoActivity">
 
         <Button
             android:id="@+id/btn_location_main_menu"

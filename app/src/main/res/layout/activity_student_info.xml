@@ -9,7 +9,7 @@
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".ui.student.StudentInfoActivity">
+        tools:context=".ui.student.impl.view.StudentInfoActivity">
 
         <Button
             android:id="@+id/btn_student_main_menu"

@@ -6,24 +6,16 @@ import com.netikras.studies.studentbuddy.api.client.android.conf.di.module.ApiHt
 import com.netikras.studies.studentbuddy.api.client.android.conf.di.module.ApplicationModule;
 import com.netikras.studies.studentbuddy.api.client.android.conf.di.module.DataModule;
 import com.netikras.studies.studentbuddy.api.client.android.conf.di.module.PresenterModule;
-import com.netikras.studies.studentbuddy.api.client.android.ui.base.MvpPresenter;
-import com.netikras.studies.studentbuddy.api.client.android.ui.base.MvpView;
-import com.netikras.studies.studentbuddy.api.client.android.ui.login.presenter.LoginMvpPresenter;
-import com.netikras.studies.studentbuddy.api.client.android.ui.login.presenter.LoginPresenter;
-import com.netikras.studies.studentbuddy.api.client.android.ui.login.view.LoginActivity;
-import com.netikras.studies.studentbuddy.api.client.android.ui.login.view.LoginMvpView;
-import com.netikras.studies.studentbuddy.api.client.android.ui.main.presenter.MainPresenter;
-import com.netikras.studies.studentbuddy.api.client.android.ui.main.view.MainActivity;
-import com.netikras.studies.studentbuddy.api.client.android.ui.person.presenter.PersonPresenter;
-import com.netikras.studies.studentbuddy.api.client.android.ui.person.presenter.UserPresenter;
-import com.netikras.studies.studentbuddy.api.client.android.ui.person.view.PersonInfoActivity;
-import com.netikras.studies.studentbuddy.api.client.android.ui.person.view.PersonMvpView;
-import com.netikras.studies.studentbuddy.api.client.android.ui.person.view.UserInfoActivity;
-import com.netikras.studies.studentbuddy.api.client.android.ui.person.view.UserMvpView;
-import com.netikras.studies.studentbuddy.api.client.android.ui.settings.presenter.SettingsPresenter;
-import com.netikras.studies.studentbuddy.api.client.android.ui.settings.view.SettingsActivity;
-
-import javax.inject.Singleton;
+import com.netikras.studies.studentbuddy.api.client.android.ui.login.impl.presenter.LoginPresenter;
+import com.netikras.studies.studentbuddy.api.client.android.ui.login.impl.view.LoginActivity;
+import com.netikras.studies.studentbuddy.api.client.android.ui.main.impl.presenter.MainPresenter;
+import com.netikras.studies.studentbuddy.api.client.android.ui.main.impl.view.MainActivity;
+import com.netikras.studies.studentbuddy.api.client.android.ui.person.impl.presenter.PersonPresenter;
+import com.netikras.studies.studentbuddy.api.client.android.ui.person.impl.presenter.UserPresenter;
+import com.netikras.studies.studentbuddy.api.client.android.ui.person.impl.view.PersonInfoActivity;
+import com.netikras.studies.studentbuddy.api.client.android.ui.person.impl.view.UserInfoActivity;
+import com.netikras.studies.studentbuddy.api.client.android.ui.settings.impl.presenter.SettingsPresenter;
+import com.netikras.studies.studentbuddy.api.client.android.ui.settings.impl.view.SettingsActivity;
 
 import dagger.Component;
 
