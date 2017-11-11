@@ -3,6 +3,7 @@ package com.netikras.studies.studentbuddy.api.client.android.pieces.discipline.d
 import com.netikras.studies.studentbuddy.api.client.android.data.stores.ApiBasedDataStore;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.discipline.data.DisciplineDataStore;
 import com.netikras.studies.studentbuddy.api.client.android.service.ServiceRequest;
+import com.netikras.studies.studentbuddy.api.client.android.service.ServiceRequest.Subscriber;
 import com.netikras.studies.studentbuddy.api.location.generated.SchoolApiConsumer;
 import com.netikras.studies.studentbuddy.core.data.api.dto.school.DisciplineDto;
 
@@ -21,7 +22,7 @@ public class DisciplineDataStoreApiImpl extends ApiBasedDataStore<String, Discip
     SchoolApiConsumer schoolApiConsumer;
 
     @Override
-    public void getById(String id, ServiceRequest.Subscriber<DisciplineDto>... subscribers) {
+    public void getById(String id, Subscriber<DisciplineDto>... subscribers) {
         orderData(new ServiceRequest() {
             @Override
             public DisciplineDto request() {
@@ -31,7 +32,7 @@ public class DisciplineDataStoreApiImpl extends ApiBasedDataStore<String, Discip
     }
 
     @Override
-    public void create(DisciplineDto item, ServiceRequest.Subscriber<DisciplineDto>... subscribers) {
+    public void create(DisciplineDto item, Subscriber<DisciplineDto>... subscribers) {
         orderData(new ServiceRequest() {
             @Override
             public DisciplineDto request() {
@@ -41,7 +42,7 @@ public class DisciplineDataStoreApiImpl extends ApiBasedDataStore<String, Discip
     }
 
     @Override
-    public void update(DisciplineDto item, ServiceRequest.Subscriber<DisciplineDto>... subscribers) {
+    public void update(DisciplineDto item, Subscriber<DisciplineDto>... subscribers) {
         orderData(new ServiceRequest() {
             @Override
             public DisciplineDto request() {
@@ -51,7 +52,7 @@ public class DisciplineDataStoreApiImpl extends ApiBasedDataStore<String, Discip
     }
 
     @Override
-    public void purge(String id, ServiceRequest.Subscriber<Boolean>... subscribers) {
+    public void purge(String id, Subscriber<Boolean>... subscribers) {
         orderData(new ServiceRequest() {
             @Override
             public Boolean request() {
@@ -62,7 +63,7 @@ public class DisciplineDataStoreApiImpl extends ApiBasedDataStore<String, Discip
     }
 
     @Override
-    public void delete(String id, ServiceRequest.Subscriber... subscribers) {
+    public void delete(String id, Subscriber... subscribers) {
         orderData(new ServiceRequest() {
             @Override
             public Boolean request() {
@@ -72,7 +73,7 @@ public class DisciplineDataStoreApiImpl extends ApiBasedDataStore<String, Discip
         }, subscribers);
     }
 
-    public void getAllForSchool(String id, ServiceRequest.Subscriber<Collection<DisciplineDto>>... subscribers) {
+    public void getAllForSchool(String id, Subscriber<Collection<DisciplineDto>>... subscribers) {
         orderData(new ServiceRequest() {
             @Override
             public List<DisciplineDto> request() {
@@ -84,7 +85,7 @@ public class DisciplineDataStoreApiImpl extends ApiBasedDataStore<String, Discip
 
 
     @Override
-    public void getAll(ServiceRequest.Subscriber<Collection<DisciplineDto>>... subscribers) {
+    public void getAll(Subscriber<Collection<DisciplineDto>>... subscribers) {
 
     }
 

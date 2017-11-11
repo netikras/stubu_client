@@ -18,7 +18,7 @@ public interface CrudDataStore<I, E> extends BaseDataStore<I, E> {
 
     void purge(I id, Subscriber<Boolean>... subscribers);
 
-    void delete(I id, Subscriber... subscribers);
+    void delete(I id, Subscriber<Boolean>... subscribers);
 
     void getAll(Subscriber<Collection<E>>... subscribers);
 

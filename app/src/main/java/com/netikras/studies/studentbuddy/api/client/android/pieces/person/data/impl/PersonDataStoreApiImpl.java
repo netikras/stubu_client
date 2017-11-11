@@ -69,7 +69,7 @@ public class PersonDataStoreApiImpl extends ApiBasedDataStore<String, PersonDto>
     }
 
     @Override
-    public void delete(String id, Subscriber... subscribers) {
+    public void delete(String id, Subscriber<Boolean>... subscribers) {
         orderData(new ServiceRequest<Boolean>(){
             @Override
             public Boolean request() {
@@ -95,6 +95,46 @@ public class PersonDataStoreApiImpl extends ApiBasedDataStore<String, PersonDto>
             @Override
             public PersonDto request() {
                 return apiConsumer.getPersonDtoByIdentifier(identifier);
+            }
+        }, subscribers);
+    }
+
+    @Override
+    public void getByCode(String value, Subscriber<PersonDto>... subscribers) {
+        orderData(new ServiceRequest<PersonDto>(){
+            @Override
+            public PersonDto request() {
+                return apiConsumer.getPersonDtoByCode(value);
+            }
+        }, subscribers);
+    }
+
+    @Override
+    public void getByFirstName(String fname, Subscriber<Collection<PersonDto>>... subscribers) {
+        orderData(new ServiceRequest<Collection<PersonDto>>(){
+            @Override
+            public Collection<PersonDto> request() {
+                return apiConsumer.getPersonDtoAllByFirstName(fname);
+            }
+        }, subscribers);
+    }
+
+    @Override
+    public void getByLastName(String lname, Subscriber<Collection<PersonDto>>... subscribers) {
+        orderData(new ServiceRequest<Collection<PersonDto>>(){
+            @Override
+            public Collection<PersonDto> request() {
+                return apiConsumer.getPersonDtoAllByLastName(lname);
+            }
+        }, subscribers);
+    }
+
+    @Override
+    public void getByFirstAndLastName(String fname, String lname, Subscriber<Collection<PersonDto>>... subscribers) {
+        orderData(new ServiceRequest<Collection<PersonDto>>(){
+            @Override
+            public Collection<PersonDto> request() {
+                return apiConsumer.getPersonDtoAllByFirstAndLastName(fname, lname);
             }
         }, subscribers);
     }

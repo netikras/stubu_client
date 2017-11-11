@@ -9,6 +9,7 @@ import com.netikras.studies.studentbuddy.api.user.mgmt.generated.AdminUserApiCon
 import com.netikras.studies.studentbuddy.core.data.api.dto.meta.UserDto;
 import com.netikras.tools.common.exception.ErrorBody;
 import com.netikras.tools.common.exception.FriendlyUncheckedException;
+import com.netikras.tools.common.remote.AuthenticationDetail;
 
 import java.util.Collection;
 
@@ -34,7 +35,7 @@ public class UserDataStoreApiImpl extends ApiBasedDataStore<String, UserDto> imp
 
     @Override
     public void getById(String id, Subscriber<UserDto>... subscribers) {
-        orderData(new ServiceRequest() {
+        orderData(new ServiceRequest<UserDto>() {
             @Override
             public UserDto request() {
                 return apiConsumer.retrieveUserDto(id);
@@ -43,8 +44,39 @@ public class UserDataStoreApiImpl extends ApiBasedDataStore<String, UserDto> imp
     }
 
     @Override
+    public void getByPerson(String id, Subscriber<UserDto>... subscribers) {
+        orderData(new ServiceRequest<UserDto>() {
+            @Override
+            public UserDto request() {
+                return apiConsumer.getUserDtoByPerson(id);
+            }
+        }, subscribers);
+    }
+
+    @Override
+    public void getByName(String name, Subscriber<UserDto>... subscribers) {
+        orderData(new ServiceRequest<UserDto>() {
+            @Override
+            public UserDto request() {
+                return apiConsumer.getUserDtoByName(name);
+            }
+        }, subscribers);
+    }
+
+    @Override
+    public void changePassword(String id, String newPassword, Subscriber<UserDto>... subscribers) {
+        orderData(new ServiceRequest<Boolean>() {
+            @Override
+            public Boolean request() {
+                apiConsumer.changeUserDtoPassword(id, newPassword);
+                return Boolean.TRUE;
+            }
+        }, subscribers);
+    }
+
+    @Override
     public void create(UserDto item, Subscriber<UserDto>... subscribers) {
-        orderData(new ServiceRequest() {
+        orderData(new ServiceRequest<UserDto>() {
             @Override
             public UserDto request() {
                 return adminApiConsumer.createUserDto(item);
@@ -54,7 +86,7 @@ public class UserDataStoreApiImpl extends ApiBasedDataStore<String, UserDto> imp
 
     @Override
     public void update(UserDto item, Subscriber<UserDto>... subscribers) {
-        orderData(new ServiceRequest() {
+        orderData(new ServiceRequest<UserDto>() {
             @Override
             public UserDto request() {
                 return apiConsumer.updateUserDto(item);
@@ -64,7 +96,7 @@ public class UserDataStoreApiImpl extends ApiBasedDataStore<String, UserDto> imp
 
     @Override
     public void purge(String id, Subscriber<Boolean>... subscribers) {
-        orderData(new ServiceRequest() {
+        orderData(new ServiceRequest<Boolean>() {
             @Override
             public Boolean request() {
                 adminApiConsumer.purgeUserDto(id);
@@ -74,8 +106,8 @@ public class UserDataStoreApiImpl extends ApiBasedDataStore<String, UserDto> imp
     }
 
     @Override
-    public void delete(String id, Subscriber... subscribers) {
-        orderData(new ServiceRequest() {
+    public void delete(String id, Subscriber<Boolean>... subscribers) {
+        orderData(new ServiceRequest<Boolean>() {
             @Override
             public Boolean request() {
                 adminApiConsumer.deleteUserDto(id);
@@ -85,16 +117,31 @@ public class UserDataStoreApiImpl extends ApiBasedDataStore<String, UserDto> imp
     }
 
     @Override
+    @Deprecated
     public void getAll(Subscriber<Collection<UserDto>>... subscribers) {
-        orderData(new ServiceRequest() {
+        notifyNotImplemented(subscribers);
+    }
+
+
+    @Override
+    public void assignRole(String id, String role, Subscriber<UserDto>... subscribers) {
+        orderData(new ServiceRequest<UserDto>() {
             @Override
             public UserDto request() {
-                throw new FriendlyUncheckedException()
-                        .addError(new ErrorBody().setMessage1("Not implemented"));
+                return adminApiConsumer.assignUserDtoRoleByName(id, role);
             }
         }, subscribers);
     }
 
+    @Override
+    public void unassignRole(String id, String role, Subscriber<UserDto>... subscribers) {
+        orderData(new ServiceRequest<UserDto>() {
+            @Override
+            public UserDto request() {
+                return adminApiConsumer.unassignUserDtoRoleByName(id, role);
+            }
+        }, subscribers);
+    }
 
     @Override
     public void login(String username, String password, Subscriber<UserDto>... subscribers) {
@@ -102,6 +149,16 @@ public class UserDataStoreApiImpl extends ApiBasedDataStore<String, UserDto> imp
             @Override
             public UserDto request() {
                 return apiConsumer.loginUserDto(username, password, null);
+            }
+        }, subscribers);
+    }
+
+    @Override
+    public void login(AuthenticationDetail auth, Subscriber<UserDto>... subscribers) {
+        orderData(new ServiceRequest<UserDto>() {
+            @Override
+            public UserDto request() {
+                return apiConsumer.loginUserDtoAuth(auth);
             }
         }, subscribers);
     }
