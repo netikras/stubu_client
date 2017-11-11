@@ -1,4 +1,4 @@
-package com.netikras.studies.studentbuddy.api.client.android.ui.location.impl.view;
+package com.netikras.studies.studentbuddy.api.client.android.ui.discipline.impl.view;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -8,8 +8,8 @@ import com.netikras.studies.studentbuddy.api.client.android.R;
 import com.netikras.studies.studentbuddy.api.client.android.conf.di.DepInjector;
 import com.netikras.studies.studentbuddy.api.client.android.ui.base.BaseActivity;
 import com.netikras.studies.studentbuddy.api.client.android.ui.base.BaseViewFields;
-import com.netikras.studies.studentbuddy.api.client.android.ui.location.presenter.AddressMvpPresenter;
-import com.netikras.studies.studentbuddy.api.client.android.ui.location.view.AddressMvpView;
+import com.netikras.studies.studentbuddy.api.client.android.ui.discipline.presenter.CourseMvpPresenter;
+import com.netikras.studies.studentbuddy.api.client.android.ui.discipline.view.CourseMvpView;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -20,12 +20,12 @@ import javax.inject.Inject;
  * Created by netikras on 17.11.10.
  */
 
-public class AddressActivity extends BaseActivity implements AddressMvpView {
+public class CourseActivity extends BaseActivity implements CourseMvpView {
 
     private ViewFields fields;
 
     @Inject
-    AddressMvpPresenter<AddressMvpView> presenter;
+    CourseMvpPresenter<CourseMvpView> presenter;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -40,7 +40,7 @@ public class AddressActivity extends BaseActivity implements AddressMvpView {
         onAttach(this);
         presenter.onAttach(this);
         fields = initFields(new ViewFields());
-        addMenu(R.id.btn_address_main_menu);
+        addMenu(R.id.btn_course_main_menu);
     }
 
     class ViewFields extends BaseViewFields {
@@ -50,5 +50,4 @@ public class AddressActivity extends BaseActivity implements AddressMvpView {
             return Arrays.asList();
         }
     }
-
 }

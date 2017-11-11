@@ -1,4 +1,4 @@
-package com.netikras.studies.studentbuddy.api.client.android.ui.school.view;
+package com.netikras.studies.studentbuddy.api.client.android.ui.discipline.view;
 
 import com.netikras.studies.studentbuddy.api.client.android.ui.base.MvpView;
 

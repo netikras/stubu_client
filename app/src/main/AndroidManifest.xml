@@ -41,7 +41,7 @@
         <activity android:name=".ui.student.impl.view.StudentsGroupInfoActivity" />
         <activity android:name=".ui.person.impl.view.PersonInfoActivity" />
         <activity android:name=".ui.person.impl.view.UserInfoActivity" />
-        <activity android:name=".ui.location.impl.view.FloorLayoutActivity" />
+        <activity android:name=".ui.location.impl.view.FloorActivity" />
         <activity android:name=".ui.SearchActivity" />
         <activity android:name=".ui.lecture.impl.view.LecturesListActivity" />
         <activity android:name=".ui.settings.impl.view.SettingsActivity" />

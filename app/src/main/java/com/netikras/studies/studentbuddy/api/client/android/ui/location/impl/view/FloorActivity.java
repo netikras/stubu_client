@@ -1,7 +1,6 @@
 package com.netikras.studies.studentbuddy.api.client.android.ui.location.impl.view;
 
 import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.TextView;
 
@@ -12,16 +11,13 @@ import com.netikras.studies.studentbuddy.api.client.android.ui.base.BaseViewFiel
 import com.netikras.studies.studentbuddy.api.client.android.ui.location.presenter.FloorMvpPresenter;
 import com.netikras.studies.studentbuddy.api.client.android.ui.location.view.FloorMvpView;
 import com.netikras.studies.studentbuddy.api.client.android.ui.location.view.LayoutMvpView;
-import com.netikras.studies.studentbuddy.api.client.android.ui.school.impl.view.CourseActivity;
-import com.netikras.studies.studentbuddy.api.client.android.ui.school.presenter.CourseMvpPresenter;
-import com.netikras.studies.studentbuddy.api.client.android.ui.school.view.CourseMvpView;
 
 import java.util.Arrays;
 import java.util.Collection;
 
 import javax.inject.Inject;
 
-public class FloorLayoutActivity extends BaseActivity implements LayoutMvpView {
+public class FloorActivity extends BaseActivity implements LayoutMvpView {
 
     private ViewFields fields;
 

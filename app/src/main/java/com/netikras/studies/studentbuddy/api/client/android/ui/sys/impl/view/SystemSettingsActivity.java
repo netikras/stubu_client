@@ -1,4 +1,4 @@
-package com.netikras.studies.studentbuddy.api.client.android.ui.location.impl.view;
+package com.netikras.studies.studentbuddy.api.client.android.ui.sys.impl.view;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -8,8 +8,11 @@ import com.netikras.studies.studentbuddy.api.client.android.R;
 import com.netikras.studies.studentbuddy.api.client.android.conf.di.DepInjector;
 import com.netikras.studies.studentbuddy.api.client.android.ui.base.BaseActivity;
 import com.netikras.studies.studentbuddy.api.client.android.ui.base.BaseViewFields;
-import com.netikras.studies.studentbuddy.api.client.android.ui.location.presenter.AddressMvpPresenter;
-import com.netikras.studies.studentbuddy.api.client.android.ui.location.view.AddressMvpView;
+import com.netikras.studies.studentbuddy.api.client.android.ui.location.impl.view.RoomActivity;
+import com.netikras.studies.studentbuddy.api.client.android.ui.location.presenter.RoomMvpPresenter;
+import com.netikras.studies.studentbuddy.api.client.android.ui.location.view.RoomMvpView;
+import com.netikras.studies.studentbuddy.api.client.android.ui.sys.presenter.SystemSettingMvpPresenter;
+import com.netikras.studies.studentbuddy.api.client.android.ui.sys.view.SystemSettingMvpView;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -17,15 +20,15 @@ import java.util.Collection;
 import javax.inject.Inject;
 
 /**
- * Created by netikras on 17.11.10.
+ * Created by netikras on 17.11.11.
  */
 
-public class AddressActivity extends BaseActivity implements AddressMvpView {
+public class SystemSettingsActivity extends BaseActivity implements SystemSettingMvpView {
 
     private ViewFields fields;
 
     @Inject
-    AddressMvpPresenter<AddressMvpView> presenter;
+    SystemSettingMvpPresenter<SystemSettingMvpView> presenter;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -40,7 +43,7 @@ public class AddressActivity extends BaseActivity implements AddressMvpView {
         onAttach(this);
         presenter.onAttach(this);
         fields = initFields(new ViewFields());
-        addMenu(R.id.btn_address_main_menu);
+        addMenu(R.id.btn_syssett_main_menu);
     }
 
     class ViewFields extends BaseViewFields {
@@ -50,5 +53,4 @@ public class AddressActivity extends BaseActivity implements AddressMvpView {
             return Arrays.asList();
         }
     }
-
 }

@@ -8,7 +8,7 @@
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".ui.location.impl.view.FloorLayoutActivity">
+        tools:context=".ui.location.impl.view.FloorActivity">
 
         <Button
             android:id="@+id/btn_floor_main_menu"

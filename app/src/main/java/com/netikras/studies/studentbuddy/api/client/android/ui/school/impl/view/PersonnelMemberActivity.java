@@ -8,9 +8,7 @@ import com.netikras.studies.studentbuddy.api.client.android.R;
 import com.netikras.studies.studentbuddy.api.client.android.conf.di.DepInjector;
 import com.netikras.studies.studentbuddy.api.client.android.ui.base.BaseActivity;
 import com.netikras.studies.studentbuddy.api.client.android.ui.base.BaseViewFields;
-import com.netikras.studies.studentbuddy.api.client.android.ui.school.presenter.CourseMvpPresenter;
 import com.netikras.studies.studentbuddy.api.client.android.ui.school.presenter.PersonelMemberMvpPresenter;
-import com.netikras.studies.studentbuddy.api.client.android.ui.school.view.CourseMvpView;
 import com.netikras.studies.studentbuddy.api.client.android.ui.school.view.PersonelMemberMvpView;
 
 import java.util.Arrays;
