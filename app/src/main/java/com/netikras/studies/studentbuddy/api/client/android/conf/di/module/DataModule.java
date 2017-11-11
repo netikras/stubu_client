@@ -8,15 +8,13 @@ import com.netikras.studies.studentbuddy.api.client.android.data.DataManagerImpl
 import com.netikras.studies.studentbuddy.api.client.android.data.prefs.AppPreferencesHelper;
 import com.netikras.studies.studentbuddy.api.client.android.data.prefs.PreferencesHelper;
 import com.netikras.studies.studentbuddy.api.client.android.data.stores.BaseDataStore;
-import com.netikras.studies.studentbuddy.api.client.android.data.stores.person.PersonDataStore;
-import com.netikras.studies.studentbuddy.api.client.android.data.stores.person.impl.PersonDataStoreApiImpl;
-import com.netikras.studies.studentbuddy.api.client.android.data.stores.user.UserDataStore;
-import com.netikras.studies.studentbuddy.api.client.android.data.stores.user.UserDataStoreApiImpl;
+import com.netikras.studies.studentbuddy.api.client.android.pieces.person.data.PersonDataStore;
+import com.netikras.studies.studentbuddy.api.client.android.pieces.person.data.impl.PersonDataStoreApiImpl;
+import com.netikras.studies.studentbuddy.api.client.android.pieces.person.data.UserDataStore;
+import com.netikras.studies.studentbuddy.api.client.android.pieces.person.data.impl.UserDataStoreApiImpl;
 
 import java.util.HashMap;
 import java.util.Map;
-
-import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;

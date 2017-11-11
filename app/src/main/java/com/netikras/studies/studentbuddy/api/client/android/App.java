@@ -10,7 +10,7 @@ import android.widget.PopupMenu;
 
 import com.netikras.studies.studentbuddy.api.client.android.conf.di.DepInjector;
 import com.netikras.studies.studentbuddy.api.client.android.conf.di.component.ApplicationComponent;
-import com.netikras.studies.studentbuddy.api.client.android.ui.login.impl.view.LoginActivity;
+import com.netikras.studies.studentbuddy.api.client.android.pieces.login.ui.impl.view.LoginActivity;
 import com.netikras.studies.studentbuddy.api.client.android.util.Settings;
 import com.netikras.studies.studentbuddy.core.data.api.dto.meta.UserDto;
 import com.netikras.tools.common.remote.RemoteEndpointServer;
