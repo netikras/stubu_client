@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.netikras.studies.studentbuddy.api.client.android.data.DataManager;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.base.BasePresenter;
+import com.netikras.studies.studentbuddy.api.client.android.pieces.discipline.data.CourseDataStore;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.discipline.ui.impl.view.CourseActivity;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.discipline.ui.presenter.CourseMvpPresenter;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.discipline.ui.view.CourseMvpView;
@@ -20,8 +21,8 @@ public class CoursePresenter<V extends CourseMvpView> extends BasePresenter<V> i
         super(dataManager);
     }
 
-    private Object getDatastore() {
-        return getDataManager().getStore(null); // FIXME
+    private CourseDataStore getDataStore() {
+        return getDataManager().getStore(CourseDataStore.class);
     }
 
     @Override

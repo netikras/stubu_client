@@ -1,9 +1,9 @@
 package com.netikras.studies.studentbuddy.api.client.android.conf.di.module;
 
 import com.netikras.studies.studentbuddy.api.client.android.pieces.discipline.ui.impl.presenter.CoursePresenter;
+import com.netikras.studies.studentbuddy.api.client.android.pieces.discipline.ui.impl.presenter.DisciplinePresenter;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.discipline.ui.presenter.CourseMvpPresenter;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.discipline.ui.presenter.DisciplineMvpPresenter;
-import com.netikras.studies.studentbuddy.api.client.android.pieces.discipline.ui.impl.presenter.DisciplinePresenter;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.discipline.ui.view.CourseMvpView;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.discipline.ui.view.DisciplineMvpView;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.lecture.ui.impl.presenter.AssignmentPresenter;
@@ -29,22 +29,23 @@ import com.netikras.studies.studentbuddy.api.client.android.pieces.location.ui.p
 import com.netikras.studies.studentbuddy.api.client.android.pieces.location.ui.presenter.BuildingSectionMvpPresenter;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.location.ui.presenter.FloorMvpPresenter;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.location.ui.presenter.LayoutMvpPresenter;
+import com.netikras.studies.studentbuddy.api.client.android.pieces.location.ui.presenter.RoomMvpPresenter;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.location.ui.view.AddressMvpView;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.location.ui.view.BuildingMvpView;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.location.ui.view.BuildingSectionMvpView;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.location.ui.view.FloorMvpView;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.location.ui.view.LayoutMvpView;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.location.ui.view.RoomMvpView;
-import com.netikras.studies.studentbuddy.api.client.android.pieces.login.ui.presenter.LoginMvpPresenter;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.login.ui.impl.presenter.LoginPresenter;
+import com.netikras.studies.studentbuddy.api.client.android.pieces.login.ui.presenter.LoginMvpPresenter;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.login.ui.view.LoginMvpView;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.main.ui.impl.presenter.MainPresenter;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.main.ui.presenter.MainMvpPresenter;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.main.ui.view.MainMvpView;
-import com.netikras.studies.studentbuddy.api.client.android.pieces.person.ui.presenter.PersonMvpPresenter;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.person.ui.impl.presenter.PersonPresenter;
-import com.netikras.studies.studentbuddy.api.client.android.pieces.person.ui.presenter.UserMvpPresenter;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.person.ui.impl.presenter.UserPresenter;
+import com.netikras.studies.studentbuddy.api.client.android.pieces.person.ui.presenter.PersonMvpPresenter;
+import com.netikras.studies.studentbuddy.api.client.android.pieces.person.ui.presenter.UserMvpPresenter;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.person.ui.view.PersonMvpView;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.person.ui.view.UserMvpView;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.school.ui.impl.presenter.PersonnelMemberPresenter;
@@ -56,12 +57,16 @@ import com.netikras.studies.studentbuddy.api.client.android.pieces.school.ui.pre
 import com.netikras.studies.studentbuddy.api.client.android.pieces.school.ui.view.PersonnelMemberMvpView;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.school.ui.view.SchoolDepartmentMvpView;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.school.ui.view.SchoolMvpView;
-import com.netikras.studies.studentbuddy.api.client.android.pieces.settings.ui.presenter.SettingsMvpPresenter;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.settings.ui.impl.presenter.SettingsPresenter;
+import com.netikras.studies.studentbuddy.api.client.android.pieces.settings.ui.presenter.SettingsMvpPresenter;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.settings.ui.view.SettingsMvpView;
+import com.netikras.studies.studentbuddy.api.client.android.pieces.student.ui.impl.presenter.GuestPresenter;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.student.ui.impl.presenter.StudentPresenter;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.student.ui.impl.presenter.StudentsGroupPresenter;
+import com.netikras.studies.studentbuddy.api.client.android.pieces.student.ui.presenter.GuestMvpPresenter;
+import com.netikras.studies.studentbuddy.api.client.android.pieces.student.ui.presenter.StudentMvpPresenter;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.student.ui.presenter.StudentsGroupMvpPresenter;
+import com.netikras.studies.studentbuddy.api.client.android.pieces.student.ui.view.GuestMvpView;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.student.ui.view.StudentMvpView;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.student.ui.view.StudentsGroupMvpView;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.sys.ui.impl.presenter.AdminPresenter;
@@ -178,7 +183,7 @@ public class PresenterModule {
     }
 
     @Provides
-    RoomPresenter<RoomMvpView> roomPresenter(RoomPresenter<RoomMvpView> presenter) {
+    RoomMvpPresenter<RoomMvpView> roomPresenter(RoomPresenter<RoomMvpView> presenter) {
         return presenter;
     }
 
@@ -209,12 +214,17 @@ public class PresenterModule {
 
     // Student
     @Provides
-    StudentPresenter<StudentMvpView> studentPresenter(StudentPresenter<StudentMvpView> presenter) {
+    StudentMvpPresenter<StudentMvpView> studentPresenter(StudentPresenter<StudentMvpView> presenter) {
         return presenter;
     }
 
     @Provides
     StudentsGroupMvpPresenter<StudentsGroupMvpView> studentsGroupPresenter(StudentsGroupPresenter<StudentsGroupMvpView> presenter) {
+        return presenter;
+    }
+
+    @Provides
+    GuestMvpPresenter<GuestMvpView> guestPresenter(GuestPresenter<GuestMvpView> presenter) {
         return presenter;
     }
 

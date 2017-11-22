@@ -19,6 +19,9 @@ public class SchoolDataStoreApiImpl extends ApiBasedDataStore<String, SchoolDto>
     
     @Inject
     SchoolApiConsumer schoolApiConsumer;
+
+    @Inject
+    public SchoolDataStoreApiImpl() {}
     
     @Override
     public void getById(String id, Subscriber<SchoolDto>... subscribers) {

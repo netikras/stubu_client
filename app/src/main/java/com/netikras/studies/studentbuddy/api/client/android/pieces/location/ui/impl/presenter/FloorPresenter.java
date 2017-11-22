@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.netikras.studies.studentbuddy.api.client.android.data.DataManager;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.base.BasePresenter;
+import com.netikras.studies.studentbuddy.api.client.android.pieces.location.data.FloorDataStore;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.location.ui.impl.view.FloorActivity;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.location.ui.presenter.FloorMvpPresenter;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.location.ui.view.FloorMvpView;
@@ -20,8 +21,8 @@ public class FloorPresenter<V extends FloorMvpView> extends BasePresenter<V> imp
         super(dataManager);
     }
 
-    private Object getDatastore() {
-        return getDataManager().getStore(null); // FIXME
+    private FloorDataStore getDataStore() {
+        return getDataManager().getStore(FloorDataStore.class);
     }
 
     @Override

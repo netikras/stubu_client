@@ -4,6 +4,8 @@ import android.content.Context;
 
 import com.netikras.studies.studentbuddy.api.client.android.data.DataManager;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.base.BasePresenter;
+import com.netikras.studies.studentbuddy.api.client.android.pieces.location.data.RoomDataStore;
+import com.netikras.studies.studentbuddy.api.client.android.pieces.sys.data.RoleDataStore;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.sys.ui.impl.view.RoleActivity;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.sys.ui.presenter.RoleMvpPresenter;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.sys.ui.view.RoleMvpView;
@@ -20,8 +22,8 @@ public class RolePresenter<V extends RoleMvpView> extends BasePresenter<V> imple
         super(dataManager);
     }
 
-    private Object getDatastore() {
-        return getDataManager().getStore(null); // FIXME
+    private RoleDataStore getDataStore() {
+        return getDataManager().getStore(RoleDataStore.class);
     }
 
     @Override

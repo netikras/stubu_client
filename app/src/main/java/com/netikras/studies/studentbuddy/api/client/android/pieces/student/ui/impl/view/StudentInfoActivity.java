@@ -1,6 +1,8 @@
 package com.netikras.studies.studentbuddy.api.client.android.pieces.student.ui.impl.view;
 
 import android.os.Bundle;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import com.netikras.studies.studentbuddy.api.client.android.R;
@@ -9,10 +11,20 @@ import com.netikras.studies.studentbuddy.api.client.android.pieces.base.BaseActi
 import com.netikras.studies.studentbuddy.api.client.android.pieces.base.BaseViewFields;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.student.ui.presenter.StudentMvpPresenter;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.student.ui.view.StudentMvpView;
+import com.netikras.studies.studentbuddy.core.data.api.dto.PersonDto;
+import com.netikras.studies.studentbuddy.core.data.api.dto.school.SchoolDepartmentDto;
+import com.netikras.studies.studentbuddy.core.data.api.dto.school.SchoolDto;
+import com.netikras.studies.studentbuddy.core.data.api.dto.school.StudentDto;
+import com.netikras.studies.studentbuddy.core.data.api.dto.school.StudentsGroupDto;
 
 import java.util.Collection;
 
 import javax.inject.Inject;
+
+import butterknife.BindView;
+import butterknife.OnClick;
+
+import static com.netikras.studies.studentbuddy.api.client.android.util.CommonUtils.datetimeToDate;
 
 public class StudentInfoActivity extends BaseActivity implements StudentMvpView {
 
@@ -37,7 +49,163 @@ public class StudentInfoActivity extends BaseActivity implements StudentMvpView 
     }
 
 
+    @Override
+    public ViewFields getFields() {
+        return fields;
+    }
+
+    @Override
+    public void show(StudentDto studentDto) {
+        getFields().reset();
+
+        if (studentDto == null) {
+            return;
+        }
+
+        getFields().setId(studentDto.getId());
+        getFields().setGroup(studentDto.getGroup());
+        getFields().setSchool(studentDto.getSchool());
+        getFields().setDepartment(studentDto.getDepartment());
+        getFields().setCreated(datetimeToDate(studentDto.getCreatedOn()));
+        getFields().setPerson(studentDto.getPerson());
+    }
+
+    public StudentDto collect() {
+        StudentDto dto = new StudentDto();
+
+        dto.setId(getFields().getId());
+        dto.setDepartment(getFields().getDepartment());
+        dto.setSchool(getFields().getSchool());
+        dto.setPerson(getFields().getPerson());
+        dto.setGroup(getFields().getGroup());
+
+        return dto;
+    }
+
+
+    @OnClick(value = {R.id.btn_student_name})
+    public void showPerson() {
+        presenter.showPerson(this, getFields().getPerson());
+    }
+
     class ViewFields extends BaseViewFields {
+
+        @BindView(R.id.txt_edit_student_id)
+        EditText id;
+        @BindView(R.id.txt_edit_student_identificator)
+        EditText identificator;
+        @BindView(R.id.txt_edit_student_date_created)
+        EditText created;
+        
+        @BindView(R.id.btn_student_name)
+        Button name;
+        @BindView(R.id.btn_student_school)
+        Button school;
+        @BindView(R.id.btn_student_school_department)
+        Button department;
+        @BindView(R.id.btn_student_group)
+        Button group;
+
+        public String getId() {
+            return getString( id);
+        }
+
+        public void setId(String id) {
+            setString(this.id, id);
+        }
+
+        public PersonDto getPerson() {
+            return (PersonDto) getTag(name);
+        }
+
+        public void setPerson(PersonDto dto) {
+            setTag(name, dto);
+            if (dto != null) {
+                setName(dto.getFirstName() + " " + dto.getLastName());
+                setIdentificator(dto.getIdentification());
+            }
+        }
+
+        public String getIdentificator() {
+            return getString( identificator);
+        }
+
+        public void setIdentificator(String identificator) {
+            setString(this.identificator, identificator);
+        }
+
+        public String getCreated() {
+            return getString( created);
+        }
+
+        public void setCreated(String created) {
+            setString(this.created, created);
+        }
+
+        public String getName() {
+            return getString( name);
+        }
+
+        public void setName(String name) {
+            setString(this.name, name);
+        }
+
+        public String getSchoolName() {
+            return getString( school);
+        }
+
+        public void setSchoolName(String school) {
+            setString(this.school, school);
+        }
+
+        public String getDepartmentName() {
+            return getString( department);
+        }
+
+        public void setDepartmentName(String department) {
+            setString(this.department, department);
+        }
+
+        public String getGroupName() {
+            return getString( group);
+        }
+
+        public void setGroupName(String group) {
+            setString(this.group, group);
+        }
+
+        public SchoolDto getSchool() {
+            return (SchoolDto) getTag(school);
+        }
+
+        public void setSchool(SchoolDto school) {
+            setTag(this.school, school);
+            if (school != null) {
+                setSchoolName(school.getTitle());
+            }
+        }
+
+        public SchoolDepartmentDto getDepartment() {
+            return (SchoolDepartmentDto) getTag(department);
+        }
+
+        public void setDepartment(SchoolDepartmentDto department) {
+            setTag(this.department, department);
+            if (department != null) {
+                setDepartmentName(department.getTitle());
+            }
+        }
+
+        public StudentsGroupDto getGroup() {
+            return (StudentsGroupDto) getTag(group);
+        }
+
+        public void setGroup(StudentsGroupDto group) {
+            setTag(this.group, group);
+            if (group != null) {
+                setGroupName(group.getTitle());
+            }
+        }
 
         @Override
         protected Collection<TextView> getAllFields() {

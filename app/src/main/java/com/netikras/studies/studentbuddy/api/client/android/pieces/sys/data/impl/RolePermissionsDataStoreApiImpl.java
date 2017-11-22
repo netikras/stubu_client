@@ -21,6 +21,9 @@ public class RolePermissionsDataStoreApiImpl extends ApiBasedDataStore<String, R
     @Inject
     AdminApiConsumer adminApiConsumer;
 
+    @Inject
+    public RolePermissionsDataStoreApiImpl() {}
+
     @Override
     @Deprecated
     public void getById(String id, Subscriber<RolePermissionDto>... subscribers) {

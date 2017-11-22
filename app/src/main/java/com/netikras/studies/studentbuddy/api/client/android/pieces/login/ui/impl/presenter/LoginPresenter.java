@@ -36,21 +36,21 @@ public class LoginPresenter<V extends LoginMvpView> extends BasePresenter<V> imp
         super(dataManager);
     }
 
-    private UserDataStore getDatastore() {
+    private UserDataStore getDataStore() {
         return getDataManager().getStore(UserDataStore.class);
     }
 
 
     @Override
     public void proceedLogin(String username, String password) {
-        getDatastore().login(username, password, new ErrorsAwareSubscriber<UserDto>() {
+        getDataStore().login(username, password, new ErrorsAwareSubscriber<UserDto>() {
             @Override
             public void onSuccess(UserDto response) {
                 app.setCurrentUser(response);
                 getLandingPresenter().startView((Context) getMvpView());
             }
         });
-        getDatastore().processOrders((Context) getMvpView());
+        getDataStore().processOrders((Context) getMvpView());
     }
 
     @Override

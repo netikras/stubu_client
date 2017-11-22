@@ -20,6 +20,9 @@ public class SchoolDepartmentDataStoreApiImpl extends ApiBasedDataStore<String, 
     
     @Inject
     SchoolApiConsumer schoolApiConsumer;
+
+    @Inject
+    public SchoolDepartmentDataStoreApiImpl() {}
     
     @Override
     public void getById(String id, Subscriber<SchoolDepartmentDto>... subscribers) {

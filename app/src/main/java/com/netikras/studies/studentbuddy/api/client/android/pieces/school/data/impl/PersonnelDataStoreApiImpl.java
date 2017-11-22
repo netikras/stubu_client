@@ -19,6 +19,9 @@ public class PersonnelDataStoreApiImpl extends ApiBasedDataStore<String, Personn
     
     @Inject
     SchoolApiConsumer schoolApiConsumer;
+
+    @Inject
+    public PersonnelDataStoreApiImpl() {}
     
     @Override
     public void getById(String id, Subscriber<PersonnelMemberDto>... subscribers) {

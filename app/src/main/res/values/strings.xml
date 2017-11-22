@@ -167,4 +167,19 @@
     <string name="txt_btn_settings_save">Išsaugoti</string>
     <string name="txt_msg_user_has_no_person">Virtualus naudotojas neturi susieto asmens</string>
     <string name="txt_msg_user_missing">Nenurodytas naudotojas</string>
+    <string name="title_school">Mokykla</string>
+    <string name="lbl_school_id">@string/lbl_id</string>
+    <string name="dummy_txt_school_id">@string/dummy_txt_id</string>
+    <string name="title_school_department">Padalinys</string>
+    <string name="lbl_school_department_id">@string/lbl_id</string>
+    <string name="dummy_txt_school_department_id">@string/dummy_txt_id</string>
+    <string name="lbl_building_id">@string/lbl_id</string>
+    <string name="title_building">Pastatas</string>
+    <string name="dummy_txt_building_id">@string/dummy_txt_id</string>
+    <string name="lbl_assignment_id">@string/lbl_id</string>
+    <string name="dummy_txt_assignment_id">@string/dummy_txt_id</string>
+    <string name="title_assignment">Užduotis</string>
+    <string name="dummy_txt_test_id">@string/dummy_txt_id</string>
+    <string name="lbl_test_id">@string/lbl_id</string>
+    <string name="title_test">Atsiskaitymai</string>
 </resources>

@@ -1,13 +1,11 @@
 package com.netikras.studies.studentbuddy.api.client.android.pieces.lecture.data.impl;
 
 import com.netikras.studies.studentbuddy.api.client.android.data.stores.ApiBasedDataStore;
-import com.netikras.studies.studentbuddy.api.client.android.pieces.lecture.data.AssingmentDataStore;
+import com.netikras.studies.studentbuddy.api.client.android.pieces.lecture.data.AssignmentDataStore;
 import com.netikras.studies.studentbuddy.api.client.android.service.ServiceRequest;
 import com.netikras.studies.studentbuddy.api.client.android.service.ServiceRequest.Subscriber;
 import com.netikras.studies.studentbuddy.api.timetable.controller.generated.AssignmentApiConsumer;
-import com.netikras.studies.studentbuddy.api.timetable.controller.generated.LecturesApiConsumer;
 import com.netikras.studies.studentbuddy.core.data.api.dto.school.AssignmentDto;
-import com.netikras.studies.studentbuddy.core.data.api.dto.school.LectureDto;
 
 import java.util.Collection;
 
@@ -17,11 +15,13 @@ import javax.inject.Inject;
  * Created by netikras on 17.11.11.
  */
 
-public class AssignmentDataStoreApiImpl extends ApiBasedDataStore<String, AssignmentDto> implements AssingmentDataStore {
+public class AssignmentDataStoreApiImpl extends ApiBasedDataStore<String, AssignmentDto> implements AssignmentDataStore {
 
     @Inject
     AssignmentApiConsumer assignmentApiConsumer;
 
+    @Inject
+    public AssignmentDataStoreApiImpl() {}
 
     @Override
     public void getById(String id, Subscriber<AssignmentDto>... subscribers) {

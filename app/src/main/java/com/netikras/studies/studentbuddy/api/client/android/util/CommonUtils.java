@@ -27,6 +27,7 @@ import com.netikras.studies.studentbuddy.api.client.android.R;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
@@ -89,6 +90,53 @@ public final class CommonUtils {
     }
 
     public static String getTimeStamp() {
-        return new SimpleDateFormat(AppConstants.TIMESTAMP_FORMAT, Locale.ENGLISH).format(new Date());
+        return datetimeToTimestamp(new Date());
     }
+
+    public static String formatDatetime(String pattern, Date datetime) {
+        if (pattern == null || datetime == null) {
+            return "";
+        }
+        return new SimpleDateFormat(pattern, Locale.ENGLISH).format(datetime);
+    }
+
+    public static Date parseDatetime(String pattern, String text) {
+        if (pattern == null || text == null) {
+            return null;
+        }
+        try {
+            return new SimpleDateFormat(pattern, Locale.ENGLISH).parse(text);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public static String datetimeToTimestamp(Date date) {
+        return formatDatetime(AppConstants.TIMESTAMP_FORMAT, date);
+    }
+    public static Date timestampTodatetime(String timestamp) {
+        return parseDatetime(AppConstants.TIMESTAMP_FORMAT, timestamp);
+    }
+
+
+
+    public static String datetimeToDate(Date date) {
+        return formatDatetime(AppConstants.DATE_FORMAT, date);
+    }
+
+    public static String datetimeToTime(Date date) {
+        return formatDatetime(AppConstants.TIME_FORMAT, date);
+    }
+
+    public static Date dateToDatetime(String date) {
+        return parseDatetime(AppConstants.DATE_FORMAT, date);
+    }
+
+    public static Date timeToDatetime(String time) {
+        return parseDatetime(AppConstants.TIME_FORMAT, time);
+    }
+
+
+
 }

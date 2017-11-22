@@ -20,6 +20,9 @@ public class TestDataStoreApiImpl extends ApiBasedDataStore<String, DisciplineTe
 
     @Inject
     TestsApiConsumer testsApiConsumer;
+
+    @Inject
+    public TestDataStoreApiImpl() {}
     
     @Override
     public void getById(String id, Subscriber<DisciplineTestDto>... subscribers) {

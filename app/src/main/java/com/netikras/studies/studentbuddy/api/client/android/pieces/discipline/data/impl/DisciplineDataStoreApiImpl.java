@@ -21,6 +21,9 @@ public class DisciplineDataStoreApiImpl extends ApiBasedDataStore<String, Discip
     @Inject
     SchoolApiConsumer schoolApiConsumer;
 
+    @Inject
+    public DisciplineDataStoreApiImpl() {}
+
     @Override
     public void getById(String id, Subscriber<DisciplineDto>... subscribers) {
         orderData(new ServiceRequest() {

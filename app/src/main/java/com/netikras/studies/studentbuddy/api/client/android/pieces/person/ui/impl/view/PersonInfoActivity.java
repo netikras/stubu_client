@@ -15,6 +15,7 @@ import com.netikras.studies.studentbuddy.api.client.android.pieces.base.BaseView
 import com.netikras.studies.studentbuddy.api.client.android.pieces.person.ui.presenter.PersonMvpPresenter;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.person.ui.view.PersonMvpView;
 import com.netikras.studies.studentbuddy.api.client.android.util.AppConstants;
+import com.netikras.studies.studentbuddy.api.client.android.util.CommonUtils;
 import com.netikras.studies.studentbuddy.core.data.api.dto.PersonDto;
 
 import java.text.ParseException;
@@ -27,6 +28,10 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+
+import static com.netikras.studies.studentbuddy.api.client.android.util.CommonUtils.dateToDatetime;
+import static com.netikras.studies.studentbuddy.api.client.android.util.CommonUtils.datetimeToDate;
+import static com.netikras.tools.common.security.IntegrityUtils.isNullOrEmpty;
 
 public class PersonInfoActivity extends BaseActivity implements PersonMvpView {
 
@@ -42,16 +47,14 @@ public class PersonInfoActivity extends BaseActivity implements PersonMvpView {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_person_info);
-
-        showPerson(null);
-        onAttach(this);
+        setUp();
     }
 
     @Override
     public View onCreateView(View parent, String name, Context context, AttributeSet attrs) {
         View view = super.onCreateView(parent, name, context, attrs);
-        fields = new ViewFields();
-        ButterKnife.bind(fields, view);
+//        fields = new ViewFields();
+//        ButterKnife.bind(fields, view);
         return view;
     }
 
@@ -72,6 +75,8 @@ public class PersonInfoActivity extends BaseActivity implements PersonMvpView {
 
     @Override
     public void showPerson(PersonDto personDto) {
+        getFields().reset();
+
         if (personDto == null) {
             personDto = new PersonDto(); // display empty fields. Replace this with 'return;' to display default dummy values
         }
@@ -84,9 +89,39 @@ public class PersonInfoActivity extends BaseActivity implements PersonMvpView {
         fields.setDateCreated(personDto.getCreatedOn());
     }
 
-    public class ViewFields extends BaseViewFields {
+    @Override
+    public PersonDto collect() {
+        PersonDto personDto = new PersonDto();
 
-        private SimpleDateFormat dateFormat = new SimpleDateFormat(AppConstants.DATE_FORMAT);
+        personDto.setId(getFields().getId());
+        personDto.setIdentification(getFields().getIdentificator());
+        personDto.setEmail(getFields().getEmail());
+        personDto.setFirstName(getFields().getName());
+        personDto.setLastName(getFields().getSurname());
+//        personDto.setPersonalCode(getFields().get);
+        personDto.setPhoneNo(getFields().getPhoneNo());
+
+        return personDto;
+    }
+
+    @Override
+    protected void menuOnClickSave() {
+        getFields().enableEdit(false);
+        if (isNullOrEmpty(getFields().getId())) {
+            presenter.createPerson(this, collect());
+        } else {
+            presenter.updatePerson(this, collect());
+        }
+    }
+
+    @Override
+    protected void menuOnClickCreate() {
+        getFields().reset();
+        getFields().setId("");
+        getFields().enableEdit(true);
+    }
+
+    public class ViewFields extends BaseViewFields {
 
         @BindView(R.id.txt_edit_person_id)
         EditText id;
@@ -169,12 +204,7 @@ public class PersonInfoActivity extends BaseActivity implements PersonMvpView {
         }
 
         public Date getDateCreatedAsDate() {
-            try {
-                return dateFormat.parse(getDateCreated());
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
-            return null;
+            return dateToDatetime(getDateCreated());
         }
 
         public void setDateCreated(String dateCreated) {
@@ -182,7 +212,7 @@ public class PersonInfoActivity extends BaseActivity implements PersonMvpView {
         }
 
         public void setDateCreated(Date dateCreated) {
-            setString(this.dateCreated, dateFormat.format(dateCreated));
+            setString(this.dateCreated, datetimeToDate(dateCreated));
         }
 
         @Override

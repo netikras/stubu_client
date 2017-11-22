@@ -23,6 +23,9 @@ public class LecturerDataStoreApiImpl extends ApiBasedDataStore<String, Lecturer
 
     @Inject
     AdminLecturerApiConsumer adminLecturerApiConsumer;
+
+    @Inject
+    public LecturerDataStoreApiImpl() {}
     
     @Override
     public void getById(String id, Subscriber<LecturerDto>... subscribers) {

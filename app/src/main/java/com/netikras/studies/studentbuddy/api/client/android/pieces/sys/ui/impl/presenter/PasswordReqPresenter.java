@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.netikras.studies.studentbuddy.api.client.android.data.DataManager;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.base.BasePresenter;
+import com.netikras.studies.studentbuddy.api.client.android.pieces.sys.data.PasswordReqDataStore;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.sys.ui.impl.view.PasswordReqActivity;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.sys.ui.presenter.PasswordReqMvpPresenter;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.sys.ui.view.PasswordReqMvpView;
@@ -20,8 +21,8 @@ public class PasswordReqPresenter<V extends PasswordReqMvpView> extends BasePres
         super(dataManager);
     }
 
-    private Object getDatastore() {
-        return getDataManager().getStore(null); // FIXME
+    private PasswordReqDataStore getDataStore() {
+        return getDataManager().getStore(PasswordReqDataStore.class);
     }
 
     @Override

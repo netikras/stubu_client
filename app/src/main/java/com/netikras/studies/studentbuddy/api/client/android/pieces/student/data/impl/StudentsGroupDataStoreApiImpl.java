@@ -23,6 +23,9 @@ public class StudentsGroupDataStoreApiImpl extends ApiBasedDataStore<String, Stu
     StudentApiConsumer studentApiConsumer;
     @Inject
     AdminStudentApiConsumer adminStudentApiConsumer;
+
+    @Inject
+    public StudentsGroupDataStoreApiImpl() {}
     
     @Override
     public void getById(String id, Subscriber<StudentsGroupDto>... subscribers) {

@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.netikras.studies.studentbuddy.api.client.android.data.DataManager;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.base.BasePresenter;
+import com.netikras.studies.studentbuddy.api.client.android.pieces.sys.data.StatusDataStore;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.sys.ui.impl.view.StatusActivity;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.sys.ui.presenter.StatusMvpPresenter;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.sys.ui.view.StatusMvpView;
@@ -20,8 +21,8 @@ public class StatusPresenter<V extends StatusMvpView> extends BasePresenter<V> i
         super(dataManager);
     }
 
-    private Object getDatastore() {
-        return getDataManager().getStore(null); // FIXME
+    private StatusDataStore getDataStore() {
+        return getDataManager().getStore(StatusDataStore.class);
     }
 
     @Override

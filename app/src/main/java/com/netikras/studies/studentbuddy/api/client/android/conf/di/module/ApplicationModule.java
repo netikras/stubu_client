@@ -5,6 +5,7 @@ import android.content.Context;
 
 import com.netikras.studies.studentbuddy.api.client.android.App;
 import com.netikras.studies.studentbuddy.api.client.android.conf.di.ApplicationCtx;
+import com.netikras.studies.studentbuddy.api.client.android.util.Exchange;
 
 import javax.inject.Singleton;
 
@@ -41,5 +42,10 @@ public class ApplicationModule {
     @Provides
     Context applicationContext() {
         return application();
+    }
+
+    @Provides
+    Exchange exchange() {
+        return new Exchange();
     }
 }

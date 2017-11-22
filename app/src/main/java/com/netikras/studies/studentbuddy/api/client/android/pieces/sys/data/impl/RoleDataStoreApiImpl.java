@@ -20,6 +20,9 @@ public class RoleDataStoreApiImpl extends ApiBasedDataStore<String, RoleDto> imp
     @Inject
     AdminApiConsumer adminApiConsumer;
 
+    @Inject
+    public RoleDataStoreApiImpl() {}
+
     @Override
     public void getById(String id, Subscriber<RoleDto>... subscribers) {
         orderData(new ServiceRequest<RoleDto>() {

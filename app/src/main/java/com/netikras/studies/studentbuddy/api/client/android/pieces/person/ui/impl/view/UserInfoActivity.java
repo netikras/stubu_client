@@ -13,6 +13,8 @@ import com.netikras.studies.studentbuddy.api.client.android.R;
 import com.netikras.studies.studentbuddy.api.client.android.conf.di.DepInjector;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.base.BaseActivity;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.base.BaseViewFields;
+import com.netikras.studies.studentbuddy.api.client.android.pieces.base.MvpPresenter;
+import com.netikras.studies.studentbuddy.api.client.android.pieces.base.MvpView;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.person.ui.presenter.UserMvpPresenter;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.person.ui.view.UserMvpView;
 import com.netikras.studies.studentbuddy.core.data.api.dto.PersonDto;
@@ -25,6 +27,8 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+
+import static com.netikras.tools.common.security.IntegrityUtils.isNullOrEmpty;
 
 public class UserInfoActivity extends BaseActivity implements UserMvpView {
 
@@ -48,9 +52,10 @@ public class UserInfoActivity extends BaseActivity implements UserMvpView {
         setContentView(R.layout.activity_user_info);
         setUp();
 
-        UserDto userDto = app.getCurrentUser();
-        showUser(userDto);
+//        UserDto userDto = app.getCurrentUser();
+//        showUser(userDto);
     }
+
 
     @Override
     protected void setUp() {
@@ -61,30 +66,39 @@ public class UserInfoActivity extends BaseActivity implements UserMvpView {
         addMenu(R.id.btn_user_main_menu);
     }
 
+    public ViewFields getFields() {
+        return fields;
+    }
+
     @Override
     protected void menuOnClickDelete() {
-        super.menuOnClickDelete();
-        presenter.delete(fields.getId());
+        getFields().enableEdit(false);
+        presenter.delete(this, fields.getId());
     }
 
     @Override
     protected void menuOnClickCreate() {
-        super.menuOnClickCreate();
-        presenter.create(collect());
+        getFields().reset();
+        getFields().setId("");
+        getFields().enableEdit(true);
     }
 
     @Override
     protected void menuOnClickSave() {
-        super.menuOnClickSave();
-        presenter.update(collect());
+        getFields().enableEdit(false);
+        if (isNullOrEmpty(getFields().getId())) {
+            presenter.create(this, collect());
+        } else {
+            presenter.update(this, collect());
+        }
     }
 
     @Override
     public void showUser(UserDto userDto) {
-        fields.enableEdit(false);
+        fields.reset();
 
         if (userDto == null) {
-            userDto = new UserDto();
+            return;
         }
         PersonDto personDto = userDto.getPerson();
 
@@ -92,8 +106,8 @@ public class UserInfoActivity extends BaseActivity implements UserMvpView {
             fields.setPersonName(personDto.getFirstName() + " " + personDto.getLastName());
             fields.setIdentification(personDto.getIdentification());
         } else {
-            fields.setPersonName(getString(R.string.dash));
-            fields.setIdentification(getString(R.string.dash));
+//            fields.setPersonName(getString(R.string.dash));
+//            fields.setIdentification(getString(R.string.dash));
         }
 
         fields.setUsername(userDto.getName());
@@ -104,7 +118,7 @@ public class UserInfoActivity extends BaseActivity implements UserMvpView {
     @OnClick(R.id.btn_user_person)
     void showPerson() {
         UserDto userDto = collect();
-        presenter.showPersonForUser(userDto);
+        presenter.showPersonForUser(this, userDto);
     }
 
     private UserDto collect() {

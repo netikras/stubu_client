@@ -22,6 +22,9 @@ public class CourseDataStoreApiImpl extends ApiBasedDataStore<String, CourseDto>
     SchoolApiConsumer schoolApiConsumer;
 
 
+    @Inject
+    public CourseDataStoreApiImpl() {}
+
     @Override
     public void getById(String id, Subscriber<CourseDto>... subscribers) {
         orderData(new ServiceRequest<CourseDto>(){

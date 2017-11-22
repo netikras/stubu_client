@@ -19,6 +19,9 @@ public class SystemSettingsDataStoreApiImpl extends ApiBasedDataStore<String, Sy
     @Inject
     AdminApiConsumer adminApiConsumer;
 
+    @Inject
+    public SystemSettingsDataStoreApiImpl() {}
+
     @Override
     public void getById(String id, ServiceRequest.Subscriber<SystemSettingDto>... subscribers) {
         orderData(new ServiceRequest<SystemSettingDto>() {

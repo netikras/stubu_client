@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.netikras.studies.studentbuddy.api.client.android.data.DataManager;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.base.BasePresenter;
+import com.netikras.studies.studentbuddy.api.client.android.pieces.sys.data.SystemSettingsDataStore;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.sys.ui.impl.view.SystemSettingsActivity;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.sys.ui.presenter.SystemSettingMvpPresenter;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.sys.ui.view.SystemSettingMvpView;
@@ -20,8 +21,8 @@ public class SystemSettingPresenter<V extends SystemSettingMvpView> extends Base
         super(dataManager);
     }
 
-    private Object getDatastore() {
-        return getDataManager().getStore(null); // FIXME
+    private SystemSettingsDataStore getDataStore() {
+        return getDataManager().getStore(SystemSettingsDataStore.class);
     }
 
     @Override

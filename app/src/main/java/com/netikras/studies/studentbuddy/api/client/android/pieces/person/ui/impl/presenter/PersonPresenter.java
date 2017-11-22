@@ -3,8 +3,11 @@ package com.netikras.studies.studentbuddy.api.client.android.pieces.person.ui.im
 import android.content.Context;
 
 import com.netikras.studies.studentbuddy.api.client.android.data.DataManager;
+import com.netikras.studies.studentbuddy.api.client.android.pieces.base.BaseActivity;
+import com.netikras.studies.studentbuddy.api.client.android.pieces.base.BaseActivity.ViewTask;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.person.data.PersonDataStore;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.base.BasePresenter;
+import com.netikras.studies.studentbuddy.api.client.android.pieces.person.ui.impl.view.PersonInfoActivity;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.person.ui.impl.view.UserInfoActivity;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.person.ui.presenter.PersonMvpPresenter;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.person.ui.view.PersonMvpView;
@@ -25,53 +28,63 @@ public class PersonPresenter<V extends PersonMvpView> extends BasePresenter<V> i
 
     @Override
     public void startView(Context fromContext) {
-        startView(fromContext, UserInfoActivity.class);
+        startView(fromContext, PersonInfoActivity.class);
     }
 
+    public void startView(Context fromContext, ViewTask<PersonInfoActivity> task) {
+        startView(fromContext, PersonInfoActivity.class, task);
+    }
 
     @Override
-    public void showPerson(String id) {
+    public void showPerson(Context context, PersonDto personDto) {
+        startView(context, new ViewTask<PersonInfoActivity>() {
+            @Override
+            public void execute() {
+                getActivity().getFields().reset();
+                getActivity().showPerson(personDto);
+            }
+        });
+    }
+
+    @Override
+    public void showPerson(Context context, String id) {
         getDataStore().getById(id, new ErrorsAwareSubscriber<PersonDto>() {
             @Override
             public void onSuccess(PersonDto response) {
-                getMvpView().getFields().enableEdit(false);
-                getMvpView().showPerson(response);
+                showPerson(context, response);
             }
         });
         getDataStore().processOrders(getContext());
     }
 
     @Override
-    public void updatePerson(PersonDto personDto) {
+    public void updatePerson(Context context, PersonDto personDto) {
         getDataStore().update(personDto, new ErrorsAwareSubscriber<PersonDto>() {
             @Override
             public void onSuccess(PersonDto response) {
-                getMvpView().showPerson(response);
-                getMvpView().getFields().enableEdit(false);
+                showPerson(context, response);
             }
         });
         getDataStore().processOrders(getContext());
     }
 
     @Override
-    public void createPerson(PersonDto personDto) {
+    public void createPerson(Context context, PersonDto personDto) {
         getDataStore().create(personDto, new ErrorsAwareSubscriber<PersonDto>() {
             @Override
             public void onSuccess(PersonDto response) {
-                getMvpView().showPerson(response);
-                getMvpView().getFields().enableEdit(false);
+                showPerson(context, response);
             }
         });
         getDataStore().processOrders(getContext());
     }
 
     @Override
-    public void showPersonByIdentifier(String identification) {
+    public void showPersonByIdentifier(Context context, String identification) {
         getDataStore().getByIdentifier(identification, new ErrorsAwareSubscriber<PersonDto>() {
             @Override
             public void onSuccess(PersonDto response) {
-//                getMvpView().getFields().enableEdit(false);
-                getMvpView().showPerson(response);
+                showPerson(context, response);
             }
         });
         getDataStore().processOrders(getContext());

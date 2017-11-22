@@ -1,18 +1,3 @@
-/*
- * Copyright (C) 2017 MINDORKS NEXTGEN PRIVATE LIMITED
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     https://mindorks.com/license/apache-v2
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License
- */
-
 package com.netikras.studies.studentbuddy.api.client.android.pieces.base;
 
 /**
@@ -24,11 +9,15 @@ import android.content.Intent;
 
 import com.netikras.studies.studentbuddy.api.client.android.App;
 import com.netikras.studies.studentbuddy.api.client.android.data.DataManager;
+import com.netikras.studies.studentbuddy.api.client.android.pieces.base.BaseActivity.ViewTask;
 import com.netikras.studies.studentbuddy.api.client.android.service.ServiceRequest.Subscriber;
+import com.netikras.studies.studentbuddy.api.client.android.util.Exchange;
 import com.netikras.tools.common.exception.ErrorBody;
 import com.netikras.tools.common.exception.ErrorsCollection;
 
 import javax.inject.Inject;
+
+import static com.netikras.tools.common.security.IntegrityUtils.isNullOrEmpty;
 
 
 /**
@@ -44,6 +33,8 @@ public class BasePresenter<V extends MvpView> implements MvpPresenter<V> {
 
     private V mMvpView;
 
+    @Inject
+    Exchange exchange;
 
     @Inject
     public BasePresenter(DataManager dataManager) {
@@ -145,6 +136,19 @@ public class BasePresenter<V extends MvpView> implements MvpPresenter<V> {
         fromContext.startActivity(intent);
     }
 
+    /**
+     *
+     * @param fromContext current context - the one activity is to be called from
+     * @param viewClass   activity class
+     * @param task        something to do when view is started. <br/>
+     *                    NOTE: before calling execute() view will call setActivity(). Utilize that
+     */
+    public <VIEW extends MvpView> void startView(Context fromContext, Class<VIEW> viewClass, ViewTask<VIEW> task) {
+        Intent intent = new Intent(fromContext, viewClass);
+        intent.putExtra("task", exchange.put(task));
+        fromContext.startActivity(intent);
+    }
+
     public static class MvpViewNotAttachedException extends RuntimeException {
         public MvpViewNotAttachedException() {
             super("Please call Presenter.onAttach(MvpView) before" +
@@ -155,8 +159,13 @@ public class BasePresenter<V extends MvpView> implements MvpPresenter<V> {
     protected class ErrorsAwareSubscriber<T> extends Subscriber<T> {
         @Override
         public void onError(ErrorsCollection errors) {
-            for (ErrorBody error : errors) {
-                getMvpView().onError(error.getMessage1());
+            if (isNullOrEmpty(errors)) {
+                return;
+            }
+            if (getMvpView() != null) {
+                for (ErrorBody error : errors) {
+                    getMvpView().onError(error.getMessage1());
+                }
             }
         }
     }

@@ -5,6 +5,7 @@ import android.content.Intent;
 
 import com.netikras.studies.studentbuddy.api.client.android.data.DataManager;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.base.BasePresenter;
+import com.netikras.studies.studentbuddy.api.client.android.pieces.lecturer.data.LecturerDataStore;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.lecturer.ui.impl.view.LecturerInfoActivity;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.lecturer.ui.presenter.LecturerMvpPresenter;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.lecturer.ui.view.LecturerMvpView;
@@ -22,8 +23,8 @@ public class LecturerPresenter<V extends LecturerMvpView> extends BasePresenter<
         super(dataManager);
     }
 
-    private Object getDataStore() {
-        return getDataManager().getStore(null); // FIXME
+    private LecturerDataStore getDataStore() {
+        return getDataManager().getStore(LecturerDataStore.class);
     }
 
     @Override

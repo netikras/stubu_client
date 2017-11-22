@@ -19,6 +19,9 @@ public class StatusDataStoreApiImpl extends ApiBasedDataStore implements StatusD
     @Inject
     StatusApiConsumer statusApiConsumer;
 
+    @Inject
+    public StatusDataStoreApiImpl() {}
+
     @Override
     public void testEcho(String text, Subscriber<String>... subscribers) {
         orderData(new ServiceRequest<String>() {

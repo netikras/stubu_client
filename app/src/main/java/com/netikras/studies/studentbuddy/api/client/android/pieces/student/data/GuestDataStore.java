@@ -7,5 +7,5 @@ import com.netikras.studies.studentbuddy.core.data.api.dto.school.LectureGuestDt
  * Created by netikras on 17.11.11.
  */
 
-public interface GuestDataSource extends CrudDataStore<String, LectureGuestDto> {
+public interface GuestDataStore extends CrudDataStore<String, LectureGuestDto> {
 }

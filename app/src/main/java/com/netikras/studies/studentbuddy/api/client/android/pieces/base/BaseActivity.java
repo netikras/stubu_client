@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
@@ -13,6 +14,7 @@ import android.support.annotation.StringRes;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.util.AttributeSet;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -26,8 +28,12 @@ import com.netikras.studies.studentbuddy.api.client.android.MainMenuDefaultListe
 import com.netikras.studies.studentbuddy.api.client.android.R;
 import com.netikras.studies.studentbuddy.api.client.android.conf.di.DepInjector;
 import com.netikras.studies.studentbuddy.api.client.android.conf.di.component.ActivityComponent;
+import com.netikras.studies.studentbuddy.api.client.android.pieces.SearchActivity;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.login.ui.impl.view.LoginActivity;
+import com.netikras.studies.studentbuddy.api.client.android.pieces.person.ui.impl.view.UserInfoActivity;
+import com.netikras.studies.studentbuddy.api.client.android.pieces.settings.ui.impl.view.SettingsActivity;
 import com.netikras.studies.studentbuddy.api.client.android.util.CommonUtils;
+import com.netikras.studies.studentbuddy.api.client.android.util.Exchange;
 import com.netikras.studies.studentbuddy.api.client.android.util.NetworkUtils;
 import com.netikras.studies.studentbuddy.api.client.android.util.misc.YesNoDialog;
 
@@ -35,6 +41,8 @@ import javax.inject.Inject;
 
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
+
+import static com.netikras.tools.common.security.IntegrityUtils.isNullOrEmpty;
 
 /**
  * Created by netikras on 17.10.30.
@@ -54,11 +62,13 @@ public abstract class BaseActivity extends AppCompatActivity
     @Inject
     App app;
 
+    @Inject
+    Exchange exchange;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         DepInjector.inject(this);
-
     }
 
     public ActivityComponent getActivityComponent() {
@@ -184,20 +194,34 @@ public abstract class BaseActivity extends AppCompatActivity
             public void onClick(View v) {
                 PopupMenu menu = app.getMainMenu(BaseActivity.this, v);
 
-                menu.setOnMenuItemClickListener(new MainMenuDefaultListener() {
+                menu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
 
-                    @Override
                     protected Context getContext() {
                         return BaseActivity.this;
                     }
 
                     @Override
                     public boolean onMenuItemClick(MenuItem item) {
-                        if (super.onMenuItemClick(item)) {
-                            return true;
-                        }
+
                         int itemId = item.getItemId();
                         switch (itemId) {
+                            case R.id.main_menu_user:
+                                startActivity(getContext(), UserInfoActivity.class, new ViewTask<UserInfoActivity>() {
+                                    @Override
+                                    public void execute() {
+                                        getActivity().showUser(app.getCurrentUser());
+                                    }
+                                });
+                                return true;
+                            case R.id.main_menu_login:
+                                startActivity(getContext(), LoginActivity.class, null);
+                                return true;
+                            case R.id.main_menu_search:
+                                startActivity(getContext(), SearchActivity.class, null);
+                                return true;
+                            case R.id.main_menu_settings:
+                                startActivity(getContext(), SettingsActivity.class, null);
+                                return true;
                             case R.id.main_menu_edit:
                                 menuOnClickEdit();
                                 return true;
@@ -210,7 +234,7 @@ public abstract class BaseActivity extends AppCompatActivity
                             case R.id.main_menu_delete:
                                 new YesNoDialog()
                                         .text("Ar tikrai norite pašalinti įrašą?")
-                                        .yes("Taip", new YesNoDialog.OnClick(){
+                                        .yes("Taip", new YesNoDialog.OnClick() {
                                             @Override
                                             protected void onClick(DialogInterface dialog) {
                                                 menuOnClickDelete();
@@ -218,7 +242,7 @@ public abstract class BaseActivity extends AppCompatActivity
                                             }
                                         })
                                         .no("Ne", null)
-                                        .show(BaseActivity.this);
+                                        .show(getContext());
                                 return true;
                         }
                         return false;
@@ -263,5 +287,51 @@ public abstract class BaseActivity extends AppCompatActivity
         super.onDestroy();
     }
 
+    @Override
+    public View onCreateView(View parent, String name, Context context, AttributeSet attrs) {
+        executeTask();
+        return super.onCreateView(parent, name, context, attrs);
+    }
+
     protected abstract void setUp();
+
+    public void startActivity(Context fromContext, Class<? extends MvpView> activity, ViewTask task) {
+        Intent intent = new Intent(fromContext, activity);
+        intent.putExtra("task", exchange.put(task));
+        fromContext.startActivity(intent);
+    }
+
+    public abstract static class ViewTask<A extends MvpView> {
+
+        private A act;
+
+        public abstract void execute();
+
+        protected void setActivity(A activity) {
+
+        }
+
+        protected A getActivity() {
+            return act;
+        }
+    }
+
+
+    protected void executeTask() {
+        Intent intent = getIntent();
+        if (intent == null) {
+            return;
+        }
+
+        String taskKey = intent.getStringExtra("task");
+        if (isNullOrEmpty(taskKey)) {
+            return;
+        }
+
+        ViewTask task = (ViewTask) exchange.get(taskKey);
+        if (task != null) {
+            task.setActivity(view);
+            task.execute();
+        }
+    }
 }

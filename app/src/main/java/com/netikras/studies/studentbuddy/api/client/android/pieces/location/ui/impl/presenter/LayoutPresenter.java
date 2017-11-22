@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.netikras.studies.studentbuddy.api.client.android.data.DataManager;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.base.BasePresenter;
+import com.netikras.studies.studentbuddy.api.client.android.pieces.location.data.LayoutDataStore;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.location.ui.impl.view.LayoutActivity;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.location.ui.presenter.LayoutMvpPresenter;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.location.ui.view.LayoutMvpView;
@@ -20,8 +21,8 @@ public class LayoutPresenter<V extends LayoutMvpView> extends BasePresenter<V> i
         super(dataManager);
     }
 
-    private Object getDatastore() {
-        return getDataManager().getStore(null); // FIXME
+    private LayoutDataStore getDataStore() {
+        return getDataManager().getStore(LayoutDataStore.class);
     }
 
     @Override

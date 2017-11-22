@@ -21,7 +21,7 @@ public class MainPresenter<V extends MainMvpView> extends BasePresenter<V> imple
         super(dataManager);
     }
 
-    private Object getDatastore() {
+    private Object getDataStore() {
         return getDataManager().getStore(null); // FIXME
     }
 

@@ -19,6 +19,8 @@ import com.netikras.tools.common.remote.http.RestServiceProvider;
 import com.netikras.tools.common.remote.http.SessionContext;
 import com.netikras.tools.common.remote.http.impl.json.HttpResponseJsonImpl;
 
+import javax.inject.Singleton;
+
 import dagger.Module;
 import dagger.Provides;
 
@@ -27,6 +29,7 @@ import dagger.Provides;
  */
 
 @Module
+@Singleton
 public class ApiHttpModule {
 
     @Provides
@@ -96,10 +99,11 @@ public class ApiHttpModule {
 
 
     @Provides
-    public RestConfig config(RestServiceProvider serviceProvider, AppPreferencesHelper preferencesHelper) {
+    @Singleton
+    public RestConfig config(SessionContext context, RequestListener listener, RestServiceProvider serviceProvider, AppPreferencesHelper preferencesHelper) {
         RestConfig config = new RestConfig();
-        config.addListener("default", listener());
-        config.setSessionContext(context());
+        config.addListener("default", listener);
+        config.setSessionContext(context);
 //        config.setRestServiceProvider(serviceProvider);
 
         RemoteEndpointServer server = RemoteEndpointServer.parse(preferencesHelper.getApiServerUrl());

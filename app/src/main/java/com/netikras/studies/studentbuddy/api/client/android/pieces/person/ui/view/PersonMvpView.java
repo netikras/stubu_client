@@ -14,4 +14,5 @@ public interface PersonMvpView extends MvpView {
 
     BaseViewFields getFields();
 
+    PersonDto collect();
 }

@@ -10,7 +10,7 @@ import java.util.Collection;
  * Created by netikras on 17.11.11.
  */
 
-public interface AssingmentDataStore extends CrudDataStore<String, AssignmentDto> {
+public interface AssignmentDataStore extends CrudDataStore<String, AssignmentDto> {
     void create(String lectureId, String description, ServiceRequest.Subscriber<AssignmentDto>... subscribers);
 
     void getAllByDiscipline(String id, Long after, Long before, ServiceRequest.Subscriber<Collection<AssignmentDto>>... subscribers);

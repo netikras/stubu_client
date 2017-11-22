@@ -19,6 +19,9 @@ public class PasswordReqDataStoreApiImpl extends ApiBasedDataStore<String, Passw
     
     @Inject
     AdminApiConsumer adminApiConsumer;
+
+    @Inject
+    public PasswordReqDataStoreApiImpl() {}
     
     @Override
     public void getById(String id, Subscriber<PasswordRequirementDto>... subscribers) {

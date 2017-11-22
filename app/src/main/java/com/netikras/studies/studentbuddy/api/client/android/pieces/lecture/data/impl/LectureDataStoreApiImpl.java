@@ -22,6 +22,9 @@ public class LectureDataStoreApiImpl extends ApiBasedDataStore<String, LectureDt
     @Inject
     LecturesApiConsumer lecturesApiConsumer;
 
+    @Inject
+    public LectureDataStoreApiImpl() {}
+
     @Override
     public void getById(String id, Subscriber<LectureDto>... subscribers) {
         orderData(new ServiceRequest<LectureDto>() {

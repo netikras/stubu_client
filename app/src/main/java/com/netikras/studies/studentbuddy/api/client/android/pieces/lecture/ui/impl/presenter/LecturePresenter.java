@@ -4,9 +4,12 @@ import android.content.Context;
 
 import com.netikras.studies.studentbuddy.api.client.android.data.DataManager;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.base.BasePresenter;
+import com.netikras.studies.studentbuddy.api.client.android.pieces.lecture.data.LectureDataStore;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.lecture.ui.impl.view.LectureInfoActivity;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.lecture.ui.presenter.LectureMvpPresenter;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.lecture.ui.view.LectureMvpView;
+import com.netikras.studies.studentbuddy.api.client.android.pieces.lecturer.data.LecturerDataStore;
+import com.netikras.studies.studentbuddy.core.data.api.dto.school.LectureDto;
 
 import javax.inject.Inject;
 
@@ -22,12 +25,17 @@ public class LecturePresenter<V extends LectureMvpView> extends BasePresenter<V>
         super(dataManager);
     }
 
-    private Object getDatastore() {
-        return getDataManager().getStore(null); // FIXME
+    private LectureDataStore getDataStore() {
+        return getDataManager().getStore(LectureDataStore.class);
     }
 
     @Override
     public void startView(Context fromContext) {
         startView(fromContext, LectureInfoActivity.class);
+    }
+
+    @Override
+    public void showLecture(LectureDto lecture, Context fromContext) {
+        getMvpView().show(lecture);
     }
 }
