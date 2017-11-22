@@ -1,6 +1,7 @@
 package com.netikras.studies.studentbuddy.api.client.android.pieces.lecture.ui.view;
 
 import com.netikras.studies.studentbuddy.api.client.android.pieces.base.MvpView;
+import com.netikras.studies.studentbuddy.api.client.android.pieces.lecture.ui.impl.view.LectureInfoActivity;
 import com.netikras.studies.studentbuddy.core.data.api.dto.school.LectureDto;
 
 /**
@@ -8,5 +9,7 @@ import com.netikras.studies.studentbuddy.core.data.api.dto.school.LectureDto;
  */
 
 public interface LectureMvpView extends MvpView {
+    LectureInfoActivity.ViewFields getFields();
+
     void show(LectureDto lectureDto);
 }

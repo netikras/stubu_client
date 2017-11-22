@@ -11,8 +11,11 @@ import com.netikras.studies.studentbuddy.api.client.android.pieces.base.BaseActi
 import com.netikras.studies.studentbuddy.api.client.android.pieces.base.BaseViewFields;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.lecture.ui.presenter.LectureMvpPresenter;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.lecture.ui.view.LectureMvpView;
+import com.netikras.studies.studentbuddy.core.data.api.dto.location.LectureRoomDto;
 import com.netikras.studies.studentbuddy.core.data.api.dto.meta.CommentDto;
+import com.netikras.studies.studentbuddy.core.data.api.dto.meta.RoleDto;
 import com.netikras.studies.studentbuddy.core.data.api.dto.school.AssignmentDto;
+import com.netikras.studies.studentbuddy.core.data.api.dto.school.DisciplineDto;
 import com.netikras.studies.studentbuddy.core.data.api.dto.school.DisciplineTestDto;
 import com.netikras.studies.studentbuddy.core.data.api.dto.school.LectureDto;
 import com.netikras.studies.studentbuddy.core.data.api.dto.school.LectureGuestDto;
@@ -26,6 +29,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import butterknife.BindView;
+import butterknife.OnClick;
 
 import static com.netikras.studies.studentbuddy.api.client.android.util.AppConstants.DAY_IN_MS;
 import static com.netikras.studies.studentbuddy.api.client.android.util.AppConstants.HOUR_IN_MS;
@@ -61,28 +65,65 @@ public class LectureInfoActivity extends BaseActivity implements LectureMvpView 
     }
 
     @Override
+    public ViewFields getFields() {
+        return fields;
+    }
+
+    @Override
     public void show(LectureDto lectureDto) {
         if (lectureDto == null) {
             fields.clean();
             return;
         }
 
-        fields.setId(lectureDto.getId());
-        fields.setAssignments(lectureDto.getAssignments());
-        fields.setTests(lectureDto.getTests());
-        fields.setStudentsGroup(lectureDto.getStudentsGroup());
-        fields.setLecturer(lectureDto.getLecturer());
-        fields.setComments(lectureDto.getComments());
-        fields.setStartDatetime(lectureDto.getStartsOn());
-
-        if (lectureDto.getDiscipline() != null) {
-            fields.setNameName(lectureDto.getDiscipline().getTitle());
-        }
+        getFields().setId(lectureDto.getId());
+        getFields().setAssignments(lectureDto.getAssignments());
+        getFields().setTests(lectureDto.getTests());
+        getFields().setStudentsGroup(lectureDto.getStudentsGroup());
+        getFields().setLecturer(lectureDto.getLecturer());
+        getFields().setComments(lectureDto.getComments());
+        getFields().setStartDatetime(lectureDto.getStartsOn());
+        getFields().setLocation(lectureDto.getRoom());
+        getFields().setDiscipline(lectureDto.getDiscipline());
 
     }
 
+    @OnClick(R.id.btn_lecture_assignments)
+    public void showAssignments() {
 
-    class ViewFields extends BaseViewFields {
+    }
+
+    @OnClick(R.id.btn_lecture_tests)
+    public void showTests() {
+
+    }
+
+    @OnClick(R.id.btn_lecture_students_group)
+    public void showGroup() {
+        presenter.showGroup(this, getFields().getStudentsGroup());
+    }
+
+    @OnClick(R.id.btn_lecture_location)
+    public void showLocation() {
+        presenter.showLocation(this, getFields().getLocation());
+    }
+
+    @OnClick(R.id.btn_lecture_lecturer)
+    public void showLecturer() {
+        presenter.showLecturer(this, getFields().getLecturer());
+    }
+
+    @OnClick(R.id.btn_lecture_guests)
+    public void showGuests() {
+
+    }
+
+    @OnClick(R.id.btn_lecture_name)
+    public void showDiscipline() {
+        presenter.showDiscipline(this, getFields().getDiscipline());
+    }
+
+    public class ViewFields extends BaseViewFields {
 
         @BindView(R.id.txt_edit_lecture_id)
         EditText id;
@@ -248,6 +289,29 @@ public class LectureInfoActivity extends BaseActivity implements LectureMvpView 
             setString(this.location, location);
         }
 
+        public void setLocation(LectureRoomDto room) {
+            setTag(location, room);
+            if (room != null) {
+                StringBuilder stringBuilder = new StringBuilder();
+                if (room.getFloor() != null) {
+                    if (room.getFloor().getBuilding() != null) {
+                        stringBuilder.append(room.getFloor().getBuilding().getTitle()).append(", ");
+                    }
+                    if (room.getFloor().getBuildingSection() != null) {
+                        stringBuilder.append(room.getFloor().getBuildingSection().getTitle()).append(", ");
+                    }
+//                    stringBuilder.append(room.getFloor().getNumber()).append(" aukš., ");
+                }
+                stringBuilder.append(room.getNumber());
+                if (!isNullOrEmpty(room.getTitle())) {
+                    stringBuilder.append(" (").append(room.getTitle()).append(")");
+                }
+            }
+        }
+
+        public LectureRoomDto getLocation() {
+            return (LectureRoomDto) getTag(location);
+        }
 
         public String getNameName() {
             return getString(name);
@@ -255,6 +319,17 @@ public class LectureInfoActivity extends BaseActivity implements LectureMvpView 
 
         public void setNameName(String name) {
             setString(this.name, name);
+        }
+
+        public void setDiscipline(DisciplineDto disciplineDto) {
+            setTag(name, disciplineDto);
+            if (disciplineDto != null) {
+                setNameName(disciplineDto.getTitle());
+            }
+        }
+
+        public DisciplineDto getDiscipline() {
+            return (DisciplineDto) getTag(name);
         }
 
         public String getStudentsGroupName() {

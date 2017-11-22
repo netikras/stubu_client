@@ -23,18 +23,21 @@ import com.netikras.studies.studentbuddy.api.client.android.pieces.location.ui.i
 import com.netikras.studies.studentbuddy.api.client.android.pieces.location.ui.impl.presenter.BuildingSectionPresenter;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.location.ui.impl.presenter.FloorPresenter;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.location.ui.impl.presenter.LayoutPresenter;
+import com.netikras.studies.studentbuddy.api.client.android.pieces.location.ui.impl.presenter.LocationPresenter;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.location.ui.impl.presenter.RoomPresenter;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.location.ui.presenter.AddressMvpPresenter;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.location.ui.presenter.BuildingMvpPresenter;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.location.ui.presenter.BuildingSectionMvpPresenter;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.location.ui.presenter.FloorMvpPresenter;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.location.ui.presenter.LayoutMvpPresenter;
+import com.netikras.studies.studentbuddy.api.client.android.pieces.location.ui.presenter.LocationMvpPresenter;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.location.ui.presenter.RoomMvpPresenter;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.location.ui.view.AddressMvpView;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.location.ui.view.BuildingMvpView;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.location.ui.view.BuildingSectionMvpView;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.location.ui.view.FloorMvpView;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.location.ui.view.LayoutMvpView;
+import com.netikras.studies.studentbuddy.api.client.android.pieces.location.ui.view.LocationMvpView;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.location.ui.view.RoomMvpView;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.login.ui.impl.presenter.LoginPresenter;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.login.ui.presenter.LoginMvpPresenter;
@@ -157,6 +160,11 @@ public class PresenterModule {
 
 
     // Location
+    @Provides
+    LocationMvpPresenter<LocationMvpView> locationPresenter(LocationPresenter<LocationMvpView> presenter) {
+        return presenter;
+    }
+
     @Provides
     AddressMvpPresenter<AddressMvpView> addressPresenter(AddressPresenter<AddressMvpView> presenter) {
         return presenter;

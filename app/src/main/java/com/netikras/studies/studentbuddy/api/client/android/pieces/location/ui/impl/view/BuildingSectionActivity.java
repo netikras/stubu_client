@@ -9,6 +9,7 @@ import com.netikras.studies.studentbuddy.api.client.android.pieces.base.BaseActi
 import com.netikras.studies.studentbuddy.api.client.android.pieces.base.BaseViewFields;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.location.ui.presenter.BuildingSectionMvpPresenter;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.location.ui.view.BuildingSectionMvpView;
+import com.netikras.studies.studentbuddy.core.data.api.dto.location.BuildingSectionDto;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -41,6 +42,10 @@ public class BuildingSectionActivity extends BaseActivity implements BuildingSec
         presenter.onAttach(this);
         fields = initFields(new ViewFields());
 //        addMenu(R.id.btn_section_main_menu);
+    }
+
+    @Override
+    public void show(BuildingSectionDto section) {
     }
 
     class ViewFields extends BaseViewFields {

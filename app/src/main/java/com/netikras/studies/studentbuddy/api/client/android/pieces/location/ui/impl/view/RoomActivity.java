@@ -9,6 +9,7 @@ import com.netikras.studies.studentbuddy.api.client.android.pieces.base.BaseActi
 import com.netikras.studies.studentbuddy.api.client.android.pieces.base.BaseViewFields;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.location.ui.presenter.RoomMvpPresenter;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.location.ui.view.RoomMvpView;
+import com.netikras.studies.studentbuddy.core.data.api.dto.location.LectureRoomDto;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -40,6 +41,11 @@ public class RoomActivity extends BaseActivity implements RoomMvpView {
         presenter.onAttach(this);
         fields = initFields(new ViewFields());
 //        addMenu(R.id.btn_room_main_menu);
+    }
+
+    @Override
+    public void show(LectureRoomDto room) {
+        // TODO implement
     }
 
     class ViewFields extends BaseViewFields {

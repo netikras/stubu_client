@@ -9,6 +9,7 @@ import com.netikras.studies.studentbuddy.api.client.android.pieces.base.BaseActi
 import com.netikras.studies.studentbuddy.api.client.android.pieces.base.BaseViewFields;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.location.ui.presenter.AddressMvpPresenter;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.location.ui.view.AddressMvpView;
+import com.netikras.studies.studentbuddy.core.data.api.dto.location.AddressDto;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -40,6 +41,11 @@ public class AddressActivity extends BaseActivity implements AddressMvpView {
         presenter.onAttach(this);
         fields = initFields(new ViewFields());
 //        addMenu(R.id.btn_address_main_menu);
+    }
+
+    @Override
+    public void show(AddressDto address) {
+
     }
 
     class ViewFields extends BaseViewFields {

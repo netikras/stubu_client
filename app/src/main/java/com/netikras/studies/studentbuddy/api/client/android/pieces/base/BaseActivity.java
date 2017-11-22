@@ -36,6 +36,11 @@ import com.netikras.studies.studentbuddy.api.client.android.util.CommonUtils;
 import com.netikras.studies.studentbuddy.api.client.android.util.Exchange;
 import com.netikras.studies.studentbuddy.api.client.android.util.NetworkUtils;
 import com.netikras.studies.studentbuddy.api.client.android.util.misc.YesNoDialog;
+import com.netikras.studies.studentbuddy.core.data.api.dto.location.AddressDto;
+import com.netikras.studies.studentbuddy.core.data.api.dto.location.BuildingDto;
+import com.netikras.studies.studentbuddy.core.data.api.dto.location.BuildingFloorDto;
+import com.netikras.studies.studentbuddy.core.data.api.dto.location.BuildingSectionDto;
+import com.netikras.studies.studentbuddy.core.data.api.dto.location.LectureRoomDto;
 
 import javax.inject.Inject;
 
@@ -300,6 +305,7 @@ public abstract class BaseActivity extends AppCompatActivity
         intent.putExtra("task", exchange.put(task));
         fromContext.startActivity(intent);
     }
+
 
     public abstract static class ViewTask<A extends MvpView> {
 

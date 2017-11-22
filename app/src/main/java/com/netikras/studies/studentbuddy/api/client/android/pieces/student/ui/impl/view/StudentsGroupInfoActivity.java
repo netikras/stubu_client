@@ -23,6 +23,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import butterknife.BindView;
+import butterknife.OnClick;
 
 import static com.netikras.studies.studentbuddy.api.client.android.util.CommonUtils.datetimeToDate;
 
@@ -80,6 +81,10 @@ public class StudentsGroupInfoActivity extends BaseActivity implements StudentsG
         return dto;
     }
 
+    @OnClick(R.id.btn_students_group_school)
+    public void showSchool() {
+        presenter.showSchool(this, getFields().getSchool());
+    }
 
     class ViewFields extends BaseViewFields {
         @BindView(R.id.txt_edit_students_group_id)

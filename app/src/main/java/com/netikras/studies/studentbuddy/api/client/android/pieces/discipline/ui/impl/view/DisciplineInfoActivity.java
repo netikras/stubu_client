@@ -12,6 +12,7 @@ import com.netikras.studies.studentbuddy.api.client.android.pieces.base.BaseView
 import com.netikras.studies.studentbuddy.api.client.android.pieces.discipline.ui.presenter.DisciplineMvpPresenter;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.discipline.ui.view.DisciplineMvpView;
 import com.netikras.studies.studentbuddy.core.data.api.dto.school.DisciplineDto;
+import com.netikras.studies.studentbuddy.core.data.api.dto.school.SchoolDto;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -19,6 +20,7 @@ import java.util.Collection;
 import javax.inject.Inject;
 
 import butterknife.BindView;
+import butterknife.OnClick;
 
 public class DisciplineInfoActivity extends BaseActivity implements DisciplineMvpView {
 
@@ -43,19 +45,43 @@ public class DisciplineInfoActivity extends BaseActivity implements DisciplineMv
         addMenu(R.id.btn_discipline_main_menu);
     }
 
-    public void show(DisciplineDto disciplineDto) {
+    @Override
+    public ViewFields getFields() {
+        return fields;
+    }
 
+    public void show(DisciplineDto disciplineDto) {
+        getFields().reset();
+
+        if (disciplineDto == null) {
+            return;
+        }
+
+        getFields().setId(disciplineDto.getId());
+        getFields().setDescription(disciplineDto.getDescription());
+        getFields().setName(disciplineDto.getTitle());
+        getFields().setSchool(disciplineDto.getSchool());
+//        getFields().setLecturers(disciplineDto.getCourses());
+        // FIXME fix discipline dto to return all courses, not just one
     }
 
     public DisciplineDto collect() {
         DisciplineDto dto = new DisciplineDto();
 
         dto.setId(fields.getId());
+        dto.setDescription(getFields().getDescription());
+        dto.setSchool(getFields().getSchool());
+        dto.setTitle(getFields().getName());
 
         return dto;
     }
 
-    class ViewFields extends BaseViewFields {
+    @OnClick(R.id.btn_discipline_school)
+    public void showSchool() {
+        presenter.showSchool(this, getFields().getSchool());
+    }
+
+    public class ViewFields extends BaseViewFields {
 
         @BindView(R.id.txt_edit_discipline_id)
         EditText id;
@@ -97,12 +123,23 @@ public class DisciplineInfoActivity extends BaseActivity implements DisciplineMv
             setString(this.description, description);
         }
 
-        public String getSchool() {
+        public String getSchoolName() {
             return getString(school);
         }
 
-        public void setSchool(String school) {
+        public void setSchoolName(String school) {
             setString(this.school, school);
+        }
+
+        public SchoolDto getSchool() {
+            return (SchoolDto) getTag(school);
+        }
+
+        public void setSchool(SchoolDto school) {
+            setTag(this.school, school);
+            if (school != null) {
+                setSchoolName(school.getTitle());
+            }
         }
 
         public String getLecturers() {

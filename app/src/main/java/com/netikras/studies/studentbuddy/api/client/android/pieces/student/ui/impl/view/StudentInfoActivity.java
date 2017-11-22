@@ -88,7 +88,7 @@ public class StudentInfoActivity extends BaseActivity implements StudentMvpView 
         presenter.showPerson(this, getFields().getPerson());
     }
 
-    class ViewFields extends BaseViewFields {
+    public class ViewFields extends BaseViewFields {
 
         @BindView(R.id.txt_edit_student_id)
         EditText id;

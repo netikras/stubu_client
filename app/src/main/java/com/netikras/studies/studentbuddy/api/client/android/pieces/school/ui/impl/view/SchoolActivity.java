@@ -77,7 +77,7 @@ public class SchoolActivity extends BaseActivity implements SchoolMvpView {
         }
     }
 
-    class ViewFields extends BaseViewFields {
+    public class ViewFields extends BaseViewFields {
         @BindView(R.id.txt_edit_school_id)
         EditText id;
         @BindView(R.id.txt_edit_school_title)

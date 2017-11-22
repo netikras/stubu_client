@@ -9,6 +9,7 @@ import com.netikras.studies.studentbuddy.api.client.android.pieces.base.BaseActi
 import com.netikras.studies.studentbuddy.api.client.android.pieces.base.BaseViewFields;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.location.ui.presenter.FloorMvpPresenter;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.location.ui.view.FloorMvpView;
+import com.netikras.studies.studentbuddy.core.data.api.dto.location.BuildingFloorDto;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -36,6 +37,10 @@ public class FloorActivity extends BaseActivity implements FloorMvpView {
         presenter.onAttach(this);
         fields = initFields(new ViewFields());
 //        addMenu(R.id.btn_layout_main_menu);
+    }
+
+    @Override
+    public void show(BuildingFloorDto floor) {
     }
 
     class ViewFields extends BaseViewFields {
