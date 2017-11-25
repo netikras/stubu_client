@@ -115,7 +115,7 @@ public final class CommonUtils {
     public static String datetimeToTimestamp(Date date) {
         return formatDatetime(AppConstants.TIMESTAMP_FORMAT, date);
     }
-    public static Date timestampTodatetime(String timestamp) {
+    public static Date timestampToDatetime(String timestamp) {
         return parseDatetime(AppConstants.TIMESTAMP_FORMAT, timestamp);
     }
 

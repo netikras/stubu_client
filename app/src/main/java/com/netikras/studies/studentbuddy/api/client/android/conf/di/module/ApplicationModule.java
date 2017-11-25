@@ -45,6 +45,7 @@ public class ApplicationModule {
     }
 
     @Provides
+    @Singleton
     Exchange exchange() {
         return new Exchange();
     }

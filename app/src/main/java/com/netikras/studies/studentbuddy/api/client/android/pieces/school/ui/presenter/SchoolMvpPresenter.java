@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.netikras.studies.studentbuddy.api.client.android.pieces.base.MvpPresenter;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.school.ui.view.SchoolMvpView;
+import com.netikras.studies.studentbuddy.core.data.api.dto.school.SchoolDepartmentDto;
 import com.netikras.studies.studentbuddy.core.data.api.dto.school.SchoolDto;
 
 /**
@@ -14,4 +15,6 @@ public interface SchoolMvpPresenter<V extends SchoolMvpView> extends MvpPresente
 
 
     void showSchool(Context context, SchoolDto schoolDto);
+
+    void showDepartment(Context listContext, SchoolDepartmentDto item);
 }

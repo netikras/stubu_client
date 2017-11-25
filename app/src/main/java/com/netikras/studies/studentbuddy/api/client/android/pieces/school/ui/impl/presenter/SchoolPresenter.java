@@ -9,8 +9,11 @@ import com.netikras.studies.studentbuddy.api.client.android.pieces.base.BasePres
 import com.netikras.studies.studentbuddy.api.client.android.pieces.person.ui.impl.view.UserInfoActivity;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.school.data.SchoolDataStore;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.school.ui.impl.view.SchoolActivity;
+import com.netikras.studies.studentbuddy.api.client.android.pieces.school.ui.presenter.SchoolDepartmentMvpPresenter;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.school.ui.presenter.SchoolMvpPresenter;
+import com.netikras.studies.studentbuddy.api.client.android.pieces.school.ui.view.SchoolDepartmentMvpView;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.school.ui.view.SchoolMvpView;
+import com.netikras.studies.studentbuddy.core.data.api.dto.school.SchoolDepartmentDto;
 import com.netikras.studies.studentbuddy.core.data.api.dto.school.SchoolDto;
 
 import javax.inject.Inject;
@@ -20,6 +23,10 @@ import javax.inject.Inject;
  */
 
 public class SchoolPresenter<V extends SchoolMvpView> extends BasePresenter<V> implements SchoolMvpPresenter<V> {
+
+    @Inject
+    SchoolDepartmentMvpPresenter<SchoolDepartmentMvpView> departmentPresenter;
+
     @Inject
     public SchoolPresenter(DataManager dataManager) {
         super(dataManager);
@@ -43,5 +50,10 @@ public class SchoolPresenter<V extends SchoolMvpView> extends BasePresenter<V> i
                 getActivity().show(schoolDto);
             }
         });
+    }
+
+    @Override
+    public void showDepartment(Context listContext, SchoolDepartmentDto item) {
+        departmentPresenter.showDepartment(listContext, item);
     }
 }

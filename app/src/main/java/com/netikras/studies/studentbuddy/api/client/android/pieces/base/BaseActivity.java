@@ -14,6 +14,7 @@ import android.support.annotation.StringRes;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.text.InputType;
 import android.util.AttributeSet;
 import android.view.MenuItem;
 import android.view.View;
@@ -24,11 +25,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.netikras.studies.studentbuddy.api.client.android.App;
-import com.netikras.studies.studentbuddy.api.client.android.MainMenuDefaultListener;
 import com.netikras.studies.studentbuddy.api.client.android.R;
 import com.netikras.studies.studentbuddy.api.client.android.conf.di.DepInjector;
 import com.netikras.studies.studentbuddy.api.client.android.conf.di.component.ActivityComponent;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.SearchActivity;
+import com.netikras.studies.studentbuddy.api.client.android.pieces.base.list.ListHandler;
+import com.netikras.studies.studentbuddy.api.client.android.pieces.base.list.SimpleListActivity;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.login.ui.impl.view.LoginActivity;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.person.ui.impl.view.UserInfoActivity;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.settings.ui.impl.view.SettingsActivity;
@@ -36,11 +38,6 @@ import com.netikras.studies.studentbuddy.api.client.android.util.CommonUtils;
 import com.netikras.studies.studentbuddy.api.client.android.util.Exchange;
 import com.netikras.studies.studentbuddy.api.client.android.util.NetworkUtils;
 import com.netikras.studies.studentbuddy.api.client.android.util.misc.YesNoDialog;
-import com.netikras.studies.studentbuddy.core.data.api.dto.location.AddressDto;
-import com.netikras.studies.studentbuddy.core.data.api.dto.location.BuildingDto;
-import com.netikras.studies.studentbuddy.core.data.api.dto.location.BuildingFloorDto;
-import com.netikras.studies.studentbuddy.core.data.api.dto.location.BuildingSectionDto;
-import com.netikras.studies.studentbuddy.core.data.api.dto.location.LectureRoomDto;
 
 import javax.inject.Inject;
 
@@ -112,21 +109,30 @@ public abstract class BaseActivity extends AppCompatActivity
         }
     }
 
-    private void showSnackBar(String message) {
-        Snackbar snackbar = Snackbar.make(findViewById(android.R.id.content),
+    private void showSnackBar(Context context, String message) {
+        Activity activity = this;
+        if (context != null && Activity.class.isAssignableFrom(context.getClass())) {
+            activity = (Activity) context;
+        }
+        Snackbar snackbar = Snackbar.make(activity.findViewById(android.R.id.content),
                 message, Snackbar.LENGTH_SHORT);
         View sbView = snackbar.getView();
         TextView textView = sbView.findViewById(android.support.design.R.id.snackbar_text);
-        textView.setTextColor(ContextCompat.getColor(this, R.color.white));
+        textView.setTextColor(ContextCompat.getColor(activity, R.color.white));
         snackbar.show();
     }
 
     @Override
     public void onError(String message) {
+        onError(this, message);
+    }
+
+    @Override
+    public void onError(Context context, String message) {
         if (message != null) {
-            showSnackBar(message);
+            showSnackBar(context, message);
         } else {
-            showSnackBar(getString(R.string.some_error));
+            showSnackBar(context, getString(R.string.some_error));
         }
     }
 
@@ -152,6 +158,16 @@ public abstract class BaseActivity extends AppCompatActivity
     @Override
     public boolean isNetworkConnected() {
         return NetworkUtils.isNetworkConnected(getApplicationContext());
+    }
+
+    protected <TV extends TextView> TV makeMultiline(TV textView) {
+        if (textView != null) {
+            textView.setElegantTextHeight(true);
+            textView.setSingleLine(false);
+            textView.setInputType(InputType.TYPE_TEXT_FLAG_MULTI_LINE);
+        }
+
+        return textView;
     }
 
     @Override
@@ -296,6 +312,12 @@ public abstract class BaseActivity extends AppCompatActivity
     public View onCreateView(View parent, String name, Context context, AttributeSet attrs) {
         executeTask();
         return super.onCreateView(parent, name, context, attrs);
+    }
+
+    public <T> void showList(Context context, ListHandler<T> handler) {
+        Intent intent = new Intent(context, SimpleListActivity.class);
+        intent.putExtra("handler", exchange.put(handler));
+        startActivity(intent);
     }
 
     protected abstract void setUp();

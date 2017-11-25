@@ -1,6 +1,7 @@
 package com.netikras.studies.studentbuddy.api.client.android.pieces.lecturer.ui.impl.view;
 
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -9,9 +10,12 @@ import com.netikras.studies.studentbuddy.api.client.android.R;
 import com.netikras.studies.studentbuddy.api.client.android.conf.di.DepInjector;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.base.BaseActivity;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.base.BaseViewFields;
+import com.netikras.studies.studentbuddy.api.client.android.pieces.base.list.ListHandler;
+import com.netikras.studies.studentbuddy.api.client.android.pieces.base.list.ListRow;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.lecturer.ui.presenter.LecturerMvpPresenter;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.lecturer.ui.view.LecturerMvpView;
 import com.netikras.studies.studentbuddy.core.data.api.dto.PersonDto;
+import com.netikras.studies.studentbuddy.core.data.api.dto.school.DisciplineDto;
 import com.netikras.studies.studentbuddy.core.data.api.dto.school.LecturerDto;
 
 import java.util.Collection;
@@ -21,6 +25,8 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+
+import static com.netikras.tools.common.security.IntegrityUtils.isNullOrEmpty;
 
 public class LecturerInfoActivity extends BaseActivity implements LecturerMvpView {
 
@@ -60,14 +66,62 @@ public class LecturerInfoActivity extends BaseActivity implements LecturerMvpVie
         getFields().setId(lecturer.getId());
         getFields().setDegree(lecturer.getDegree());
         getFields().setPerson(lecturer.getPerson());
-//        getFields().setDisciplines(); // TODO maybe include courses?
+        getFields().setDisciplines(lecturer.getDisciplines());
     }
 
     @OnClick(R.id.btn_lecturer_name)
     public void showPerson() {
         presenter.showPerson(this, getFields().getPerson());
     }
-    
+
+    @OnClick(R.id.btn_lecturer_disciplines)
+    public void showDisciplinesList() {
+        List<DisciplineDto> disciplines = getFields().getDisciplines();
+        if (isNullOrEmpty(disciplines)) {
+            onError(R.string.err_no_disciplines);
+            return;
+        }
+
+        showList(this, new ListHandler<DisciplineDto>() {
+            @Override
+            public ListRow<DisciplineDto> getNewRow(View convertView) {
+                return new DisciplineRow(convertView);
+            }
+
+            @Override
+            public List<DisciplineDto> getListData() {
+                return disciplines;
+            }
+
+            @Override
+            public void onRowClick(DisciplineDto item) {
+                onError(getListContext(), "Discipline selected: " + item.getTitle());
+                System.out.println("Discipline selected: " + item.getId());
+                presenter.showDiscipline(getListContext(), item);
+            }
+
+            @Override
+            public String getToolbarText() {
+                return getString(R.string.title_disciplines);
+            }
+
+            class DisciplineRow extends ListRow<DisciplineDto> {
+
+                TextView text;
+
+                public DisciplineRow(View rowView) {
+                    super(null);
+                    text = getDefaultListTextView(rowView);
+                    rowView.setTag(this);
+                }
+
+                @Override
+                public void assign(DisciplineDto item) {
+                    text.setText(item.getTitle());
+                }
+            }
+        });
+    }
 
     public class ViewFields extends BaseViewFields {
         @BindView(R.id.txt_edit_lecturer_id)
@@ -80,7 +134,7 @@ public class LecturerInfoActivity extends BaseActivity implements LecturerMvpVie
         Button name;
 
         public String getId() {
-            return getString( id);
+            return getString(id);
         }
 
         public void setId(String id) {
@@ -88,23 +142,34 @@ public class LecturerInfoActivity extends BaseActivity implements LecturerMvpVie
         }
 
         public String getDegree() {
-            return getString( degree);
+            return getString(degree);
         }
 
         public void setDegree(String degree) {
             setString(this.degree, degree);
         }
 
-        public String getDisciplines() {
-            return getString( disciplines);
+        public String getDisciplinesCount() {
+            return getString(disciplines);
         }
 
-        public void setDisciplines(String disciplines) {
+        public void setDisciplinesCount(String disciplines) {
             setString(this.disciplines, disciplines);
         }
 
+        public List<DisciplineDto> getDisciplines() {
+            return (List<DisciplineDto>) getTag(disciplines);
+        }
+
+        public void setDisciplines(List<DisciplineDto> disciplines) {
+            setTag(this.disciplines, disciplines);
+            if (disciplines != null) {
+                setDisciplinesCount("" + disciplines.size());
+            }
+        }
+
         public String getName() {
-            return getString( name);
+            return getString(name);
         }
 
         public void setName(String name) {

@@ -7,6 +7,8 @@ import com.netikras.studies.studentbuddy.api.client.android.data.DataManager;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.base.BaseActivity;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.base.BaseActivity.ViewTask;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.base.BasePresenter;
+import com.netikras.studies.studentbuddy.api.client.android.pieces.discipline.ui.presenter.DisciplineMvpPresenter;
+import com.netikras.studies.studentbuddy.api.client.android.pieces.discipline.ui.view.DisciplineMvpView;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.lecturer.data.LecturerDataStore;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.lecturer.ui.impl.view.LecturerInfoActivity;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.lecturer.ui.presenter.LecturerMvpPresenter;
@@ -14,6 +16,7 @@ import com.netikras.studies.studentbuddy.api.client.android.pieces.lecturer.ui.v
 import com.netikras.studies.studentbuddy.api.client.android.pieces.person.ui.presenter.PersonMvpPresenter;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.person.ui.view.PersonMvpView;
 import com.netikras.studies.studentbuddy.core.data.api.dto.PersonDto;
+import com.netikras.studies.studentbuddy.core.data.api.dto.school.DisciplineDto;
 import com.netikras.studies.studentbuddy.core.data.api.dto.school.LecturerDto;
 
 import javax.inject.Inject;
@@ -23,6 +26,9 @@ import javax.inject.Inject;
  */
 
 public class LecturerPresenter<V extends LecturerMvpView> extends BasePresenter<V> implements LecturerMvpPresenter<V> {
+
+    @Inject
+    DisciplineMvpPresenter<DisciplineMvpView> disciplinePresenter;
 
     @Inject
     PersonMvpPresenter<PersonMvpView> personPresenter;
@@ -55,5 +61,10 @@ public class LecturerPresenter<V extends LecturerMvpView> extends BasePresenter<
     @Override
     public void showPerson(Context context, PersonDto person) {
         personPresenter.showPerson(context, person);
+    }
+
+    @Override
+    public void showDiscipline(Context listContext, DisciplineDto item) {
+        disciplinePresenter.show(listContext, item);
     }
 }

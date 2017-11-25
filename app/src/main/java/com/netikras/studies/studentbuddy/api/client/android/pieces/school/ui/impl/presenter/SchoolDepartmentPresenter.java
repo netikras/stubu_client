@@ -6,6 +6,8 @@ import com.netikras.studies.studentbuddy.api.client.android.data.DataManager;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.base.BaseActivity;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.base.BaseActivity.ViewTask;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.base.BasePresenter;
+import com.netikras.studies.studentbuddy.api.client.android.pieces.location.ui.presenter.BuildingMvpPresenter;
+import com.netikras.studies.studentbuddy.api.client.android.pieces.location.ui.view.BuildingMvpView;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.person.ui.impl.view.UserInfoActivity;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.school.data.SchoolDepartmentDataStore;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.school.ui.impl.view.SchoolDepartmentActivity;
@@ -13,6 +15,7 @@ import com.netikras.studies.studentbuddy.api.client.android.pieces.school.ui.pre
 import com.netikras.studies.studentbuddy.api.client.android.pieces.school.ui.presenter.SchoolMvpPresenter;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.school.ui.view.SchoolDepartmentMvpView;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.school.ui.view.SchoolMvpView;
+import com.netikras.studies.studentbuddy.core.data.api.dto.location.BuildingDto;
 import com.netikras.studies.studentbuddy.core.data.api.dto.school.SchoolDepartmentDto;
 import com.netikras.studies.studentbuddy.core.data.api.dto.school.SchoolDto;
 
@@ -26,6 +29,8 @@ public class SchoolDepartmentPresenter<V extends SchoolDepartmentMvpView> extend
 
     @Inject
     SchoolMvpPresenter<SchoolMvpView> schoolPresenter;
+    @Inject
+    BuildingMvpPresenter<BuildingMvpView> buildingPresenter;
 
     @Inject
     public SchoolDepartmentPresenter(DataManager dataManager) {
@@ -54,5 +59,10 @@ public class SchoolDepartmentPresenter<V extends SchoolDepartmentMvpView> extend
                 getActivity().show(dto);
             }
         });
+    }
+
+    @Override
+    public void showBuilding(Context listContext, BuildingDto item) {
+        buildingPresenter.show(listContext, item);
     }
 }

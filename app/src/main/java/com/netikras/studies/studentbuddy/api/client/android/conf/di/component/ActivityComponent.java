@@ -9,6 +9,7 @@ import com.netikras.studies.studentbuddy.api.client.android.conf.di.module.Appli
 import com.netikras.studies.studentbuddy.api.client.android.conf.di.module.DataModule;
 import com.netikras.studies.studentbuddy.api.client.android.conf.di.module.PresenterModule;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.base.BaseActivity;
+import com.netikras.studies.studentbuddy.api.client.android.pieces.base.list.SimpleListActivity;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.discipline.ui.impl.view.CourseActivity;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.discipline.ui.impl.view.DisciplineInfoActivity;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.lecture.ui.impl.view.AssignmentActivity;
@@ -64,6 +65,8 @@ public interface ActivityComponent {
     void inject(Activity activity);
 
     void inject(BaseActivity activity);
+
+    void inject(SimpleListActivity activity);
 
     void inject(DisciplineInfoActivity activity);
 

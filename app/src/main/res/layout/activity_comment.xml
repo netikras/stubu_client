@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:context=".pieces.location.ui.impl.view.FloorActivity">
+
+        <Button
+            android:id="@+id/btn_comment_main_menu"
+            style="@style/Widget.AppCompat.Button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:layout_marginTop="16dp"
+            android:background="@color/colorTransparentWhite"
+            android:text="@string/txt_main_menu"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+
+        <ImageView
+            android:id="@+id/img_comment_banner"
+            android:layout_width="0dp"
+            android:layout_height="150dp"
+            android:scaleType="centerCrop"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/comment_banner" />
+
+        <TextView
+            android:id="@+id/txt_comment_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:layout_marginStart="24dp"
+            android:text="@string/title_comment"
+            android:textColor="@android:color/black"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:labelFor="@+id/txt_edit_comment_title"
+            app:layout_constraintBottom_toBottomOf="@+id/img_comment_banner"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <TextView
+            android:id="@+id/txt_lbl_comment_id"
+            android:layout_width="90dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:text="@string/lbl_comment_id"
+            android:labelFor="@+id/txt_edit_comment_id"
+            app:layout_constraintBaseline_toBaselineOf="@+id/txt_edit_comment_id"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <EditText
+            android:id="@+id/txt_edit_comment_id"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:ems="10"
+            android:focusable="false"
+            android:inputType="textMultiLine"
+            android:text="@string/dummy_txt_comment_id"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/txt_lbl_comment_id"
+            app:layout_constraintTop_toBottomOf="@+id/img_comment_banner" />
+
+        <TextView
+            android:id="@+id/txt_lbl_comment_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:text="@string/lbl_comment_title"
+            android:labelFor="@+id/txt_edit_comment_title"
+            app:layout_constraintBaseline_toBaselineOf="@+id/txt_edit_comment_title"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <EditText
+            android:id="@+id/txt_edit_comment_title"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:ems="10"
+            android:inputType="textMultiLine"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/txt_lbl_comment_id"
+            app:layout_constraintTop_toBottomOf="@+id/txt_edit_comment_create_datetime" />
+
+        <TextView
+            android:id="@+id/txt_lbl_comment_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:text="@string/lbl_comment_text"
+            android:labelFor="@+id/txt_edit_comment_text"
+            app:layout_constraintBaseline_toBaselineOf="@+id/txt_edit_comment_text"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <EditText
+            android:id="@+id/txt_edit_comment_text"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:layout_marginStart="16dp"
+            android:ems="10"
+            android:inputType="textMultiLine"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/txt_lbl_comment_id"
+            app:layout_constraintTop_toBottomOf="@+id/txt_edit_comment_title" />
+
+        <TextView
+            android:id="@+id/txt_lbl_comment_author"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:text="@string/lbl_comment_author"
+            android:labelFor="@+id/btn_comment_author"
+            app:layout_constraintBaseline_toBaselineOf="@+id/btn_comment_author"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <EditText
+            android:id="@+id/txt_edit_comment_create_datetime"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:ems="10"
+            android:inputType="datetime"
+            android:text="@string/dummy_txt_comment_datetime_created"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/txt_lbl_comment_id"
+            app:layout_constraintTop_toBottomOf="@+id/btn_comment_author" />
+
+        <TextView
+            android:id="@+id/txt_lbl_comment_create_datetime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:text="@string/lbl_comment_create_datetime"
+            android:labelFor="@+id/txt_edit_comment_create_datetime"
+            app:layout_constraintBaseline_toBaselineOf="@+id/txt_edit_comment_create_datetime"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <Button
+            android:id="@+id/btn_comment_author"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:background="@android:color/transparent"
+            android:fontFamily="sans-serif"
+            android:textAlignment="textStart"
+            android:textAllCaps="false"
+            android:textSize="18sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toEndOf="@+id/txt_lbl_comment_id"
+            app:layout_constraintTop_toBottomOf="@+id/txt_edit_comment_id" />
+
+    </android.support.constraint.ConstraintLayout>
+</ScrollView>

@@ -5,6 +5,7 @@ import android.content.Context;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.base.MvpPresenter;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.school.ui.impl.view.SchoolDepartmentActivity;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.school.ui.view.SchoolDepartmentMvpView;
+import com.netikras.studies.studentbuddy.core.data.api.dto.location.BuildingDto;
 import com.netikras.studies.studentbuddy.core.data.api.dto.school.SchoolDepartmentDto;
 import com.netikras.studies.studentbuddy.core.data.api.dto.school.SchoolDto;
 
@@ -17,4 +18,6 @@ public interface SchoolDepartmentMvpPresenter<V extends SchoolDepartmentMvpView>
     void showSchool(Context ctx, SchoolDto schoolDto);
 
     void showDepartment(Context context, SchoolDepartmentDto dto);
+
+    void showBuilding(Context listContext, BuildingDto item);
 }

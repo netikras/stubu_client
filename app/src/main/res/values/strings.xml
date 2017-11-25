@@ -182,4 +182,40 @@
     <string name="dummy_txt_test_id">@string/dummy_txt_id</string>
     <string name="lbl_test_id">@string/lbl_id</string>
     <string name="title_test">Atsiskaitymai</string>
+    <string name="lbl_comment_id">@string/lbl_id</string>
+    <string name="dummy_txt_comment_id">@string/dummy_txt_id</string>
+    <string name="title_comment">Komentaras</string>
+
+    <string name="err_no_departments">Padaliniai neurodyti</string>
+    <string name="err_no_disciplines">Disciplinos neurodytos</string>
+    <string name="err_no_buildings">Pastatai neurodyti</string>
+    <string name="err_no_building_sections">Korpusai neurodyti</string>
+    <string name="err_no_comments">Komentarų nėra</string>
+    <string name="err_no_courses">Kursų nėra</string>
+    <string name="err_no_students">Studentai nenurodyti</string>
+    <string name="err_no_guests">Svečiai nenurodyti</string>
+    <string name="err_no_lecturers">Dėstytojai nenurodyti</string>
+    <string name="err_no_lectures">Paskaitų nėra</string>
+    <string name="err_no_tests">Atsiskaitymų nėra</string>
+    <string name="err_no_assignments">Užduočių nėra</string>
+
+    <string name="title_departments">Padaliniai</string>
+    <string name="title_disciplines">Disciplinos</string>
+    <string name="title_buildings">Pastatai</string>
+    <string name="title_building_sections">Korpusai</string>
+    <string name="title_comments">Komentarai</string>
+    <string name="title_courses">Kursai</string>
+    <string name="title_students">Studentai</string>
+    <string name="title_guests">Svečiai</string>
+    <string name="title_lecturers">Dėstytojai</string>
+    <string name="title_lectures">Paskaitos</string>
+    <string name="title_tests">Atsiskaitymai</string>
+    <string name="title_assignments">Užduotys</string>
+    <string name="lbl_comment_title">Antraštė</string>
+    <string name="lbl_comment_text">Komentaras</string>
+    <string name="lbl_comment_author">Autorius</string>
+    <string name="dummy_txt_comment_datetime_created">2017-04-12 07:43</string>
+    <string name="lbl_comment_create_datetime">Sukurta</string>
+
+
 </resources>

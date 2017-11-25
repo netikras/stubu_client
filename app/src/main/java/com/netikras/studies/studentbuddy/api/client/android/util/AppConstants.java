@@ -20,7 +20,7 @@ public final class AppConstants {
     public static final String SEED_DATABASE_OPTIONS = "seed/options.json";
     public static final String SEED_DATABASE_QUESTIONS = "seed/questions.json";
 
-    public static final String TIMESTAMP_FORMAT = "yyyyMMdd_HHmmss";
+    public static final String TIMESTAMP_FORMAT = "yyyyMMdd HHmmss";
     public static final String DATE_FORMAT = "yyyyMMdd";
     public static final String TIME_FORMAT = "HH:mm";
 

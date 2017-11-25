@@ -2,6 +2,7 @@ package com.netikras.studies.studentbuddy.api.client.android.pieces.school.ui.im
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -10,6 +11,8 @@ import com.netikras.studies.studentbuddy.api.client.android.R;
 import com.netikras.studies.studentbuddy.api.client.android.conf.di.DepInjector;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.base.BaseActivity;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.base.BaseViewFields;
+import com.netikras.studies.studentbuddy.api.client.android.pieces.base.list.ListHandler;
+import com.netikras.studies.studentbuddy.api.client.android.pieces.base.list.ListRow;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.school.ui.presenter.SchoolDepartmentMvpPresenter;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.school.ui.view.SchoolDepartmentMvpView;
 import com.netikras.studies.studentbuddy.core.data.api.dto.location.BuildingDto;
@@ -24,6 +27,8 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+
+import static com.netikras.tools.common.security.IntegrityUtils.isNullOrEmpty;
 
 /**
  * Created by netikras on 17.11.10.
@@ -87,6 +92,55 @@ public class SchoolDepartmentActivity extends BaseActivity implements SchoolDepa
         }
 
         presenter.showSchool(this, schoolDto);
+    }
+
+    @OnClick(R.id.btn_school_departments_buildings)
+    public void showBuildingsList() {
+        List<BuildingDto> buildings = getFields().getBuildings();
+        if (isNullOrEmpty(buildings)) {
+            onError(R.string.err_no_buildings);
+            return;
+        }
+
+        showList(this, new ListHandler<BuildingDto>() {
+            @Override
+            public ListRow<BuildingDto> getNewRow(View convertView) {
+                return new BuildingRow(convertView);
+            }
+
+            @Override
+            public List<BuildingDto> getListData() {
+                return buildings;
+            }
+
+            @Override
+            public void onRowClick(BuildingDto item) {
+                onError(getListContext(), "Building selected: " + item.getTitle());
+                System.out.println("Building selected: " + item.getId());
+                presenter.showBuilding(getListContext(), item);
+            }
+
+            @Override
+            public String getToolbarText() {
+                return getString(R.string.title_building);
+            }
+
+            class BuildingRow extends ListRow<BuildingDto> {
+
+                TextView text;
+
+                public BuildingRow(View rowView) {
+                    super(null);
+                    text = getDefaultListTextView(rowView);
+                    rowView.setTag(this);
+                }
+
+                @Override
+                public void assign(BuildingDto item) {
+                    text.setText(item.getTitle());
+                }
+            }
+        });
     }
 
     class ViewFields extends BaseViewFields {

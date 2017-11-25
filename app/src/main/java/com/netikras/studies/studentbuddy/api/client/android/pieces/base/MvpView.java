@@ -1,5 +1,6 @@
 package com.netikras.studies.studentbuddy.api.client.android.pieces.base;
 
+import android.content.Context;
 import android.support.annotation.StringRes;
 
 /**
@@ -12,6 +13,8 @@ public interface MvpView {
     void hideLoading();
 
     void openActivityOnTokenExpire();
+
+    void onError(Context context, String message);
 
     void onError(@StringRes int resId);
 

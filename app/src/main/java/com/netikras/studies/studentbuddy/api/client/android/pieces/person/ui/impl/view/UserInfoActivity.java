@@ -13,15 +13,18 @@ import com.netikras.studies.studentbuddy.api.client.android.R;
 import com.netikras.studies.studentbuddy.api.client.android.conf.di.DepInjector;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.base.BaseActivity;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.base.BaseViewFields;
-import com.netikras.studies.studentbuddy.api.client.android.pieces.base.MvpPresenter;
-import com.netikras.studies.studentbuddy.api.client.android.pieces.base.MvpView;
+import com.netikras.studies.studentbuddy.api.client.android.pieces.base.list.ListHandler;
+import com.netikras.studies.studentbuddy.api.client.android.pieces.base.list.ListRow;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.person.ui.presenter.UserMvpPresenter;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.person.ui.view.UserMvpView;
 import com.netikras.studies.studentbuddy.core.data.api.dto.PersonDto;
 import com.netikras.studies.studentbuddy.core.data.api.dto.meta.UserDto;
+import com.netikras.studies.studentbuddy.core.data.api.dto.school.LectureDto;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -117,8 +120,83 @@ public class UserInfoActivity extends BaseActivity implements UserMvpView {
 
     @OnClick(R.id.btn_user_person)
     void showPerson() {
-        UserDto userDto = collect();
-        presenter.showPersonForUser(this, userDto);
+//        UserDto userDto = collect();
+//        presenter.showPersonForUser(this, userDto);
+        showList(this, new ListHandler<LectureDto>() {
+            @Override
+            public ListRow getNewRow(View convertView) {
+                return new LectureRow(convertView);
+            }
+
+            @Override
+            public ListRow extractExistingRow(View convertView) {
+                if (convertView == null) {
+                    return null;
+                }
+                return (ListRow) convertView.getTag();
+            }
+
+            @Override
+            public int getActivityLayout() {
+                return super.getActivityLayout();
+            }
+
+            @Override
+            public int getRowLayout() {
+                return super.getRowLayout();
+            }
+
+            @Override
+            public List<LectureDto> getListData() {
+                List<LectureDto> lectures = new ArrayList<>();
+                LectureDto dto;
+
+                dto = new LectureDto();
+                dto.setId("aaa");
+                lectures.add(dto);
+
+                dto = new LectureDto();
+                dto.setId("bbb");
+                lectures.add(dto);
+
+                dto = new LectureDto();
+                dto.setId("ccc");
+                lectures.add(dto);
+
+                return lectures;
+            }
+
+            @Override
+            public void onRowClick(LectureDto item) {
+                onError(getListContext(), "Lecture selected: " + item.getId());
+                System.out.println("Lecture selected: " + item.getId());
+            }
+
+            @Override
+            public String getToolbarText() {
+                return "Lectures";
+            }
+
+            class LectureRow extends ListRow<LectureDto> {
+
+                TextView text;
+
+                public LectureRow(View rowView) {
+                    super(null);
+                    if (rowView == null) {
+                        return;
+                    }
+                    text = rowView.findViewById(android.R.id.text1);
+                    makeMultiline(text);
+                    rowView.setTag(this);
+                }
+
+                @Override
+                public void assign(LectureDto item) {
+                    text.setText(item.getId());
+                }
+            }
+        });
     }
 
     private UserDto collect() {

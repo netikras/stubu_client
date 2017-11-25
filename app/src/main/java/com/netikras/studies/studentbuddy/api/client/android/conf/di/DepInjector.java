@@ -15,6 +15,7 @@ import com.netikras.studies.studentbuddy.api.client.android.conf.di.module.DataM
 import com.netikras.studies.studentbuddy.api.client.android.conf.di.module.PresenterModule;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.base.BaseActivity;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.base.MvpPresenter;
+import com.netikras.studies.studentbuddy.api.client.android.pieces.base.list.SimpleListActivity;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.discipline.ui.impl.presenter.CoursePresenter;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.discipline.ui.impl.presenter.DisciplinePresenter;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.discipline.ui.impl.view.CourseActivity;
@@ -154,6 +155,11 @@ public class DepInjector {
     }
 
     public static ActivityComponent inject(BaseActivity activity) {
+        getActivityComponent(activity).inject(activity);
+        return getActivityComponent();
+    }
+
+    public static ActivityComponent inject(SimpleListActivity activity) {
         getActivityComponent(activity).inject(activity);
         return getActivityComponent();
     }

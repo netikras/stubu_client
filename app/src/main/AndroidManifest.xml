@@ -24,7 +24,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".pieces.login.ui.impl.view.LoginActivity"
             android:label="@string/title_activity_login"
@@ -33,6 +32,7 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".pieces.main.ui.impl.view.MainActivity" />
         </activity>
+        <activity android:name=".pieces.base.list.SimpleListActivity" />
         <activity android:name=".pieces.lecture.ui.impl.view.LectureInfoActivity" />
         <activity android:name=".pieces.discipline.ui.impl.view.DisciplineInfoActivity" />
         <activity android:name=".pieces.location.ui.impl.view.LocationInfoActivity" />
@@ -45,14 +45,16 @@
         <activity android:name=".pieces.SearchActivity" />
         <activity android:name=".pieces.lecture.ui.impl.view.LecturesListActivity" />
         <activity android:name=".pieces.settings.ui.impl.view.SettingsActivity" />
+        <activity android:name=".pieces.comments.ui.impl.view.CommentsActivity" />
 
         <service
             android:name=".service.ApiService"
-            android:exported="false"></service>
+            android:exported="false" />
 
         <meta-data
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />
+
     </application>
 
 </manifest>

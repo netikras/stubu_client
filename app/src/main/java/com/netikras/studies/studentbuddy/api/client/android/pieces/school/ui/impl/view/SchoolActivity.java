@@ -2,6 +2,7 @@ package com.netikras.studies.studentbuddy.api.client.android.pieces.school.ui.im
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -10,6 +11,8 @@ import com.netikras.studies.studentbuddy.api.client.android.R;
 import com.netikras.studies.studentbuddy.api.client.android.conf.di.DepInjector;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.base.BaseActivity;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.base.BaseViewFields;
+import com.netikras.studies.studentbuddy.api.client.android.pieces.base.list.ListHandler;
+import com.netikras.studies.studentbuddy.api.client.android.pieces.base.list.ListRow;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.school.ui.presenter.SchoolMvpPresenter;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.school.ui.view.SchoolMvpView;
 import com.netikras.studies.studentbuddy.core.data.api.dto.school.SchoolDepartmentDto;
@@ -22,6 +25,9 @@ import java.util.List;
 import javax.inject.Inject;
 
 import butterknife.BindView;
+import butterknife.OnClick;
+
+import static com.netikras.tools.common.security.IntegrityUtils.isNullOrEmpty;
 
 /**
  * Created by netikras on 17.11.10.
@@ -72,9 +78,55 @@ public class SchoolActivity extends BaseActivity implements SchoolMvpView {
         getFields().setId(schoolDto.getId());
         getFields().setTitle(schoolDto.getTitle());
         getFields().setDepartments(schoolDto.getDepartments());
-        if (schoolDto.getDepartments() != null) {
-            getFields().setDepartmentsCount("" + schoolDto.getDepartments().size());
+    }
+
+    @OnClick(R.id.btn_school_departments)
+    public void showDepartmentsList() {
+        List<SchoolDepartmentDto> departments = getFields().getDepartments();
+        if (isNullOrEmpty(departments)) {
+            onError(R.string.err_no_departments);
+            return;
         }
+
+        showList(this, new ListHandler<SchoolDepartmentDto>() {
+            @Override
+            public ListRow<SchoolDepartmentDto> getNewRow(View convertView) {
+                return new DepartmentRow(convertView);
+            }
+
+            @Override
+            public List<SchoolDepartmentDto> getListData() {
+                return departments;
+            }
+
+            @Override
+            public void onRowClick(SchoolDepartmentDto item) {
+                onError(getListContext(), "Department selected: " + item.getTitle());
+                System.out.println("Department selected: " + item.getId());
+                presenter.showDepartment(getListContext(), item);
+            }
+
+            @Override
+            public String getToolbarText() {
+                return getString(R.string.title_departments);
+            }
+
+            class DepartmentRow extends ListRow<SchoolDepartmentDto> {
+
+                TextView text;
+
+                public DepartmentRow(View rowView) {
+                    super(null);
+                    text = getDefaultListTextView(rowView);
+                    rowView.setTag(this);
+                }
+
+                @Override
+                public void assign(SchoolDepartmentDto item) {
+                    text.setText(item.getTitle());
+                }
+            }
+        });
     }
 
     public class ViewFields extends BaseViewFields {
@@ -117,6 +169,9 @@ public class SchoolActivity extends BaseActivity implements SchoolMvpView {
 
         public void setDepartments(List<SchoolDepartmentDto> departments) {
             setTag(this.departments, departments);
+            if (departments != null) {
+                setDepartmentsCount("" + departments.size());
+            }
         }
 
         @Override
