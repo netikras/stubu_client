@@ -9,6 +9,7 @@ import com.netikras.studies.studentbuddy.api.client.android.R;
 import com.netikras.studies.studentbuddy.api.client.android.conf.di.DepInjector;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.base.BaseActivity;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.base.BaseViewFields;
+import com.netikras.studies.studentbuddy.api.client.android.pieces.base.list.ListHandler;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.comments.ui.presenter.CommentsMvpPresenter;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.comments.ui.view.CommentsMvpView;
 import com.netikras.studies.studentbuddy.core.data.api.dto.PersonDto;
@@ -16,13 +17,16 @@ import com.netikras.studies.studentbuddy.core.data.api.dto.meta.CommentDto;
 
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 
 import javax.inject.Inject;
 
 import butterknife.BindView;
+import butterknife.OnClick;
 
 import static com.netikras.studies.studentbuddy.api.client.android.util.CommonUtils.datetimeToTimestamp;
 import static com.netikras.studies.studentbuddy.api.client.android.util.CommonUtils.timestampToDatetime;
+import static com.netikras.tools.common.security.IntegrityUtils.isNullOrEmpty;
 
 /**
  * Created by netikras on 17.11.25.
@@ -66,8 +70,34 @@ public class CommentsActivity extends BaseActivity implements CommentsMvpView {
         getFields().setAuthor(commentDto.getAuthor());
         getFields().setTitle(commentDto.getTitle());
         getFields().setText(commentDto.getText());
+        getFields().setTags(commentDto.getTags());
     }
 
+    @OnClick(R.id.btn_comment_author)
+    public void showAuthor() {
+        PersonDto author = getFields().getAuthor();
+        presenter.showAuthor(this, author);
+    }
+
+    @OnClick(R.id.btn_comment_tags)
+    public void showTags() {
+        List<String> tags = getFields().getTags();
+        if (tags == null) {
+            return;
+        }
+
+        showList(this, new ListHandler<String>() {
+            @Override
+            public List<String> getListData() {
+                return tags;
+            }
+
+            @Override
+            public String getToolbarText() {
+                return getString(R.string.lbl_comment_tags);
+            }
+        });
+    }
 
     class ViewFields extends BaseViewFields {
         @BindView(R.id.txt_edit_comment_id)
@@ -80,9 +110,11 @@ public class CommentsActivity extends BaseActivity implements CommentsMvpView {
         EditText createDate;
         @BindView(R.id.btn_comment_author)
         Button author;
+        @BindView(R.id.btn_comment_tags)
+        Button tags;
 
         public String getId() {
-            return getString( id);
+            return getString(id);
         }
 
         public void setId(String id) {
@@ -90,7 +122,7 @@ public class CommentsActivity extends BaseActivity implements CommentsMvpView {
         }
 
         public String getTitle() {
-            return getString( title);
+            return getString(title);
         }
 
         public void setTitle(String title) {
@@ -98,7 +130,7 @@ public class CommentsActivity extends BaseActivity implements CommentsMvpView {
         }
 
         public String getText() {
-            return getString( text);
+            return getString(text);
         }
 
         public void setText(String text) {
@@ -106,7 +138,7 @@ public class CommentsActivity extends BaseActivity implements CommentsMvpView {
         }
 
         public String getCreateDate() {
-            return getString( createDate);
+            return getString(createDate);
         }
 
         public void setCreateDate(String createDate) {
@@ -122,7 +154,7 @@ public class CommentsActivity extends BaseActivity implements CommentsMvpView {
         }
 
         public String getAuthorName() {
-            return getString( author);
+            return getString(author);
         }
 
         public void setAuthorName(String author) {
@@ -138,6 +170,25 @@ public class CommentsActivity extends BaseActivity implements CommentsMvpView {
 
         public PersonDto getAuthor() {
             return (PersonDto) getTag(author);
+        }
+
+        public void setTagsCount(String count) {
+            setString(tags, count);
+        }
+
+        public String getTagsCount() {
+            return getString(tags);
+        }
+
+        public void setTags(List<String> tags) {
+            setTag(this.tags, tags);
+            if (tags != null) {
+                setTagsCount("" + tags.size());
+            }
+        }
+
+        public List<String> getTags() {
+            return (List<String>) getTag(tags);
         }
 
         @Override

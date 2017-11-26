@@ -88,8 +88,10 @@ public class SimpleListActivity extends BaseActivity {
                 } else {
                     listRow = handler.extractExistingRow(convertView);
                 }
-                
-                listRow.assign(getItem(position));
+
+                if (listRow != null) {
+                    listRow.assign(getItem(position));
+                }
                 return convertView;
             }
         };

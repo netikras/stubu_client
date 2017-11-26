@@ -11,6 +11,7 @@ import com.netikras.studies.studentbuddy.api.client.android.pieces.student.ui.pr
 import com.netikras.studies.studentbuddy.api.client.android.pieces.student.ui.presenter.StudentMvpPresenter;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.student.ui.view.GuestMvpView;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.student.ui.view.StudentMvpView;
+import com.netikras.studies.studentbuddy.core.data.api.dto.school.LectureGuestDto;
 
 import java.util.Collection;
 
@@ -40,6 +41,11 @@ public class GuestActivity extends BaseActivity implements GuestMvpView {
         presenter.onAttach(this);
         fields = initFields(new ViewFields());
 //        addMenu(R.id.btn_guest_main_menu);
+    }
+
+    @Override
+    public void show(LectureGuestDto item) {
+
     }
 
 

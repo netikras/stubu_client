@@ -10,18 +10,27 @@ import com.netikras.studies.studentbuddy.api.client.android.pieces.discipline.ui
 import com.netikras.studies.studentbuddy.api.client.android.pieces.discipline.ui.view.DisciplineMvpView;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.lecture.data.LectureDataStore;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.lecture.ui.impl.view.LectureInfoActivity;
+import com.netikras.studies.studentbuddy.api.client.android.pieces.lecture.ui.presenter.AssignmentMvpPresenter;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.lecture.ui.presenter.LectureMvpPresenter;
+import com.netikras.studies.studentbuddy.api.client.android.pieces.lecture.ui.presenter.TestMvpPresenter;
+import com.netikras.studies.studentbuddy.api.client.android.pieces.lecture.ui.view.AssignmentMvpView;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.lecture.ui.view.LectureMvpView;
+import com.netikras.studies.studentbuddy.api.client.android.pieces.lecture.ui.view.TestMvpView;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.lecturer.ui.presenter.LecturerMvpPresenter;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.lecturer.ui.view.LecturerMvpView;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.location.ui.presenter.LocationMvpPresenter;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.location.ui.view.LocationMvpView;
+import com.netikras.studies.studentbuddy.api.client.android.pieces.student.ui.presenter.GuestMvpPresenter;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.student.ui.presenter.StudentsGroupMvpPresenter;
+import com.netikras.studies.studentbuddy.api.client.android.pieces.student.ui.view.GuestMvpView;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.student.ui.view.StudentsGroupMvpView;
 import com.netikras.studies.studentbuddy.api.client.android.util.CommonUtils;
 import com.netikras.studies.studentbuddy.core.data.api.dto.location.LectureRoomDto;
+import com.netikras.studies.studentbuddy.core.data.api.dto.school.AssignmentDto;
 import com.netikras.studies.studentbuddy.core.data.api.dto.school.DisciplineDto;
+import com.netikras.studies.studentbuddy.core.data.api.dto.school.DisciplineTestDto;
 import com.netikras.studies.studentbuddy.core.data.api.dto.school.LectureDto;
+import com.netikras.studies.studentbuddy.core.data.api.dto.school.LectureGuestDto;
 import com.netikras.studies.studentbuddy.core.data.api.dto.school.LecturerDto;
 import com.netikras.studies.studentbuddy.core.data.api.dto.school.StudentsGroupDto;
 
@@ -41,6 +50,12 @@ public class LecturePresenter<V extends LectureMvpView> extends BasePresenter<V>
     StudentsGroupMvpPresenter<StudentsGroupMvpView> groupPresenter;
     @Inject
     LecturerMvpPresenter<LecturerMvpView> lecturerPresenter;
+    @Inject
+    GuestMvpPresenter<GuestMvpView> guestPresenter;
+    @Inject
+    TestMvpPresenter<TestMvpView> testpresenter;
+    @Inject
+    AssignmentMvpPresenter<AssignmentMvpView> assignmentPresenter;
 
     @Inject
     public LecturePresenter(DataManager dataManager) {
@@ -87,5 +102,20 @@ public class LecturePresenter<V extends LectureMvpView> extends BasePresenter<V>
     @Override
     public void showGroup(Context context, StudentsGroupDto studentsGroup) {
         groupPresenter.show(context, studentsGroup);
+    }
+
+    @Override
+    public void showGuest(Context context, LectureGuestDto item) {
+        guestPresenter.show(context, item);
+    }
+
+    @Override
+    public void showTest(Context context, DisciplineTestDto item) {
+        testpresenter.show(context, item);
+    }
+
+    @Override
+    public void showAssignment(Context context, AssignmentDto item) {
+        assignmentPresenter.show(context, item);
     }
 }

@@ -216,6 +216,7 @@
     <string name="lbl_comment_author">Autorius</string>
     <string name="dummy_txt_comment_datetime_created">2017-04-12 07:43</string>
     <string name="lbl_comment_create_datetime">Sukurta</string>
+    <string name="lbl_comment_tags">Žymos</string>
 
 
 </resources>

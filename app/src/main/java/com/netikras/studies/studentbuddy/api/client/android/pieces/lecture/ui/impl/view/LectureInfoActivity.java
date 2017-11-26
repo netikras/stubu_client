@@ -1,6 +1,8 @@
 package com.netikras.studies.studentbuddy.api.client.android.pieces.lecture.ui.impl.view;
 
+import android.content.Context;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -9,8 +11,11 @@ import com.netikras.studies.studentbuddy.api.client.android.R;
 import com.netikras.studies.studentbuddy.api.client.android.conf.di.DepInjector;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.base.BaseActivity;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.base.BaseViewFields;
+import com.netikras.studies.studentbuddy.api.client.android.pieces.base.list.ListHandler;
+import com.netikras.studies.studentbuddy.api.client.android.pieces.base.list.ListRow;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.lecture.ui.presenter.LectureMvpPresenter;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.lecture.ui.view.LectureMvpView;
+import com.netikras.studies.studentbuddy.api.client.android.pieces.lecturer.ui.impl.view.LecturerInfoActivity;
 import com.netikras.studies.studentbuddy.core.data.api.dto.location.LectureRoomDto;
 import com.netikras.studies.studentbuddy.core.data.api.dto.meta.CommentDto;
 import com.netikras.studies.studentbuddy.core.data.api.dto.meta.RoleDto;
@@ -90,12 +95,52 @@ public class LectureInfoActivity extends BaseActivity implements LectureMvpView 
 
     @OnClick(R.id.btn_lecture_assignments)
     public void showAssignments() {
+        List<AssignmentDto> assignments = getFields().getAssignments();
+        if (assignments == null) {
+            return;
+        }
 
+        showList(this, new ListHandler<AssignmentDto>() {
+            @Override
+            public List<AssignmentDto> getListData() {
+                return assignments;
+            }
+
+            @Override
+            public void onRowClick(AssignmentDto item) {
+                presenter.showAssignment(LectureInfoActivity.this, item);
+            }
+
+            @Override
+            public String getToolbarText() {
+                return getString(R.string.title_assignments);
+            }
+        });
     }
 
     @OnClick(R.id.btn_lecture_tests)
     public void showTests() {
+        List<DisciplineTestDto> tests = getFields().getTests();
+        if (tests == null) {
+            return;
+        }
 
+        showList(this, new ListHandler<DisciplineTestDto>() {
+            @Override
+            public List<DisciplineTestDto> getListData() {
+                return tests;
+            }
+
+            @Override
+            public void onRowClick(DisciplineTestDto item) {
+                presenter.showTest(LectureInfoActivity.this, item);
+            }
+
+            @Override
+            public String getToolbarText() {
+                return getString(R.string.title_tests);
+            }
+        });
     }
 
     @OnClick(R.id.btn_lecture_students_group)
@@ -115,7 +160,27 @@ public class LectureInfoActivity extends BaseActivity implements LectureMvpView 
 
     @OnClick(R.id.btn_lecture_guests)
     public void showGuests() {
+        List<LectureGuestDto> guests = getFields().getGuests();
+        if (guests == null) {
+            return;
+        }
 
+        showList(this, new ListHandler<LectureGuestDto>() {
+            @Override
+            public List<LectureGuestDto> getListData() {
+                return guests;
+            }
+
+            @Override
+            public void onRowClick(LectureGuestDto item) {
+                presenter.showGuest(LectureInfoActivity.this, item);
+            }
+
+            @Override
+            public String getToolbarText() {
+                return getString(R.string.title_guests);
+            }
+        });
     }
 
     @OnClick(R.id.btn_lecture_name)
