@@ -13,7 +13,10 @@ import com.netikras.studies.studentbuddy.api.client.android.pieces.login.ui.pres
 import com.netikras.studies.studentbuddy.api.client.android.pieces.login.ui.view.LoginMvpView;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.person.ui.presenter.UserMvpPresenter;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.person.ui.view.UserMvpView;
+import com.netikras.studies.studentbuddy.api.client.android.service.ServiceRequest;
+import com.netikras.studies.studentbuddy.api.client.android.service.ServiceRequest.Subscriber;
 import com.netikras.studies.studentbuddy.core.data.api.dto.meta.UserDto;
+import com.netikras.tools.common.exception.ErrorsCollection;
 
 import javax.inject.Inject;
 
@@ -42,12 +45,29 @@ public class LoginPresenter<V extends LoginMvpView> extends BasePresenter<V> imp
 
 
     @Override
-    public void proceedLogin(String username, String password) {
-        getDataStore().login(username, password, new ErrorsAwareSubscriber<UserDto>() {
+    public void proceedLogin(String username, String password, Subscriber<UserDto> subscriber) {
+
+
+        getDataStore().login(username, password, new Subscriber<UserDto>() {
             @Override
             public void onSuccess(UserDto response) {
                 app.setCurrentUser(response);
-                getLandingPresenter().startView((Context) getMvpView());
+//                getLandingPresenter().startView((Context) getMvpView());
+                if (subscriber != null) {
+                    subscriber.onSuccess(response);
+                }
+            }
+
+            @Override
+            public void onError(ErrorsCollection errors) {
+                if (subscriber != null) {
+                    subscriber.onError(errors);
+                } else {
+                    if (getMvpView() != null) {
+                        getMvpView().onError((Context) getMvpView(), errors.buildSingleMessage());
+                    }
+
+                }
             }
         });
         getDataStore().processOrders((Context) getMvpView());

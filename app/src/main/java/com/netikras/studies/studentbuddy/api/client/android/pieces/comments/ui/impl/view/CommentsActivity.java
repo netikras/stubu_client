@@ -12,6 +12,7 @@ import com.netikras.studies.studentbuddy.api.client.android.pieces.base.BaseView
 import com.netikras.studies.studentbuddy.api.client.android.pieces.base.list.ListHandler;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.comments.ui.presenter.CommentsMvpPresenter;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.comments.ui.view.CommentsMvpView;
+import com.netikras.studies.studentbuddy.api.client.android.pieces.person.ui.impl.view.PersonInfoActivity;
 import com.netikras.studies.studentbuddy.core.data.api.dto.PersonDto;
 import com.netikras.studies.studentbuddy.core.data.api.dto.meta.CommentDto;
 
@@ -76,7 +77,12 @@ public class CommentsActivity extends BaseActivity implements CommentsMvpView {
     @OnClick(R.id.btn_comment_author)
     public void showAuthor() {
         PersonDto author = getFields().getAuthor();
-        presenter.showAuthor(this, author);
+        startView(PersonInfoActivity.class, new ViewTask<PersonInfoActivity>() {
+            @Override
+            public void execute() {
+                getActivity().showPerson(author);
+            }
+        });
     }
 
     @OnClick(R.id.btn_comment_tags)

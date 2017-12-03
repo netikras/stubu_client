@@ -13,6 +13,7 @@ import com.netikras.studies.studentbuddy.api.client.android.pieces.base.BaseActi
 import com.netikras.studies.studentbuddy.api.client.android.pieces.base.BaseViewFields;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.base.list.ListHandler;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.base.list.ListRow;
+import com.netikras.studies.studentbuddy.api.client.android.pieces.location.ui.impl.view.BuildingActivity;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.school.ui.presenter.SchoolDepartmentMvpPresenter;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.school.ui.view.SchoolDepartmentMvpView;
 import com.netikras.studies.studentbuddy.core.data.api.dto.location.BuildingDto;
@@ -84,16 +85,6 @@ public class SchoolDepartmentActivity extends BaseActivity implements SchoolDepa
         getFields().setSchool(dto.getSchool());
     }
 
-    @OnClick(/* TODO */)
-    public void showSchool() {
-        SchoolDto schoolDto = getFields().getSchool();
-        if (schoolDto == null) {
-            return;
-        }
-
-        presenter.showSchool(this, schoolDto);
-    }
-
     @OnClick(R.id.btn_school_departments_buildings)
     public void showBuildingsList() {
         List<BuildingDto> buildings = getFields().getBuildings();
@@ -117,7 +108,12 @@ public class SchoolDepartmentActivity extends BaseActivity implements SchoolDepa
             public void onRowClick(BuildingDto item) {
                 onError(getListContext(), "Building selected: " + item.getTitle());
                 System.out.println("Building selected: " + item.getId());
-                presenter.showBuilding(getListContext(), item);
+                startView(BuildingActivity.class, new ViewTask<BuildingActivity>() {
+                    @Override
+                    public void execute() {
+                        getActivity().show(item);
+                    }
+                });
             }
 
             @Override

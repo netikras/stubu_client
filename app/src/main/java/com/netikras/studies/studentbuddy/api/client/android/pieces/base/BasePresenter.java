@@ -156,18 +156,4 @@ public class BasePresenter<V extends MvpView> implements MvpPresenter<V> {
         }
     }
 
-    protected class ErrorsAwareSubscriber<T> extends Subscriber<T> {
-        @Override
-        public void onError(ErrorsCollection errors) {
-            if (isNullOrEmpty(errors)) {
-                return;
-            }
-            if (getMvpView() != null) {
-                for (ErrorBody error : errors) {
-                    getMvpView().onError(error.getMessage1());
-                }
-            }
-        }
-    }
-
 }

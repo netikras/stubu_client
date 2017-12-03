@@ -103,7 +103,12 @@ public class SchoolActivity extends BaseActivity implements SchoolMvpView {
             public void onRowClick(SchoolDepartmentDto item) {
                 onError(getListContext(), "Department selected: " + item.getTitle());
                 System.out.println("Department selected: " + item.getId());
-                presenter.showDepartment(getListContext(), item);
+                startView(SchoolDepartmentActivity.class, new ViewTask<SchoolDepartmentActivity>() {
+                    @Override
+                    public void execute() {
+                        getActivity().show(item);
+                    }
+                });
             }
 
             @Override

@@ -2,6 +2,8 @@ package com.netikras.studies.studentbuddy.api.client.android.pieces.login.ui.pre
 
 import com.netikras.studies.studentbuddy.api.client.android.pieces.base.MvpPresenter;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.login.ui.view.LoginMvpView;
+import com.netikras.studies.studentbuddy.api.client.android.service.ServiceRequest.Subscriber;
+import com.netikras.studies.studentbuddy.core.data.api.dto.meta.UserDto;
 
 /**
  * Created by netikras on 17.11.1.
@@ -9,7 +11,7 @@ import com.netikras.studies.studentbuddy.api.client.android.pieces.login.ui.view
 
 public interface LoginMvpPresenter<V extends LoginMvpView> extends MvpPresenter<V> {
 
-    void proceedLogin(String username, String password);
+    void proceedLogin(String username, String password, Subscriber<UserDto> subscriber);
 
     String getLastLoginUsername();
 

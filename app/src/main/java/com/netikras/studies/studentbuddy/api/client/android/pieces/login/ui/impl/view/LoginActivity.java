@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -13,6 +14,8 @@ import com.netikras.studies.studentbuddy.api.client.android.pieces.base.BaseActi
 import com.netikras.studies.studentbuddy.api.client.android.pieces.base.BaseViewFields;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.login.ui.presenter.LoginMvpPresenter;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.login.ui.view.LoginMvpView;
+import com.netikras.studies.studentbuddy.api.client.android.pieces.main.ui.impl.view.MainActivity;
+import com.netikras.studies.studentbuddy.core.data.api.dto.meta.UserDto;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -58,7 +61,17 @@ public class LoginActivity extends BaseActivity implements LoginMvpView {
     @OnClick(R.id.btn_login_proceed)
     public void proceed() {
         presenter.setLastLoginUsername(fields.getUsername());
-        presenter.proceedLogin(fields.getUsername(), fields.getPassword());
+        presenter.proceedLogin(fields.getUsername(), fields.getPassword(), new ErrorsAwareSubscriber<UserDto>(){
+            @Override
+            public void onSuccess(UserDto response) {
+                startView(MainActivity.class, new ViewTask<MainActivity>() {
+                    @Override
+                    public void execute() {
+                        // nothing is required so far
+                    }
+                });
+            }
+        });
     }
 
     public class ViewFields extends BaseViewFields {

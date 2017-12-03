@@ -12,8 +12,10 @@ import com.netikras.studies.studentbuddy.api.client.android.pieces.base.BaseActi
 import com.netikras.studies.studentbuddy.api.client.android.pieces.base.BaseViewFields;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.base.list.ListHandler;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.base.list.ListRow;
+import com.netikras.studies.studentbuddy.api.client.android.pieces.discipline.ui.impl.view.DisciplineInfoActivity;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.lecturer.ui.presenter.LecturerMvpPresenter;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.lecturer.ui.view.LecturerMvpView;
+import com.netikras.studies.studentbuddy.api.client.android.pieces.person.ui.impl.view.PersonInfoActivity;
 import com.netikras.studies.studentbuddy.core.data.api.dto.PersonDto;
 import com.netikras.studies.studentbuddy.core.data.api.dto.school.DisciplineDto;
 import com.netikras.studies.studentbuddy.core.data.api.dto.school.LecturerDto;
@@ -71,7 +73,12 @@ public class LecturerInfoActivity extends BaseActivity implements LecturerMvpVie
 
     @OnClick(R.id.btn_lecturer_name)
     public void showPerson() {
-        presenter.showPerson(this, getFields().getPerson());
+        startView(PersonInfoActivity.class, new ViewTask<PersonInfoActivity>() {
+            @Override
+            public void execute() {
+                getActivity().showPerson(getFields().getPerson());
+            }
+        });
     }
 
     @OnClick(R.id.btn_lecturer_disciplines)
@@ -97,7 +104,12 @@ public class LecturerInfoActivity extends BaseActivity implements LecturerMvpVie
             public void onRowClick(DisciplineDto item) {
                 onError(getListContext(), "Discipline selected: " + item.getTitle());
                 System.out.println("Discipline selected: " + item.getId());
-                presenter.showDiscipline(getListContext(), item);
+                startView(DisciplineInfoActivity.class, new ViewTask<DisciplineInfoActivity>() {
+                    @Override
+                    public void execute() {
+                        getActivity().show(item);
+                    }
+                });
             }
 
             @Override

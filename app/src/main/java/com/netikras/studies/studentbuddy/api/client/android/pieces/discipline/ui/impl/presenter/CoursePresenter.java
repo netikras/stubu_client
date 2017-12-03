@@ -1,11 +1,8 @@
 package com.netikras.studies.studentbuddy.api.client.android.pieces.discipline.ui.impl.presenter;
 
-import android.content.Context;
-
 import com.netikras.studies.studentbuddy.api.client.android.data.DataManager;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.base.BasePresenter;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.discipline.data.CourseDataStore;
-import com.netikras.studies.studentbuddy.api.client.android.pieces.discipline.ui.impl.view.CourseActivity;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.discipline.ui.presenter.CourseMvpPresenter;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.discipline.ui.view.CourseMvpView;
 
@@ -25,8 +22,4 @@ public class CoursePresenter<V extends CourseMvpView> extends BasePresenter<V> i
         return getDataManager().getStore(CourseDataStore.class);
     }
 
-    @Override
-    public void startView(Context fromContext) {
-        super.startView(fromContext, CourseActivity.class);
-    }
 }

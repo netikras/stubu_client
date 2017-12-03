@@ -14,6 +14,8 @@ import com.netikras.studies.studentbuddy.api.client.android.pieces.base.BaseActi
 import com.netikras.studies.studentbuddy.api.client.android.pieces.base.BaseViewFields;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.person.ui.presenter.PersonMvpPresenter;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.person.ui.view.PersonMvpView;
+import com.netikras.studies.studentbuddy.api.client.android.service.ServiceRequest;
+import com.netikras.studies.studentbuddy.api.client.android.service.ServiceRequest.Subscriber;
 import com.netikras.studies.studentbuddy.api.client.android.util.AppConstants;
 import com.netikras.studies.studentbuddy.api.client.android.util.CommonUtils;
 import com.netikras.studies.studentbuddy.core.data.api.dto.PersonDto;
@@ -34,9 +36,6 @@ import static com.netikras.studies.studentbuddy.api.client.android.util.CommonUt
 import static com.netikras.tools.common.security.IntegrityUtils.isNullOrEmpty;
 
 public class PersonInfoActivity extends BaseActivity implements PersonMvpView {
-
-    @Inject
-    App app;
 
     @Inject
     PersonMvpPresenter<PersonMvpView> presenter;
@@ -65,7 +64,10 @@ public class PersonInfoActivity extends BaseActivity implements PersonMvpView {
         presenter.onAttach(this);
         fields = initFields(new ViewFields());
         addMenu(R.id.btn_person_main_menu);
+        executeTask();
     }
+
+
 
 
     @Override
@@ -104,13 +106,22 @@ public class PersonInfoActivity extends BaseActivity implements PersonMvpView {
         return personDto;
     }
 
+
+
     @Override
     protected void menuOnClickSave() {
         getFields().enableEdit(false);
+        Subscriber<PersonDto> subscriber = new ErrorsAwareSubscriber<PersonDto>() {
+            @Override
+            public void onSuccess(PersonDto response) {
+                showPerson(response);
+            }
+        };
+
         if (isNullOrEmpty(getFields().getId())) {
-            presenter.createPerson(this, collect());
+            presenter.createPerson(subscriber, collect());
         } else {
-            presenter.updatePerson(this, collect());
+            presenter.updatePerson(subscriber, collect());
         }
     }
 

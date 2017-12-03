@@ -1,6 +1,7 @@
 package com.netikras.studies.studentbuddy.api.client.android.pieces.discipline.ui.impl.view;
 
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -9,13 +10,20 @@ import com.netikras.studies.studentbuddy.api.client.android.R;
 import com.netikras.studies.studentbuddy.api.client.android.conf.di.DepInjector;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.base.BaseActivity;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.base.BaseViewFields;
+import com.netikras.studies.studentbuddy.api.client.android.pieces.base.list.ListHandler;
+import com.netikras.studies.studentbuddy.api.client.android.pieces.base.list.ListRow;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.discipline.ui.presenter.DisciplineMvpPresenter;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.discipline.ui.view.DisciplineMvpView;
+import com.netikras.studies.studentbuddy.api.client.android.pieces.lecturer.ui.impl.view.LecturerInfoActivity;
+import com.netikras.studies.studentbuddy.api.client.android.pieces.school.ui.impl.view.SchoolActivity;
 import com.netikras.studies.studentbuddy.core.data.api.dto.school.DisciplineDto;
+import com.netikras.studies.studentbuddy.core.data.api.dto.school.LectureDto;
+import com.netikras.studies.studentbuddy.core.data.api.dto.school.LecturerDto;
 import com.netikras.studies.studentbuddy.core.data.api.dto.school.SchoolDto;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -78,7 +86,58 @@ public class DisciplineInfoActivity extends BaseActivity implements DisciplineMv
 
     @OnClick(R.id.btn_discipline_school)
     public void showSchool() {
-        presenter.showSchool(this, getFields().getSchool());
+        startView(SchoolActivity.class, new ViewTask<SchoolActivity>() {
+            @Override
+            public void execute() {
+                getActivity().show(getFields().getSchool());
+            }
+        });
+    }
+
+    @OnClick(R.id.btn_discipline_lecturers)
+    public void showLecturers() {
+        showList(this, new ListHandler<LecturerDto>() {
+            @Override
+            public ListRow getNewRow(View convertView) {
+                return new LecturerRow(convertView);
+            }
+
+            @Override
+            public List<LecturerDto> getListData() {
+                return getFields().getLecturers();
+            }
+
+            @Override
+            public void onRowClick(LecturerDto item) {
+                startView(LecturerInfoActivity.class, new ViewTask<LecturerInfoActivity>() {
+                    @Override
+                    public void execute() {
+                        getActivity().show(item);
+                    }
+                });
+            }
+
+            @Override
+            public String getToolbarText() {
+                return getString(R.string.title_lecturers);
+            }
+
+            class LecturerRow extends ListRow<LecturerDto> {
+
+                TextView text;
+
+                public LecturerRow(View rowView) {
+                    super(null);
+                    text = getDefaultListTextView(rowView);
+                    rowView.setTag(this);
+                }
+
+                @Override
+                public void assign(LecturerDto item) {
+                    super.assign(item);
+                }
+            }
+        });
     }
 
     public class ViewFields extends BaseViewFields {
@@ -142,12 +201,23 @@ public class DisciplineInfoActivity extends BaseActivity implements DisciplineMv
             }
         }
 
-        public String getLecturers() {
+        public String getLecturersCount() {
             return getString(lecturers);
         }
 
-        public void setLecturers(String lecturersCount) {
+        public void setLecturersCount(String lecturersCount) {
             setString(this.lecturers, lecturersCount);
+        }
+
+        public List<LecturerDto> getLecturers() {
+            return (List<LecturerDto>) getTag(lecturers);
+        }
+
+        public void setLectures(List<LecturerDto> lecturers) {
+            setTag(this.lecturers, lecturers);
+            if (lecturers != null) {
+                setLecturersCount("" + lecturers.size());
+            }
         }
 
         @Override

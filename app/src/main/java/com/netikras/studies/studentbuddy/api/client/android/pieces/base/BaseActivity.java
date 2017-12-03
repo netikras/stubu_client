@@ -34,10 +34,13 @@ import com.netikras.studies.studentbuddy.api.client.android.pieces.base.list.Sim
 import com.netikras.studies.studentbuddy.api.client.android.pieces.login.ui.impl.view.LoginActivity;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.person.ui.impl.view.UserInfoActivity;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.settings.ui.impl.view.SettingsActivity;
+import com.netikras.studies.studentbuddy.api.client.android.service.ServiceRequest;
 import com.netikras.studies.studentbuddy.api.client.android.util.CommonUtils;
 import com.netikras.studies.studentbuddy.api.client.android.util.Exchange;
 import com.netikras.studies.studentbuddy.api.client.android.util.NetworkUtils;
 import com.netikras.studies.studentbuddy.api.client.android.util.misc.YesNoDialog;
+import com.netikras.tools.common.exception.ErrorBody;
+import com.netikras.tools.common.exception.ErrorsCollection;
 
 import javax.inject.Inject;
 
@@ -94,6 +97,17 @@ public abstract class BaseActivity extends AppCompatActivity
     public boolean hasPermission(String permission) {
         return Build.VERSION.SDK_INT < Build.VERSION_CODES.M ||
                 checkSelfPermission(permission) == PackageManager.PERMISSION_GRANTED;
+    }
+
+    /**
+     * @param viewClass activity class
+     * @param task      something to do when view is started. <br/>
+     *                  NOTE: before calling execute() view will call setActivity(). Utilize that
+     */
+    protected <VIEW extends MvpView> void startView(Class<VIEW> viewClass, ViewTask<VIEW> task) {
+        Intent intent = new Intent(this, viewClass);
+        intent.putExtra("task", exchange.put(task));
+        startActivity(intent);
     }
 
     @Override
@@ -206,6 +220,7 @@ public abstract class BaseActivity extends AppCompatActivity
             setUnBinder(ButterKnife.bind((Activity) view));
 //            DepInjector.inject(view);
         }
+//        executeTask();
     }
 
     protected void addMenu(int menu) {
@@ -310,7 +325,6 @@ public abstract class BaseActivity extends AppCompatActivity
 
     @Override
     public View onCreateView(View parent, String name, Context context, AttributeSet attrs) {
-        executeTask();
         return super.onCreateView(parent, name, context, attrs);
     }
 
@@ -336,11 +350,23 @@ public abstract class BaseActivity extends AppCompatActivity
         public abstract void execute();
 
         protected void setActivity(A activity) {
-
+            act = activity;
         }
 
         protected A getActivity() {
             return act;
+        }
+    }
+
+    protected class ErrorsAwareSubscriber<T> extends ServiceRequest.Subscriber<T> {
+        @Override
+        public void onError(ErrorsCollection errors) {
+            if (isNullOrEmpty(errors)) {
+                return;
+            }
+            for (ErrorBody error : errors) {
+                BaseActivity.this.onError(error.getMessage1());
+            }
         }
     }
 

@@ -70,7 +70,12 @@ public class TestInfoActivity extends BaseActivity implements TestMvpView {
 
     @OnClick(R.id.btn_test_lecture)
     void onLectureClick() {
-        presenter.showLecture(fields.getLecture());
+        startView(LectureInfoActivity.class, new ViewTask<LectureInfoActivity>() {
+            @Override
+            public void execute() {
+                getActivity().show(fields.getLecture());
+            }
+        });
     }
 
 

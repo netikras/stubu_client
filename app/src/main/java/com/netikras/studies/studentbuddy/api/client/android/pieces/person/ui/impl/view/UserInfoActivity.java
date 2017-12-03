@@ -17,6 +17,8 @@ import com.netikras.studies.studentbuddy.api.client.android.pieces.base.list.Lis
 import com.netikras.studies.studentbuddy.api.client.android.pieces.base.list.ListRow;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.person.ui.presenter.UserMvpPresenter;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.person.ui.view.UserMvpView;
+import com.netikras.studies.studentbuddy.api.client.android.service.ServiceRequest;
+import com.netikras.studies.studentbuddy.api.client.android.service.ServiceRequest.Subscriber;
 import com.netikras.studies.studentbuddy.core.data.api.dto.PersonDto;
 import com.netikras.studies.studentbuddy.core.data.api.dto.meta.UserDto;
 import com.netikras.studies.studentbuddy.core.data.api.dto.school.LectureDto;
@@ -38,8 +40,6 @@ public class UserInfoActivity extends BaseActivity implements UserMvpView {
     private static final String TAG = "UserInfoActivity";
 
     @Inject
-    App app;
-    @Inject
     UserMvpPresenter<UserMvpView> presenter;
 
     private ViewFields fields;
@@ -54,19 +54,17 @@ public class UserInfoActivity extends BaseActivity implements UserMvpView {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_info);
         setUp();
-
-//        UserDto userDto = app.getCurrentUser();
-//        showUser(userDto);
     }
 
 
     @Override
     protected void setUp() {
         DepInjector.inject(this);
+        fields = initFields(new ViewFields());
         onAttach(this);
         presenter.onAttach(this);
-        fields = initFields(new ViewFields());
         addMenu(R.id.btn_user_main_menu);
+        executeTask();
     }
 
     public ViewFields getFields() {
@@ -76,7 +74,12 @@ public class UserInfoActivity extends BaseActivity implements UserMvpView {
     @Override
     protected void menuOnClickDelete() {
         getFields().enableEdit(false);
-        presenter.delete(this, fields.getId());
+        presenter.delete(new ErrorsAwareSubscriber<Boolean>() {
+            @Override
+            public void onSuccess(Boolean response) {
+                showUser(null);
+            }
+        }, fields.getId());
     }
 
     @Override
@@ -89,10 +92,18 @@ public class UserInfoActivity extends BaseActivity implements UserMvpView {
     @Override
     protected void menuOnClickSave() {
         getFields().enableEdit(false);
+        UserDto userDto = collect();
+        Subscriber<UserDto> subscriber = new ErrorsAwareSubscriber<UserDto>() {
+            @Override
+            public void onSuccess(UserDto response) {
+                showUser(response);
+            }
+        };
+
         if (isNullOrEmpty(getFields().getId())) {
-            presenter.create(this, collect());
+            presenter.create(subscriber, userDto);
         } else {
-            presenter.update(this, collect());
+            presenter.update(subscriber, userDto);
         }
     }
 
@@ -108,9 +119,6 @@ public class UserInfoActivity extends BaseActivity implements UserMvpView {
         if (personDto != null) {
             fields.setPersonName(personDto.getFirstName() + " " + personDto.getLastName());
             fields.setIdentification(personDto.getIdentification());
-        } else {
-//            fields.setPersonName(getString(R.string.dash));
-//            fields.setIdentification(getString(R.string.dash));
         }
 
         fields.setUsername(userDto.getName());
@@ -120,81 +128,11 @@ public class UserInfoActivity extends BaseActivity implements UserMvpView {
 
     @OnClick(R.id.btn_user_person)
     void showPerson() {
-//        UserDto userDto = collect();
-//        presenter.showPersonForUser(this, userDto);
-        showList(this, new ListHandler<LectureDto>() {
+        UserDto userDto = collect();
+        startView(PersonInfoActivity.class, new ViewTask<PersonInfoActivity>() {
             @Override
-            public ListRow getNewRow(View convertView) {
-                return new LectureRow(convertView);
-            }
-
-            @Override
-            public ListRow extractExistingRow(View convertView) {
-                if (convertView == null) {
-                    return null;
-                }
-                return (ListRow) convertView.getTag();
-            }
-
-            @Override
-            public int getActivityLayout() {
-                return super.getActivityLayout();
-            }
-
-            @Override
-            public int getRowLayout() {
-                return super.getRowLayout();
-            }
-
-            @Override
-            public List<LectureDto> getListData() {
-                List<LectureDto> lectures = new ArrayList<>();
-                LectureDto dto;
-
-                dto = new LectureDto();
-                dto.setId("aaa");
-                lectures.add(dto);
-
-                dto = new LectureDto();
-                dto.setId("bbb");
-                lectures.add(dto);
-
-                dto = new LectureDto();
-                dto.setId("ccc");
-                lectures.add(dto);
-
-                return lectures;
-            }
-
-            @Override
-            public void onRowClick(LectureDto item) {
-                onError(getListContext(), "Lecture selected: " + item.getId());
-                System.out.println("Lecture selected: " + item.getId());
-            }
-
-            @Override
-            public String getToolbarText() {
-                return "Lectures";
-            }
-
-            class LectureRow extends ListRow<LectureDto> {
-
-                TextView text;
-
-                public LectureRow(View rowView) {
-                    super(null);
-                    if (rowView == null) {
-                        return;
-                    }
-                    text = rowView.findViewById(android.R.id.text1);
-                    makeMultiline(text);
-                    rowView.setTag(this);
-                }
-
-                @Override
-                public void assign(LectureDto item) {
-                    text.setText(item.getId());
-                }
+            public void execute() {
+                getActivity().showPerson(userDto.getPerson());
             }
         });
     }

@@ -1,6 +1,7 @@
 package com.netikras.studies.studentbuddy.api.client.android.pieces.student.ui.impl.view;
 
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -9,9 +10,11 @@ import com.netikras.studies.studentbuddy.api.client.android.R;
 import com.netikras.studies.studentbuddy.api.client.android.conf.di.DepInjector;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.base.BaseActivity;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.base.BaseViewFields;
+import com.netikras.studies.studentbuddy.api.client.android.pieces.base.list.ListHandler;
+import com.netikras.studies.studentbuddy.api.client.android.pieces.base.list.ListRow;
+import com.netikras.studies.studentbuddy.api.client.android.pieces.school.ui.impl.view.SchoolActivity;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.student.ui.presenter.StudentsGroupMvpPresenter;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.student.ui.view.StudentsGroupMvpView;
-import com.netikras.studies.studentbuddy.core.data.api.dto.school.PersonnelMemberDto;
 import com.netikras.studies.studentbuddy.core.data.api.dto.school.SchoolDto;
 import com.netikras.studies.studentbuddy.core.data.api.dto.school.StudentDto;
 import com.netikras.studies.studentbuddy.core.data.api.dto.school.StudentsGroupDto;
@@ -83,7 +86,65 @@ public class StudentsGroupInfoActivity extends BaseActivity implements StudentsG
 
     @OnClick(R.id.btn_students_group_school)
     public void showSchool() {
-        presenter.showSchool(this, getFields().getSchool());
+        startView(SchoolActivity.class, new ViewTask<SchoolActivity>() {
+            @Override
+            public void execute() {
+                getActivity().show(getFields().getSchool());
+            }
+        });
+    }
+
+    @OnClick(R.id.btn_students_group_members)
+    public void showGroupMembers() {
+        showList(this, new ListHandler<StudentDto>(){
+
+            @Override
+            public ListRow getNewRow(View convertView) {
+                return new StudentRow(convertView);
+            }
+
+            @Override
+            public List<StudentDto> getListData() {
+                return getFields().getMembers();
+            }
+
+            @Override
+            public void onRowClick(StudentDto item) {
+                startView(StudentInfoActivity.class, new ViewTask<StudentInfoActivity>() {
+                    @Override
+                    public void execute() {
+                        getActivity().show(item);
+                    }
+                });
+            }
+
+            @Override
+            public String getToolbarText() {
+                return getString(R.string.title_students);
+            }
+
+            class StudentRow extends ListRow<StudentDto> {
+
+                TextView text;
+
+                public StudentRow(View rowView) {
+                    super(null);
+                    text = getDefaultListTextView(rowView);
+                    rowView.setTag(this);
+                }
+
+                @Override
+                public void assign(StudentDto item) {
+                    StringBuilder title = new StringBuilder();
+                    if (item != null && item.getPerson() != null) {
+                        title.append("(").append(item.getPerson().getIdentification()).append(") ");
+                        title.append(item.getPerson().getFirstName()).append(" ");
+                        title.append(item.getPerson().getLastName()).append(" ");
+                    }
+                    text.setText(title.toString());
+                }
+            }
+        });
     }
 
     class ViewFields extends BaseViewFields {

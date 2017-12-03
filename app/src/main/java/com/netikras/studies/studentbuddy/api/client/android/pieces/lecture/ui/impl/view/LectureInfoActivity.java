@@ -1,8 +1,6 @@
 package com.netikras.studies.studentbuddy.api.client.android.pieces.lecture.ui.impl.view;
 
-import android.content.Context;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -12,13 +10,15 @@ import com.netikras.studies.studentbuddy.api.client.android.conf.di.DepInjector;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.base.BaseActivity;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.base.BaseViewFields;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.base.list.ListHandler;
-import com.netikras.studies.studentbuddy.api.client.android.pieces.base.list.ListRow;
+import com.netikras.studies.studentbuddy.api.client.android.pieces.discipline.ui.impl.view.DisciplineInfoActivity;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.lecture.ui.presenter.LectureMvpPresenter;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.lecture.ui.view.LectureMvpView;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.lecturer.ui.impl.view.LecturerInfoActivity;
+import com.netikras.studies.studentbuddy.api.client.android.pieces.location.ui.impl.view.LocationInfoActivity;
+import com.netikras.studies.studentbuddy.api.client.android.pieces.student.ui.impl.view.GuestActivity;
+import com.netikras.studies.studentbuddy.api.client.android.pieces.student.ui.impl.view.StudentsGroupInfoActivity;
 import com.netikras.studies.studentbuddy.core.data.api.dto.location.LectureRoomDto;
 import com.netikras.studies.studentbuddy.core.data.api.dto.meta.CommentDto;
-import com.netikras.studies.studentbuddy.core.data.api.dto.meta.RoleDto;
 import com.netikras.studies.studentbuddy.core.data.api.dto.school.AssignmentDto;
 import com.netikras.studies.studentbuddy.core.data.api.dto.school.DisciplineDto;
 import com.netikras.studies.studentbuddy.core.data.api.dto.school.DisciplineTestDto;
@@ -45,8 +45,6 @@ import static com.netikras.tools.common.security.IntegrityUtils.isNullOrEmpty;
 import static java.lang.String.valueOf;
 
 public class LectureInfoActivity extends BaseActivity implements LectureMvpView {
-
-    private static LectureDto current;
 
     private ViewFields fields;
 
@@ -108,7 +106,12 @@ public class LectureInfoActivity extends BaseActivity implements LectureMvpView 
 
             @Override
             public void onRowClick(AssignmentDto item) {
-                presenter.showAssignment(LectureInfoActivity.this, item);
+                startView(AssignmentActivity.class, new ViewTask<AssignmentActivity>() {
+                    @Override
+                    public void execute() {
+                        getActivity().show(item);
+                    }
+                });
             }
 
             @Override
@@ -133,7 +136,12 @@ public class LectureInfoActivity extends BaseActivity implements LectureMvpView 
 
             @Override
             public void onRowClick(DisciplineTestDto item) {
-                presenter.showTest(LectureInfoActivity.this, item);
+                startView(TestInfoActivity.class, new ViewTask<TestInfoActivity>() {
+                    @Override
+                    public void execute() {
+                        getActivity().show(item);
+                    }
+                });
             }
 
             @Override
@@ -145,17 +153,32 @@ public class LectureInfoActivity extends BaseActivity implements LectureMvpView 
 
     @OnClick(R.id.btn_lecture_students_group)
     public void showGroup() {
-        presenter.showGroup(this, getFields().getStudentsGroup());
+        startView(StudentsGroupInfoActivity.class, new ViewTask<StudentsGroupInfoActivity>() {
+            @Override
+            public void execute() {
+                getActivity().show(getFields().getStudentsGroup());
+            }
+        });
     }
 
     @OnClick(R.id.btn_lecture_location)
     public void showLocation() {
-        presenter.showLocation(this, getFields().getLocation());
+        startView(LocationInfoActivity.class, new ViewTask<LocationInfoActivity>() {
+            @Override
+            public void execute() {
+                getActivity().show(null, null, null, null, getFields().getLocation());
+            }
+        });
     }
 
     @OnClick(R.id.btn_lecture_lecturer)
     public void showLecturer() {
-        presenter.showLecturer(this, getFields().getLecturer());
+        startView(LecturerInfoActivity.class, new ViewTask<LecturerInfoActivity>() {
+            @Override
+            public void execute() {
+                getActivity().show(getFields().getLecturer());
+            }
+        });
     }
 
     @OnClick(R.id.btn_lecture_guests)
@@ -173,7 +196,12 @@ public class LectureInfoActivity extends BaseActivity implements LectureMvpView 
 
             @Override
             public void onRowClick(LectureGuestDto item) {
-                presenter.showGuest(LectureInfoActivity.this, item);
+                startView(GuestActivity.class, new ViewTask<GuestActivity>() {
+                    @Override
+                    public void execute() {
+                        getActivity().show(item);
+                    }
+                });
             }
 
             @Override
@@ -185,7 +213,12 @@ public class LectureInfoActivity extends BaseActivity implements LectureMvpView 
 
     @OnClick(R.id.btn_lecture_name)
     public void showDiscipline() {
-        presenter.showDiscipline(this, getFields().getDiscipline());
+        startView(DisciplineInfoActivity.class, new ViewTask<DisciplineInfoActivity>() {
+            @Override
+            public void execute() {
+                getActivity().show(getFields().getDiscipline());
+            }
+        });
     }
 
     public class ViewFields extends BaseViewFields {

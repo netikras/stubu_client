@@ -7,8 +7,10 @@ import android.widget.TextView;
 
 import com.netikras.studies.studentbuddy.api.client.android.R;
 import com.netikras.studies.studentbuddy.api.client.android.conf.di.DepInjector;
+import com.netikras.studies.studentbuddy.api.client.android.conf.di.PerActivity;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.base.BaseActivity;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.base.BaseViewFields;
+import com.netikras.studies.studentbuddy.api.client.android.pieces.person.ui.impl.view.PersonInfoActivity;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.student.ui.presenter.StudentMvpPresenter;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.student.ui.view.StudentMvpView;
 import com.netikras.studies.studentbuddy.core.data.api.dto.PersonDto;
@@ -85,7 +87,12 @@ public class StudentInfoActivity extends BaseActivity implements StudentMvpView 
 
     @OnClick(value = {R.id.btn_student_name})
     public void showPerson() {
-        presenter.showPerson(this, getFields().getPerson());
+        startView(PersonInfoActivity.class, new ViewTask<PersonInfoActivity>() {
+            @Override
+            public void execute() {
+                getActivity().showPerson(getFields().getPerson());
+            }
+        });
     }
 
     public class ViewFields extends BaseViewFields {
