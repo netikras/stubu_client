@@ -217,6 +217,11 @@
     <string name="dummy_txt_comment_datetime_created">2017-04-12 07:43</string>
     <string name="lbl_comment_create_datetime">Sukurta</string>
     <string name="lbl_comment_tags">Žymos</string>
+    <string name="main_menu_logout">Atsijungti</string>
+    <string name="yesno_question_logout">Ar tikrai norite atsijungti?</string>
+    <string name="yesno_choice_yes">Taip</string>
+    <string name="yesno_choice_no">Ne</string>
+    <string name="yesno_question_delete">Ar tikrai norite pašalinti įrašą?</string>
 
 
 </resources>

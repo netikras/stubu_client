@@ -39,7 +39,8 @@ public class RoleActivity extends BaseActivity implements RoleMvpView {
         onAttach(this);
         presenter.onAttach(this);
         fields = initFields(new ViewFields());
-//        addMenu(R.id.btn_role_main_menu);
+        addMenu();
+        executeTask();
     }
 
     class ViewFields extends BaseViewFields {

@@ -2,7 +2,6 @@ package com.netikras.studies.studentbuddy.api.client.android.pieces.base;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -16,6 +15,8 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.text.InputType;
 import android.util.AttributeSet;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -39,8 +40,14 @@ import com.netikras.studies.studentbuddy.api.client.android.util.CommonUtils;
 import com.netikras.studies.studentbuddy.api.client.android.util.Exchange;
 import com.netikras.studies.studentbuddy.api.client.android.util.NetworkUtils;
 import com.netikras.studies.studentbuddy.api.client.android.util.misc.YesNoDialog;
+import com.netikras.studies.studentbuddy.core.data.api.dto.meta.UserDto;
 import com.netikras.tools.common.exception.ErrorBody;
 import com.netikras.tools.common.exception.ErrorsCollection;
+
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 import javax.inject.Inject;
 
@@ -56,7 +63,7 @@ import static com.netikras.tools.common.security.IntegrityUtils.isNullOrEmpty;
 public abstract class BaseActivity extends AppCompatActivity
         implements MvpView, BaseFragment.Callback {
 
-    private ProgressDialog mProgressDialog;
+//    private ProgressDialog mProgressDialog;
 
     private Unbinder mUnBinder;
 
@@ -66,7 +73,6 @@ public abstract class BaseActivity extends AppCompatActivity
 
     @Inject
     App app;
-
     @Inject
     Exchange exchange;
 
@@ -74,6 +80,10 @@ public abstract class BaseActivity extends AppCompatActivity
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         DepInjector.inject(this);
+    }
+
+    protected UserDto getCurrentUser() {
+        return app.getCurrentUser();
     }
 
     public ActivityComponent getActivityComponent() {
@@ -112,15 +122,17 @@ public abstract class BaseActivity extends AppCompatActivity
 
     @Override
     public void showLoading() {
-        hideLoading();
-        mProgressDialog = CommonUtils.showLoadingDialog(this);
+//        hideLoading();
+//        mProgressDialog = CommonUtils.showLoadingDialog(this);
+        CommonUtils.showSpinner(this);
     }
 
     @Override
     public void hideLoading() {
-        if (mProgressDialog != null && mProgressDialog.isShowing()) {
-            mProgressDialog.cancel();
-        }
+//        if (mProgressDialog != null && mProgressDialog.isShowing()) {
+//            mProgressDialog.cancel();
+//        }
+        CommonUtils.hideSpinner(this);
     }
 
     private void showSnackBar(Context context, String message) {
@@ -223,12 +235,17 @@ public abstract class BaseActivity extends AppCompatActivity
 //        executeTask();
     }
 
-    protected void addMenu(int menu) {
-        Button menuButton = findViewById(menu);
+    protected List<Integer> excludeMenuItems() {
+        return Arrays.asList();
+    }
+
+    protected void addMenu() {
+        int btnId = R.id.btn_main_menu;
+        Button menuButton = findViewById(btnId);
         menuButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                PopupMenu menu = app.getMainMenu(BaseActivity.this, v);
+                PopupMenu menu = getMainMenu(BaseActivity.this, v);
 
                 menu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
 
@@ -245,7 +262,7 @@ public abstract class BaseActivity extends AppCompatActivity
                                 startActivity(getContext(), UserInfoActivity.class, new ViewTask<UserInfoActivity>() {
                                     @Override
                                     public void execute() {
-                                        getActivity().showUser(app.getCurrentUser());
+                                        getActivity().showUser(getCurrentUser());
                                     }
                                 });
                                 return true;
@@ -269,15 +286,33 @@ public abstract class BaseActivity extends AppCompatActivity
                                 return true;
                             case R.id.main_menu_delete:
                                 new YesNoDialog()
-                                        .text("Ar tikrai norite pašalinti įrašą?")
-                                        .yes("Taip", new YesNoDialog.OnClick() {
+                                        .text(getString(R.string.yesno_question_delete))
+                                        .yes(getString(R.string.yesno_choice_yes), new YesNoDialog.OnClick() {
                                             @Override
                                             protected void onClick(DialogInterface dialog) {
                                                 menuOnClickDelete();
                                                 super.onClick(dialog);
                                             }
                                         })
-                                        .no("Ne", null)
+                                        .no(getString(R.string.yesno_choice_no), null)
+                                        .show(getContext());
+                                return true;
+                            case R.id.main_menu_logout:
+                                new YesNoDialog()
+                                        .text(getString(R.string.yesno_question_logout))
+                                        .yes(getString(R.string.yesno_choice_yes), new YesNoDialog.OnClick() {
+                                            @Override
+                                            protected void onClick(DialogInterface dialog) {
+                                                super.onClick(dialog);
+                                                startView(LoginActivity.class, new ViewTask<LoginActivity>() {
+                                                    @Override
+                                                    public void execute() {
+                                                        getActivity().proceedLogout();
+                                                    }
+                                                });
+                                            }
+                                        })
+                                        .no(getString(R.string.yesno_choice_no), null)
                                         .show(getContext());
                                 return true;
                         }
@@ -288,6 +323,54 @@ public abstract class BaseActivity extends AppCompatActivity
             }
         });
     }
+
+    public PopupMenu getMainMenu(Context context, View view) {
+        PopupMenu menu = new PopupMenu(context, view);
+        MenuInflater inflater = menu.getMenuInflater();
+        inflater.inflate(R.menu.main_menu, menu.getMenu());
+
+        removeUnavailableItems(menu.getMenu());
+//        menu.show();
+        return menu;
+    }
+
+    private void removeUnavailableItems(Menu menu) {
+
+        Set<Integer> excluded = new HashSet<>(excludeMenuItems());
+
+        if (getCurrentUser() == null) {
+            excluded.add(R.id.main_menu_user);
+            excluded.add(R.id.main_menu_logout);
+            excluded.add(R.id.main_menu_create);
+            excluded.add(R.id.main_menu_delete);
+            excluded.add(R.id.main_menu_edit);
+            excluded.add(R.id.main_menu_save);
+            excluded.add(R.id.main_menu_search);
+            setVisible(menu.findItem(R.id.main_menu_login), true);
+        } else {
+            setVisible(menu.findItem(R.id.main_menu_user), true);
+            excluded.add(R.id.main_menu_login);
+            setVisible(menu.findItem(R.id.main_menu_logout), true);
+        }
+
+        if (!isNullOrEmpty(excluded)) {
+            for (int item : excluded) {
+                setVisible(menu.findItem(item), false);
+            }
+        }
+    }
+
+
+
+
+    private void setVisible(MenuItem item, boolean show) {
+        if (item == null) {
+            return;
+        }
+
+        item.setVisible(show);
+    }
+
 
 
     protected void menuOnClickEdit() {
@@ -359,15 +442,29 @@ public abstract class BaseActivity extends AppCompatActivity
     }
 
     protected class ErrorsAwareSubscriber<T> extends ServiceRequest.Subscriber<T> {
+
+        @Override
+        public void executeOnError(ErrorsCollection errors) {
+            hideLoading();
+            super.executeOnError(errors);
+        }
+
+        @Override
+        protected void executeOnSuccess(T response) {
+            hideLoading();
+            super.executeOnSuccess(response);
+        }
+
         @Override
         public void onError(ErrorsCollection errors) {
             if (isNullOrEmpty(errors)) {
                 return;
             }
             for (ErrorBody error : errors) {
-                BaseActivity.this.onError(error.getMessage1());
+                BaseActivity.this.onError(error.getMessage1() + "\n" + error.getMessage2());
             }
         }
+
     }
 
 

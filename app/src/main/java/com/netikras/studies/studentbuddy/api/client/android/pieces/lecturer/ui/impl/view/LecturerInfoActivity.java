@@ -20,6 +20,7 @@ import com.netikras.studies.studentbuddy.core.data.api.dto.PersonDto;
 import com.netikras.studies.studentbuddy.core.data.api.dto.school.DisciplineDto;
 import com.netikras.studies.studentbuddy.core.data.api.dto.school.LecturerDto;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
@@ -39,6 +40,11 @@ public class LecturerInfoActivity extends BaseActivity implements LecturerMvpVie
     LecturerMvpPresenter<LecturerMvpView> presenter;
 
     @Override
+    protected List<Integer> excludeMenuItems() {
+        return Arrays.asList(R.id.main_menu_create, R.id.main_menu_delete);
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_lecturer_info);
@@ -50,7 +56,8 @@ public class LecturerInfoActivity extends BaseActivity implements LecturerMvpVie
         onAttach(this);
         presenter.onAttach(this);
         fields = initFields(new ViewFields());
-        addMenu(R.id.btn_lecturer_main_menu);
+        addMenu();
+        executeTask();
     }
 
     @Override

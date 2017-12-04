@@ -25,11 +25,13 @@ public class YesNoDialog {
 
     public YesNoDialog yes(String name, OnClick onClick) {
         yesName = name;
+        onYes = onClick;
         return this;
     }
 
     public YesNoDialog no(String name, OnClick onClick) {
         noName = name;
+        onNo = onClick;
         return this;
     }
 

@@ -8,4 +8,7 @@ import com.netikras.studies.studentbuddy.api.client.android.pieces.base.MvpView;
 
 public interface LoginMvpView extends MvpView {
 
+    void proceedLogin();
+
+    void proceedLogout();
 }

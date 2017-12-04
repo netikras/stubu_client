@@ -20,6 +20,7 @@ import com.netikras.tools.common.remote.RemoteEndpointServer;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -35,6 +36,11 @@ public class SettingsActivity extends BaseActivity implements SettingsMvpView {
     SettingsMvpPresenter<SettingsMvpView> presenter;
 
     private ViewFields fields;
+
+    @Override
+    protected List<Integer> excludeMenuItems() {
+        return Arrays.asList(R.id.main_menu_create, R.id.main_menu_delete, R.id.main_menu_settings, R.id.main_menu_search, R.id.main_menu_login);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,7 +66,8 @@ public class SettingsActivity extends BaseActivity implements SettingsMvpView {
         onAttach(this);
         presenter.onAttach(this);
         fields = initFields(new SettingsActivity.ViewFields());
-        addMenu(R.id.btn_settings_main_menu);
+        addMenu();
+        executeTask();
     }
 
     public static void start(Context context) {

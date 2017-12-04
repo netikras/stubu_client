@@ -39,6 +39,11 @@ public class DisciplineInfoActivity extends BaseActivity implements DisciplineMv
     private ViewFields fields;
 
     @Override
+    protected List<Integer> excludeMenuItems() {
+        return Arrays.asList(R.id.main_menu_create, R.id.main_menu_delete);
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_discipline_info);
@@ -50,7 +55,8 @@ public class DisciplineInfoActivity extends BaseActivity implements DisciplineMv
         onAttach(this);
         presenter.onAttach(this);
         fields = initFields(new ViewFields());
-        addMenu(R.id.btn_discipline_main_menu);
+        addMenu();
+        executeTask();
     }
 
     @Override

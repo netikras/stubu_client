@@ -20,6 +20,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
+
         <android.support.constraint.ConstraintLayout
             android:layout_width="0dp"
             android:layout_height="0dp"
@@ -31,6 +32,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
+
 
             <EditText
                 android:id="@+id/txt_edit_login_password"
@@ -92,4 +94,9 @@
                 app:layout_constraintVertical_bias="0.0" />
         </android.support.constraint.ConstraintLayout>
     </android.support.constraint.ConstraintLayout>
+
+    <include layout="@layout/include_main_menu_button"/>
+    <!-- Progress bar overlay; shown while login is in progress -->
+    <include layout="@layout/include_progress_overlay"/>
+
 </android.support.constraint.ConstraintLayout>

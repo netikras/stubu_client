@@ -20,4 +20,7 @@
         android:layout_alignParentStart="true"
         android:layout_below="@+id/toolbar_simple_list"
         android:layout_marginTop="8dp" />
+
+    <!-- Progress bar overlay; shown while login is in progress -->
+    <include layout="@layout/include_progress_overlay"/>
 </RelativeLayout>

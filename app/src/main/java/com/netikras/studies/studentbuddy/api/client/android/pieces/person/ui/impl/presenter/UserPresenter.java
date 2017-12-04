@@ -24,16 +24,25 @@ public class UserPresenter<V extends UserMvpView> extends BasePresenter<V> imple
     @Override
     public void delete(Subscriber<Boolean> subscriber, String id) {
         getDataStore().delete(id, subscriber);
+        getDataStore().processOrders(getContext());
     }
 
     @Override
     public void create(Subscriber<UserDto> subscriber, UserDto collect) {
         getDataStore().create(collect, subscriber);
+        getDataStore().processOrders(getContext());
     }
 
     @Override
     public void update(Subscriber<UserDto> subscriber, UserDto collect) {
         getDataStore().update(collect, subscriber);
+        getDataStore().processOrders(getContext());
+    }
+
+    @Override
+    public void changePassword(Subscriber<Boolean> subscriber, UserDto collect) {
+        getDataStore().changePassword(collect.getId(), collect.getPassword(), subscriber);
+        getDataStore().processOrders(getContext());
     }
 
 

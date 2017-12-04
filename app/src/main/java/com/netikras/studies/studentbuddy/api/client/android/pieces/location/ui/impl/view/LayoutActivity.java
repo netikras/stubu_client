@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.widget.TextView;
 
+import com.netikras.studies.studentbuddy.api.client.android.R;
 import com.netikras.studies.studentbuddy.api.client.android.conf.di.DepInjector;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.base.BaseActivity;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.base.BaseViewFields;
@@ -12,6 +13,7 @@ import com.netikras.studies.studentbuddy.api.client.android.pieces.location.ui.v
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -28,9 +30,14 @@ public class LayoutActivity extends BaseActivity implements LayoutMvpView {
     LayoutMvpPresenter<LayoutMvpView> presenter;
 
     @Override
+    protected List<Integer> excludeMenuItems() {
+        return Arrays.asList(R.id.main_menu_create, R.id.main_menu_delete);
+    }
+
+    @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        setContentView(R.layout.);
+        setContentView(R.layout.activity_floor_layout);
         setUp();
     }
 
@@ -40,7 +47,8 @@ public class LayoutActivity extends BaseActivity implements LayoutMvpView {
         onAttach(this);
         presenter.onAttach(this);
         fields = initFields(new ViewFields());
-//        addMenu(R.id.btn_layout_main_menu);
+        addMenu();
+        executeTask();
     }
 
     class ViewFields extends BaseViewFields {

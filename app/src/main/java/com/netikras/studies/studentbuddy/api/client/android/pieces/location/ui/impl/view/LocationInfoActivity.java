@@ -1,6 +1,5 @@
 package com.netikras.studies.studentbuddy.api.client.android.pieces.location.ui.impl.view;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.EditText;
@@ -19,7 +18,9 @@ import com.netikras.studies.studentbuddy.core.data.api.dto.location.BuildingFloo
 import com.netikras.studies.studentbuddy.core.data.api.dto.location.BuildingSectionDto;
 import com.netikras.studies.studentbuddy.core.data.api.dto.location.LectureRoomDto;
 
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -35,6 +36,11 @@ public class LocationInfoActivity extends BaseActivity implements LocationMvpVie
     private ViewFields fields;
 
     @Override
+    protected List<Integer> excludeMenuItems() {
+        return Arrays.asList(R.id.main_menu_create, R.id.main_menu_delete);
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_location_info);
@@ -46,7 +52,8 @@ public class LocationInfoActivity extends BaseActivity implements LocationMvpVie
         onAttach(this);
         presenter.onAttach(this);
         fields = initFields(new ViewFields());
-        addMenu(R.id.btn_location_main_menu);
+        addMenu();
+        executeTask();
     }
 
     @Override

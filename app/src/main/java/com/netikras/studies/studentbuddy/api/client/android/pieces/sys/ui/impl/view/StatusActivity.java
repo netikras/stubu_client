@@ -39,7 +39,8 @@ public class StatusActivity extends BaseActivity implements StatusMvpView {
         onAttach(this);
         presenter.onAttach(this);
         fields = initFields(new ViewFields());
-//        addMenu(R.id.btn_status_main_menu);
+        addMenu();
+        executeTask();
     }
 
     class ViewFields extends BaseViewFields {

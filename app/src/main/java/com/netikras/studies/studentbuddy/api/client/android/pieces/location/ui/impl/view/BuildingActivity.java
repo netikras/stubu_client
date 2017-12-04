@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.widget.TextView;
 
+import com.netikras.studies.studentbuddy.api.client.android.R;
 import com.netikras.studies.studentbuddy.api.client.android.conf.di.DepInjector;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.base.BaseActivity;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.base.BaseViewFields;
@@ -13,6 +14,7 @@ import com.netikras.studies.studentbuddy.core.data.api.dto.location.BuildingDto;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -27,6 +29,11 @@ public class BuildingActivity extends BaseActivity implements BuildingMvpView {
 
     @Inject
     BuildingMvpPresenter<BuildingMvpView> presenter;
+
+    @Override
+    protected List<Integer> excludeMenuItems() {
+        return Arrays.asList(R.id.main_menu_create, R.id.main_menu_delete);
+    }
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {

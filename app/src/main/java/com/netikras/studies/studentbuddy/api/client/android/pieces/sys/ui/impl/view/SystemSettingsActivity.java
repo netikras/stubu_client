@@ -39,7 +39,8 @@ public class SystemSettingsActivity extends BaseActivity implements SystemSettin
         onAttach(this);
         presenter.onAttach(this);
         fields = initFields(new ViewFields());
-//        addMenu(R.id.btn_syssett_main_menu);
+        addMenu();
+        executeTask();
     }
 
     class ViewFields extends BaseViewFields {

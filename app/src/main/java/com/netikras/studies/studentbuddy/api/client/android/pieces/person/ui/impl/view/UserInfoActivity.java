@@ -50,6 +50,11 @@ public class UserInfoActivity extends BaseActivity implements UserMvpView {
     }
 
     @Override
+    protected List<Integer> excludeMenuItems() {
+        return Arrays.asList(R.id.main_menu_create, R.id.main_menu_delete, R.id.main_menu_user);
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_info);
@@ -63,7 +68,7 @@ public class UserInfoActivity extends BaseActivity implements UserMvpView {
         fields = initFields(new ViewFields());
         onAttach(this);
         presenter.onAttach(this);
-        addMenu(R.id.btn_user_main_menu);
+        addMenu();
         executeTask();
     }
 
@@ -74,6 +79,7 @@ public class UserInfoActivity extends BaseActivity implements UserMvpView {
     @Override
     protected void menuOnClickDelete() {
         getFields().enableEdit(false);
+        showLoading();
         presenter.delete(new ErrorsAwareSubscriber<Boolean>() {
             @Override
             public void onSuccess(Boolean response) {
@@ -93,6 +99,9 @@ public class UserInfoActivity extends BaseActivity implements UserMvpView {
     protected void menuOnClickSave() {
         getFields().enableEdit(false);
         UserDto userDto = collect();
+        getFields().setPassword("");
+
+        showLoading();
         Subscriber<UserDto> subscriber = new ErrorsAwareSubscriber<UserDto>() {
             @Override
             public void onSuccess(UserDto response) {
@@ -103,26 +112,31 @@ public class UserInfoActivity extends BaseActivity implements UserMvpView {
         if (isNullOrEmpty(getFields().getId())) {
             presenter.create(subscriber, userDto);
         } else {
-            presenter.update(subscriber, userDto);
+            if (!isNullOrEmpty(userDto.getPassword())) {
+                presenter.changePassword(new ErrorsAwareSubscriber<Boolean>() {
+                    @Override
+                    public void onSuccess(Boolean response) {
+                        super.onSuccess(response);
+                    }
+                }, userDto);
+            } else {
+                presenter.update(subscriber, userDto);
+            }
         }
     }
 
     @Override
     public void showUser(UserDto userDto) {
-        fields.reset();
+        getFields().reset();
 
         if (userDto == null) {
             return;
         }
-        PersonDto personDto = userDto.getPerson();
 
-        if (personDto != null) {
-            fields.setPersonName(personDto.getFirstName() + " " + personDto.getLastName());
-            fields.setIdentification(personDto.getIdentification());
-        }
+        getFields().setPerson(userDto.getPerson());
 
-        fields.setUsername(userDto.getName());
-        fields.setId(userDto.getId());
+        getFields().setUsername(userDto.getName());
+        getFields().setId(userDto.getId());
     }
 
 
@@ -139,11 +153,10 @@ public class UserInfoActivity extends BaseActivity implements UserMvpView {
 
     private UserDto collect() {
         UserDto user = new UserDto();
-        user.setId(fields.getId());
-        user.setName(fields.getUsername());
-        user.setPassword(fields.getPassword());
-        user.setPerson(new PersonDto());
-        user.getPerson().setIdentification(fields.getIdentification());
+        user.setId(getFields().getId());
+        user.setName(getFields().getUsername());
+        user.setPassword(getFields().getPassword());
+        user.setPerson(getFields().getPerson());
         return user;
     }
 
@@ -211,6 +224,18 @@ public class UserInfoActivity extends BaseActivity implements UserMvpView {
 
         public void setPersonName(String personName) {
             setString(this.personName, personName);
+        }
+
+        public void setPerson(PersonDto person) {
+            setTag(this.personName, person);
+            if (person != null) {
+                setPersonName(person.getFirstName() + " " + person.getLastName());
+                setIdentification(person.getIdentification());
+            }
+        }
+
+        public PersonDto getPerson() {
+            return (PersonDto) getTag(personName);
         }
 
         @Override

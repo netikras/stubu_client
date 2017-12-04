@@ -16,7 +16,7 @@ public interface UserDataStore extends CrudDataStore<String, UserDto> {
 
     void getByName(String name, Subscriber<UserDto>... subscribers);
 
-    void changePassword(String id, String newPassword, Subscriber<UserDto>... subscribers);
+    void changePassword(String id, String newPassword, Subscriber<Boolean>... subscribers);
 
     void assignRole(String id, String role, Subscriber<UserDto>... subscribers);
 

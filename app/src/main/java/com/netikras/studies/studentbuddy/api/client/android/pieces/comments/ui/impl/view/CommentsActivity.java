@@ -16,6 +16,7 @@ import com.netikras.studies.studentbuddy.api.client.android.pieces.person.ui.imp
 import com.netikras.studies.studentbuddy.core.data.api.dto.PersonDto;
 import com.netikras.studies.studentbuddy.core.data.api.dto.meta.CommentDto;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
@@ -41,6 +42,11 @@ public class CommentsActivity extends BaseActivity implements CommentsMvpView {
     CommentsMvpPresenter<CommentsMvpView> presenter;
 
     @Override
+    protected List<Integer> excludeMenuItems() {
+        return Arrays.asList();
+    }
+
+    @Override
     public void onCreate(Bundle saved) {
         super.onCreate(saved);
         setContentView(R.layout.activity_comment);
@@ -53,7 +59,8 @@ public class CommentsActivity extends BaseActivity implements CommentsMvpView {
         onAttach(this);
         presenter.onAttach(this);
         fields = initFields(new ViewFields());
-        addMenu(R.id.btn_comment_main_menu);
+        addMenu();
+        executeTask();
     }
 
     public ViewFields getFields() {

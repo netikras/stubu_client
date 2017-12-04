@@ -40,7 +40,8 @@ public class GuestActivity extends BaseActivity implements GuestMvpView {
         onAttach(this);
         presenter.onAttach(this);
         fields = initFields(new ViewFields());
-//        addMenu(R.id.btn_guest_main_menu);
+        addMenu();
+        executeTask();
     }
 
     @Override

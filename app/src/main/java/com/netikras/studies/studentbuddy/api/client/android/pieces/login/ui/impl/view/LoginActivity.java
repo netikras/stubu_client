@@ -4,10 +4,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.netikras.studies.studentbuddy.api.client.android.App;
 import com.netikras.studies.studentbuddy.api.client.android.R;
 import com.netikras.studies.studentbuddy.api.client.android.conf.di.DepInjector;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.base.BaseActivity;
@@ -19,6 +19,7 @@ import com.netikras.studies.studentbuddy.core.data.api.dto.meta.UserDto;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -32,6 +33,8 @@ public class LoginActivity extends BaseActivity implements LoginMvpView {
 
 
     @Inject
+    App app;
+    @Inject
     LoginMvpPresenter<LoginMvpView> presenter;
 
     private ViewFields fields;
@@ -42,6 +45,11 @@ public class LoginActivity extends BaseActivity implements LoginMvpView {
     }
 
     @Override
+    protected List<Integer> excludeMenuItems() {
+        return Arrays.asList(R.id.main_menu_create, R.id.main_menu_delete, R.id.main_menu_edit);
+    }
+
+    @Override
     protected void setUp() {
         DepInjector.inject(this);
         onAttach(this);
@@ -49,6 +57,8 @@ public class LoginActivity extends BaseActivity implements LoginMvpView {
         fields = initFields(new ViewFields());
         fields.enableEdit(true);
         fields.setUsername(presenter.getLastLoginUsername());
+        addMenu();
+        executeTask();
     }
 
     @Override
@@ -58,12 +68,16 @@ public class LoginActivity extends BaseActivity implements LoginMvpView {
         setUp();
     }
 
+    @Override
     @OnClick(R.id.btn_login_proceed)
-    public void proceed() {
+    public void proceedLogin() {
         presenter.setLastLoginUsername(fields.getUsername());
+        hideKeyboard();
+        showLoading();
         presenter.proceedLogin(fields.getUsername(), fields.getPassword(), new ErrorsAwareSubscriber<UserDto>(){
             @Override
             public void onSuccess(UserDto response) {
+                finish();
                 startView(MainActivity.class, new ViewTask<MainActivity>() {
                     @Override
                     public void execute() {
@@ -72,6 +86,17 @@ public class LoginActivity extends BaseActivity implements LoginMvpView {
                 });
             }
         });
+    }
+
+    @Override
+    public void proceedLogout() {
+        showLoading();
+        presenter.logout(new ErrorsAwareSubscriber<Boolean>() {
+            @Override
+            public void onSuccess(Boolean response) {
+                app.setCurrentUser(null);
+            }
+        }, getCurrentUser());
     }
 
     public class ViewFields extends BaseViewFields {

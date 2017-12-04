@@ -50,7 +50,8 @@ public class StudentsGroupInfoActivity extends BaseActivity implements StudentsG
         onAttach(this);
         presenter.onAttach(this);
         fields = initFields(new ViewFields());
-        addMenu(R.id.btn_user_main_menu);
+        addMenu();
+        executeTask();
     }
 
     public ViewFields getFields() {

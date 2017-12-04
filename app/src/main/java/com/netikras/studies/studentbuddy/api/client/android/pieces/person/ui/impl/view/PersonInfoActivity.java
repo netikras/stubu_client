@@ -25,6 +25,7 @@ import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -41,6 +42,11 @@ public class PersonInfoActivity extends BaseActivity implements PersonMvpView {
     PersonMvpPresenter<PersonMvpView> presenter;
 
     private ViewFields fields;
+
+    @Override
+    protected List<Integer> excludeMenuItems() {
+        return Arrays.asList(R.id.main_menu_create, R.id.main_menu_delete);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,7 +69,7 @@ public class PersonInfoActivity extends BaseActivity implements PersonMvpView {
         onAttach(this);
         presenter.onAttach(this);
         fields = initFields(new ViewFields());
-        addMenu(R.id.btn_person_main_menu);
+        addMenu();
         executeTask();
     }
 
@@ -111,6 +117,8 @@ public class PersonInfoActivity extends BaseActivity implements PersonMvpView {
     @Override
     protected void menuOnClickSave() {
         getFields().enableEdit(false);
+
+        showLoading();
         Subscriber<PersonDto> subscriber = new ErrorsAwareSubscriber<PersonDto>() {
             @Override
             public void onSuccess(PersonDto response) {
@@ -203,7 +211,7 @@ public class PersonInfoActivity extends BaseActivity implements PersonMvpView {
         }
 
         public String getPhoneNo() {
-            return getString(email);
+            return getString(phoneNo);
         }
 
         public void setPhoneNo(String phoneNo) {

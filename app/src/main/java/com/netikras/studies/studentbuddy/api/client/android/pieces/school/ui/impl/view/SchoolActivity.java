@@ -41,6 +41,11 @@ public class SchoolActivity extends BaseActivity implements SchoolMvpView {
     SchoolMvpPresenter<SchoolMvpView> presenter;
 
     @Override
+    protected List<Integer> excludeMenuItems() {
+        return Arrays.asList(R.id.main_menu_create, R.id.main_menu_delete);
+    }
+
+    @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_school);
@@ -58,7 +63,8 @@ public class SchoolActivity extends BaseActivity implements SchoolMvpView {
         onAttach(this);
         presenter.onAttach(this);
         fields = initFields(new ViewFields());
-        addMenu(R.id.btn_school_main_menu);
+        addMenu();
+        executeTask();
     }
 
     public SchoolDto collect() {

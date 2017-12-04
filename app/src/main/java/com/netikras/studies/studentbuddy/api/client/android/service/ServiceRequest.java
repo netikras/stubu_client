@@ -21,11 +21,11 @@ public abstract class ServiceRequest<T> {
     }
 
     public void respondWithSuccess(T response) {
-        subscribers.forEach(s -> s.onSuccess(response));
+        subscribers.forEach(s -> s.executeOnSuccess(response));
     }
 
     public void respondWithErrors(ErrorsCollection errors) {
-        subscribers.forEach(s -> s.onError(errors));
+        subscribers.forEach(s -> s.executeOnError(errors));
     }
 
     public static class Subscriber<T> {
@@ -35,6 +35,14 @@ public abstract class ServiceRequest<T> {
 
         public void onError(ErrorsCollection errors) {
 
+        }
+
+        protected void executeOnSuccess(T response) {
+            onSuccess(response);
+        }
+
+        protected void executeOnError(ErrorsCollection errors) {
+            onError(errors);
         }
     }
 }

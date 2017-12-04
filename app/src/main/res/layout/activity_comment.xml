@@ -12,19 +12,6 @@
         android:layout_height="wrap_content"
         tools:context=".pieces.location.ui.impl.view.FloorActivity">
 
-        <Button
-            android:id="@+id/btn_comment_main_menu"
-            style="@style/Widget.AppCompat.Button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="16dp"
-            android:layout_marginTop="16dp"
-            android:background="@color/colorTransparentWhite"
-            android:text="@string/txt_main_menu"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-
         <ImageView
             android:id="@+id/img_comment_banner"
             android:layout_width="0dp"
@@ -195,5 +182,8 @@
             app:layout_constraintStart_toEndOf="@+id/txt_lbl_comment_id"
             app:layout_constraintTop_toBottomOf="@+id/txt_edit_comment_text" />
 
+        <include layout="@layout/include_main_menu_button"/>
+        <!-- Progress bar overlay; shown while login is in progress -->
+        <include layout="@layout/include_progress_overlay"/>
     </android.support.constraint.ConstraintLayout>
 </ScrollView>

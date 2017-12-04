@@ -16,6 +16,7 @@ import com.netikras.studies.studentbuddy.core.data.api.dto.school.AssignmentDto;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -36,6 +37,11 @@ public class AssignmentActivity extends BaseActivity implements AssignmentMvpVie
     AssignmentMvpPresenter<AssignmentMvpView> presenter;
 
     @Override
+    protected List<Integer> excludeMenuItems() {
+        return Arrays.asList();
+    }
+
+    @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_assignment);
@@ -48,7 +54,8 @@ public class AssignmentActivity extends BaseActivity implements AssignmentMvpVie
         onAttach(this);
         presenter.onAttach(this);
         fields = initFields(new ViewFields());
-        addMenu(R.id.btn_assignment_main_menu);
+        addMenu();
+        executeTask();
     }
 
     @Override

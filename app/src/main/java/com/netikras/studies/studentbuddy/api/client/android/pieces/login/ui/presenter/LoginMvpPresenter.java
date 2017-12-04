@@ -13,6 +13,8 @@ public interface LoginMvpPresenter<V extends LoginMvpView> extends MvpPresenter<
 
     void proceedLogin(String username, String password, Subscriber<UserDto> subscriber);
 
+    void logout(Subscriber<Boolean> subscriber, UserDto userDto);
+
     String getLastLoginUsername();
 
     void setLastLoginUsername(String username);

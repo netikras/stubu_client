@@ -64,7 +64,7 @@ public class UserDataStoreApiImpl extends ApiBasedDataStore<String, UserDto> imp
     }
 
     @Override
-    public void changePassword(String id, String newPassword, Subscriber<UserDto>... subscribers) {
+    public void changePassword(String id, String newPassword, Subscriber<Boolean>... subscribers) {
         orderData(new ServiceRequest<Boolean>() {
             @Override
             public Boolean request() {

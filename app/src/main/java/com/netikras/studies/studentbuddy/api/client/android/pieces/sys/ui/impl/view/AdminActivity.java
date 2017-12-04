@@ -39,7 +39,8 @@ public class AdminActivity extends BaseActivity implements AdminMvpView {
         onAttach(this);
         presenter.onAttach(this);
         fields = initFields(new ViewFields());
-//        addMenu(R.id.btn_admin_main_menu);
+        addMenu();
+        executeTask();
     }
 
     class ViewFields extends BaseViewFields {

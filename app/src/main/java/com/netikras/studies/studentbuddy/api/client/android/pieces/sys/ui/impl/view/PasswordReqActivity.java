@@ -39,7 +39,8 @@ public class PasswordReqActivity extends BaseActivity implements PasswordReqMvpV
         onAttach(this);
         presenter.onAttach(this);
         fields = initFields(new ViewFields());
-//        addMenu(R.id.btn_pwreq_main_menu);
+        addMenu();
+        executeTask();
     }
 
     class ViewFields extends BaseViewFields {

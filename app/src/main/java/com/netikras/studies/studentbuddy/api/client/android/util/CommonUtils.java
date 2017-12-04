@@ -15,13 +15,17 @@
 
 package com.netikras.studies.studentbuddy.api.client.android.util;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.res.AssetManager;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.provider.Settings;
+import android.view.View;
 
 import com.netikras.studies.studentbuddy.api.client.android.R;
 
@@ -57,6 +61,39 @@ public final class CommonUtils {
         progressDialog.setCancelable(false);
         progressDialog.setCanceledOnTouchOutside(false);
         return progressDialog;
+    }
+
+    public static void showSpinner(Activity activity) {
+        View spinner = activity.findViewById(R.id.progress_overlay);
+        animateView(spinner, View.VISIBLE, 0.4f, 200);
+    }
+
+    public static void hideSpinner(Activity activity) {
+        View spinner = activity.findViewById(R.id.progress_overlay);
+        animateView(spinner, View.GONE, 0, 200);
+    }
+
+    /**
+     * @param view         View to animate
+     * @param toVisibility Visibility at the end of animation
+     * @param toAlpha      Alpha at the end of animation
+     * @param duration     Animation duration in ms
+     */
+    public static void animateView(final View view, final int toVisibility, float toAlpha, int duration) {
+        boolean show = toVisibility == View.VISIBLE;
+        if (show) {
+            view.setAlpha(0);
+        }
+        view.setVisibility(View.VISIBLE);
+        view.animate()
+                .setDuration(duration)
+                .alpha(show ? toAlpha : 0)
+                .setListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        view.setVisibility(toVisibility);
+                    }
+                });
     }
 
     @SuppressLint("all")

@@ -32,8 +32,9 @@
         android:id="@+id/main_menu_search"
         android:title="@string/menu_item_search" />
 
-
-
+    <item
+        android:id="@+id/main_menu_logout"
+        android:title="@string/main_menu_logout" />
 
 
 </menu>

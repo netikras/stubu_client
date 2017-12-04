@@ -47,7 +47,8 @@ public class StudentInfoActivity extends BaseActivity implements StudentMvpView 
         onAttach(this);
         presenter.onAttach(this);
         fields = initFields(new ViewFields());
-        addMenu(R.id.btn_user_main_menu);
+        addMenu();
+        executeTask();
     }
 
 

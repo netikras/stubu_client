@@ -18,6 +18,7 @@ import com.netikras.studies.studentbuddy.core.data.api.dto.school.LectureDto;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -39,6 +40,12 @@ public class TestInfoActivity extends BaseActivity implements TestMvpView {
     @Inject
     TestMvpPresenter<TestMvpView> presenter;
 
+
+    @Override
+    protected List<Integer> excludeMenuItems() {
+        return Arrays.asList();
+    }
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,7 +59,8 @@ public class TestInfoActivity extends BaseActivity implements TestMvpView {
         onAttach(this);
         presenter.onAttach(this);
         fields = initFields(new ViewFields());
-        addMenu(R.id.btn_test_main_menu);
+        addMenu();
+        executeTask();
     }
 
 

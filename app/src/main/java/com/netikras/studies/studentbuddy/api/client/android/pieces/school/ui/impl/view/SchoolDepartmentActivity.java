@@ -43,6 +43,11 @@ public class SchoolDepartmentActivity extends BaseActivity implements SchoolDepa
     SchoolDepartmentMvpPresenter<SchoolDepartmentMvpView> presenter;
 
     @Override
+    protected List<Integer> excludeMenuItems() {
+        return Arrays.asList(R.id.main_menu_create, R.id.main_menu_delete);
+    }
+
+    @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_school_department);
@@ -55,7 +60,8 @@ public class SchoolDepartmentActivity extends BaseActivity implements SchoolDepa
         onAttach(this);
         presenter.onAttach(this);
         fields = initFields(new ViewFields());
-        addMenu(R.id.btn_school_department_main_menu);
+        addMenu();
+        executeTask();
     }
 
 

@@ -74,6 +74,12 @@ public class LoginPresenter<V extends LoginMvpView> extends BasePresenter<V> imp
     }
 
     @Override
+    public void logout(Subscriber<Boolean> subscriber, UserDto userDto) {
+        getDataStore().logout(subscriber);
+        getDataStore().processOrders(getContext());
+    }
+
+    @Override
     public String getLastLoginUsername() {
         return preferences.getLoginUsername();
     }
