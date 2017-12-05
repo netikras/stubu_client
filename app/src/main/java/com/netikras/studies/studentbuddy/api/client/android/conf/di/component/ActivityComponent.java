@@ -21,6 +21,7 @@ import com.netikras.studies.studentbuddy.api.client.android.pieces.location.ui.i
 import com.netikras.studies.studentbuddy.api.client.android.pieces.location.ui.impl.view.BuildingSectionActivity;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.location.ui.impl.view.FloorActivity;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.location.ui.impl.view.LayoutActivity;
+import com.netikras.studies.studentbuddy.api.client.android.pieces.location.ui.impl.view.LocationInfoActivity;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.location.ui.impl.view.RoomActivity;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.login.ui.impl.view.LoginActivity;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.login.ui.presenter.LoginMvpPresenter;
@@ -65,6 +66,8 @@ public interface ActivityComponent {
     void inject(Activity activity);
 
     void inject(BaseActivity activity);
+
+    void inject(LocationInfoActivity activity);
 
     void inject(SimpleListActivity activity);
 

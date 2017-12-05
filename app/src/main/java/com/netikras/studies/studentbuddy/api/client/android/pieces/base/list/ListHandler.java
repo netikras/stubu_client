@@ -2,8 +2,11 @@ package com.netikras.studies.studentbuddy.api.client.android.pieces.base.list;
 
 import android.content.Context;
 import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.BaseAdapter;
 
 import com.netikras.studies.studentbuddy.api.client.android.R;
+import com.netikras.studies.studentbuddy.core.data.api.dto.school.LectureDto;
 
 import java.util.Arrays;
 import java.util.List;
@@ -11,6 +14,7 @@ import java.util.List;
 public class ListHandler<T> {
 
     private Context context;
+    private BaseAdapter adapter;
 
     public ListRow getNewRow(View convertView) {
         return new ListRow<T>(convertView);
@@ -36,6 +40,12 @@ public class ListHandler<T> {
 
     }
 
+    public void onDataSetChanged() {
+        if (adapter != null) {
+            adapter.notifyDataSetChanged();
+        }
+    }
+
     public void setContext(Context context) {
         this.context = context;
     }
@@ -48,4 +58,7 @@ public class ListHandler<T> {
         return "";
     }
 
+    public void setAdapter(BaseAdapter adapter) {
+        this.adapter = adapter;
+    }
 }

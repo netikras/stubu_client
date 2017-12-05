@@ -10,7 +10,6 @@ import com.netikras.studies.studentbuddy.core.data.api.dto.PersonDto;
 import com.netikras.studies.studentbuddy.core.data.api.dto.meta.UserDto;
 
 import javax.inject.Inject;
-import javax.inject.Singleton;
 
 import static com.netikras.tools.common.security.IntegrityUtils.isNullOrEmpty;
 
@@ -27,6 +26,7 @@ public class AppPreferencesHelper implements PreferencesHelper {
     private static final String PREF_KEY_API_SERVER_URL = "PREF_KEY_API_SERVER_URL";
     private static final String PREF_KEY_NOTIFICATIONS_ENABLED = "PREF_KEY_NOTIFICATIONS_ENABLED";
     private static final String PREF_KEY_LOGIN_USERNAME = "PREF_KEY_LOGIN_USERNAME";
+    private static final String PREF_KEY_LECT_LIST_HOURS = "PREF_KEY_LECT_LIST_HOURS";
 
     private final SharedPreferences mPrefs;
 
@@ -52,7 +52,7 @@ public class AppPreferencesHelper implements PreferencesHelper {
 
     @Override
     public String getCurrentUserName() {
-        return getPreference(PREF_KEY_CURRENT_USER_NAME, null);
+        return getPreference(PREF_KEY_CURRENT_USER_NAME, (String) null);
     }
 
     @Override
@@ -132,6 +132,16 @@ public class AppPreferencesHelper implements PreferencesHelper {
         return getPreference(PREF_KEY_LOGIN_USERNAME, "");
     }
 
+    @Override
+    public long getLecturesListDuration() {
+        return getPreference(PREF_KEY_LECT_LIST_HOURS, 24L);
+    }
+
+    @Override
+    public void setLecturesListDuration(long hours) {
+        setPreference(PREF_KEY_LECT_LIST_HOURS, hours);
+    }
+
     private void setPreference(String key, String value) {
         mPrefs.edit().putString(key, value).apply();
     }
@@ -147,6 +157,15 @@ public class AppPreferencesHelper implements PreferencesHelper {
 
     private boolean getPreference(String key, boolean defaultValue) {
         boolean value = mPrefs.getBoolean(key, defaultValue);
+        return value;
+    }
+
+    private void setPreference(String key, Long value) {
+        mPrefs.edit().putLong(key, value).apply();
+    }
+
+    private Long getPreference(String key, Long defaultValue) {
+        Long value = mPrefs.getLong(key, defaultValue);
         return value;
     }
 }

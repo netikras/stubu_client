@@ -39,6 +39,7 @@ import com.netikras.studies.studentbuddy.api.client.android.pieces.location.ui.i
 import com.netikras.studies.studentbuddy.api.client.android.pieces.location.ui.impl.view.BuildingSectionActivity;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.location.ui.impl.view.FloorActivity;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.location.ui.impl.view.LayoutActivity;
+import com.netikras.studies.studentbuddy.api.client.android.pieces.location.ui.impl.view.LocationInfoActivity;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.location.ui.impl.view.RoomActivity;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.login.ui.impl.presenter.LoginPresenter;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.login.ui.impl.view.LoginActivity;
@@ -155,6 +156,11 @@ public class DepInjector {
     }
 
     public static ActivityComponent inject(BaseActivity activity) {
+        getActivityComponent(activity).inject(activity);
+        return getActivityComponent();
+    }
+
+    public static ActivityComponent inject(LocationInfoActivity activity) {
         getActivityComponent(activity).inject(activity);
         return getActivityComponent();
     }

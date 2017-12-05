@@ -82,4 +82,14 @@ public class GuestDataStoreApiImpl extends ApiBasedDataStore<String, LectureGues
     public void getAll(Subscriber<Collection<LectureGuestDto>>... subscribers) {
         notifyNotImplemented(subscribers);
     }
+
+    @Override
+    public void getAllByPerson(String id, Subscriber<Collection<LectureGuestDto>>... subscribers) {
+        orderData(new ServiceRequest<Collection<LectureGuestDto>>() {
+            @Override
+            public Collection<LectureGuestDto> request() {
+                return studentApiConsumer.getLectureGuestDtoAllGuestsByPerson(id);
+            }
+        }, subscribers);
+    }
 }

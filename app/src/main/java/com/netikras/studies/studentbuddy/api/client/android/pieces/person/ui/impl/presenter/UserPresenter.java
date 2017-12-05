@@ -7,8 +7,12 @@ import com.netikras.studies.studentbuddy.api.client.android.pieces.person.ui.pre
 import com.netikras.studies.studentbuddy.api.client.android.pieces.person.ui.view.UserMvpView;
 import com.netikras.studies.studentbuddy.api.client.android.service.ServiceRequest.Subscriber;
 import com.netikras.studies.studentbuddy.core.data.api.dto.meta.UserDto;
+import com.netikras.tools.common.exception.ErrorBody;
+import com.netikras.tools.common.exception.ErrorsCollection;
 
 import javax.inject.Inject;
+
+import static com.netikras.tools.common.security.IntegrityUtils.isNullOrEmpty;
 
 /**
  * Created by netikras on 17.10.30.
@@ -43,6 +47,32 @@ public class UserPresenter<V extends UserMvpView> extends BasePresenter<V> imple
     public void changePassword(Subscriber<Boolean> subscriber, UserDto collect) {
         getDataStore().changePassword(collect.getId(), collect.getPassword(), subscriber);
         getDataStore().processOrders(getContext());
+    }
+
+    @Override
+    public void fetchPerson(Subscriber<UserDto> subscriber, UserDto userDto) {
+        if (userDto != null) {
+            if (subscriber != null) {
+                if (userDto.getPerson() != null) {
+                    subscriber.executeOnSuccess(userDto);
+                    return;
+                }
+                if (!isNullOrEmpty(userDto.getId())) {
+                    getDataStore().getById(userDto.getId(), subscriber);
+                    getDataStore().processOrders(getContext());
+                    return;
+                }
+                if (!isNullOrEmpty(userDto.getName())) {
+                    getDataStore().getByName(userDto.getName(), subscriber);
+                    getDataStore().processOrders(getContext());
+                    return;
+                }
+            }
+        }
+
+        if (subscriber != null) {
+            subscriber.executeOnError(new ErrorBody().setMessage1("Unable to fetch User's person"));
+        }
     }
 
 

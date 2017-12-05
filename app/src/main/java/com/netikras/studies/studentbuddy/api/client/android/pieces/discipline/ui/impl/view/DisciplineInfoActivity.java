@@ -17,7 +17,6 @@ import com.netikras.studies.studentbuddy.api.client.android.pieces.discipline.ui
 import com.netikras.studies.studentbuddy.api.client.android.pieces.lecturer.ui.impl.view.LecturerInfoActivity;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.school.ui.impl.view.SchoolActivity;
 import com.netikras.studies.studentbuddy.core.data.api.dto.school.DisciplineDto;
-import com.netikras.studies.studentbuddy.core.data.api.dto.school.LectureDto;
 import com.netikras.studies.studentbuddy.core.data.api.dto.school.LecturerDto;
 import com.netikras.studies.studentbuddy.core.data.api.dto.school.SchoolDto;
 
@@ -47,6 +46,7 @@ public class DisciplineInfoActivity extends BaseActivity implements DisciplineMv
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_discipline_info);
+        setUp();
     }
 
     @Override
@@ -64,6 +64,7 @@ public class DisciplineInfoActivity extends BaseActivity implements DisciplineMv
         return fields;
     }
 
+    @Override
     public void show(DisciplineDto disciplineDto) {
         getFields().reset();
 
@@ -82,7 +83,7 @@ public class DisciplineInfoActivity extends BaseActivity implements DisciplineMv
     public DisciplineDto collect() {
         DisciplineDto dto = new DisciplineDto();
 
-        dto.setId(fields.getId());
+        dto.setId(getFields().getId());
         dto.setDescription(getFields().getDescription());
         dto.setSchool(getFields().getSchool());
         dto.setTitle(getFields().getName());
@@ -163,6 +164,9 @@ public class DisciplineInfoActivity extends BaseActivity implements DisciplineMv
         @BindView(R.id.btn_discipline_lecturers)
         Button lecturers;
 
+        @BindView(R.id.txt_lbl_discipline_id)
+        TextView lblId;
+
 
         public String getId() {
             return getString(id);
@@ -233,7 +237,20 @@ public class DisciplineInfoActivity extends BaseActivity implements DisciplineMv
 
         @Override
         protected Collection<TextView> getEditableFields() {
-            return Arrays.asList(name, description, school, lecturers);
+            return Arrays.asList(name, description);
+        }
+
+        @Override
+        public void enableEdit(boolean enable) {
+            super.enableEdit(enable);
+
+            if (enable) {
+                setVisible(lblId, true);
+                setVisible(id, true);
+            } else {
+                setVisible(lblId, false);
+                setVisible(id, null);
+            }
         }
     }
 }

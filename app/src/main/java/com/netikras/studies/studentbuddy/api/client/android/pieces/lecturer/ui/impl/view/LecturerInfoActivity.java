@@ -48,6 +48,7 @@ public class LecturerInfoActivity extends BaseActivity implements LecturerMvpVie
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_lecturer_info);
+        setUp();
     }
 
     @Override
@@ -152,6 +153,9 @@ public class LecturerInfoActivity extends BaseActivity implements LecturerMvpVie
         @BindView(R.id.btn_lecturer_name)
         Button name;
 
+        @BindView(R.id.txt_lbl_lecturer_id)
+        TextView lblId;
+
         public String getId() {
             return getString(id);
         }
@@ -209,7 +213,25 @@ public class LecturerInfoActivity extends BaseActivity implements LecturerMvpVie
 
         @Override
         protected Collection<TextView> getAllFields() {
-            return null;
+            return Arrays.asList(id, degree, disciplines, name);
+        }
+
+        @Override
+        protected Collection<TextView> getEditableFields() {
+            return Arrays.asList(degree);
+        }
+
+        @Override
+        public void enableEdit(boolean enable) {
+            super.enableEdit(enable);
+
+            if (enable) {
+                setVisible(id, true);
+                setVisible(lblId, true);
+            } else {
+                setVisible(id, null);
+                setVisible(lblId, false);
+            }
         }
     }
 }

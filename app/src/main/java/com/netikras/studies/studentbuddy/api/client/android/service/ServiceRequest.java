@@ -1,5 +1,6 @@
 package com.netikras.studies.studentbuddy.api.client.android.service;
 
+import com.netikras.tools.common.exception.ErrorBody;
 import com.netikras.tools.common.exception.ErrorsCollection;
 
 import java.util.ArrayList;
@@ -37,12 +38,38 @@ public abstract class ServiceRequest<T> {
 
         }
 
-        protected void executeOnSuccess(T response) {
+        public void executeOnSuccess(T response) {
             onSuccess(response);
         }
 
-        protected void executeOnError(ErrorsCollection errors) {
+        public void executeOnError(ErrorsCollection errors) {
             onError(errors);
+        }
+
+        public void executeOnError(ErrorBody errorBody) {
+            ErrorsCollection errorBodies = new ErrorsCollection();
+            errorBodies.add(errorBody);
+            executeOnError(errorBodies);
+        }
+    }
+
+    public static class Result<T> {
+        private T value;
+
+        public Result (T value) {
+            setValue(value);
+        }
+
+        public Result () {
+
+        }
+
+        public T getValue() {
+            return value;
+        }
+
+        public void setValue(T value) {
+            this.value = value;
         }
     }
 }

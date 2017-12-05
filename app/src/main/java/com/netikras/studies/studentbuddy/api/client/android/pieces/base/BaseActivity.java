@@ -284,6 +284,9 @@ public abstract class BaseActivity extends AppCompatActivity
                             case R.id.main_menu_save:
                                 menuOnClickSave();
                                 return true;
+                            case R.id.main_menu_refresh:
+                                menuOnClickRefresh();
+                                return true;
                             case R.id.main_menu_delete:
                                 new YesNoDialog()
                                         .text(getString(R.string.yesno_question_delete))
@@ -389,6 +392,10 @@ public abstract class BaseActivity extends AppCompatActivity
 
     }
 
+    protected void menuOnClickRefresh() {
+
+    }
+
 
     protected <F extends BaseViewFields> F initFields(F fields) {
         ButterKnife.bind(fields, this);
@@ -450,7 +457,7 @@ public abstract class BaseActivity extends AppCompatActivity
         }
 
         @Override
-        protected void executeOnSuccess(T response) {
+        public void executeOnSuccess(T response) {
             hideLoading();
             super.executeOnSuccess(response);
         }

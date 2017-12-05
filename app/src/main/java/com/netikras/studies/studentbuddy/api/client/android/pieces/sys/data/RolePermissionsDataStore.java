@@ -13,7 +13,9 @@ public interface RolePermissionsDataStore extends CrudDataStore<String, RolePerm
 
     void create(String roleName, String resourceName, String actionName, String resourceId, Boolean strict, ServiceRequest.Subscriber<RolePermissionDto>... subscribers);
 
-    void delete(String roleName, String resourceName, String actionName, String resourceId, ServiceRequest.Subscriber<Boolean>... subscribers);
+    void deleteById(String rolename, String id, ServiceRequest.Subscriber<Boolean>... subscribers);
+
+    void delete(String roleName, String resourceName, String actionName, String resourceId, Boolean strict, ServiceRequest.Subscriber<Boolean>... subscribers);
 
     void refresh(ServiceRequest.Subscriber<Boolean>... subscribers);
 }

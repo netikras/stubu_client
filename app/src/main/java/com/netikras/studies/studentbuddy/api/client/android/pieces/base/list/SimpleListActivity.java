@@ -71,9 +71,6 @@ public class SimpleListActivity extends BaseActivity {
 
         handler.setContext(this);
 
-//        setContentView(handler.getActivityLayout());
-
-
         getFields().setTitle(handler.getToolbarText());
 
         ArrayAdapter<LectureDto> adapter = new ArrayAdapter<LectureDto>(this, handler.getRowLayout(), handler.getListData()) {
@@ -95,6 +92,8 @@ public class SimpleListActivity extends BaseActivity {
                 return convertView;
             }
         };
+
+        handler.setAdapter(adapter);
         getFields().getListView().setAdapter(adapter);
 
         getFields().getListView().setOnItemClickListener(new OnItemClickListener() {
@@ -128,11 +127,7 @@ public class SimpleListActivity extends BaseActivity {
         @BindView(R.id.toolbar_simple_list)
         Toolbar toolbar;
 
-        public ViewFields() {
-//            toolbar = findViewById(R.id.toolbar_simple_list);
-//            listView = findViewById(R.id.list_simple_list);
-//            System.out.println("List view: " + listView);
-        }
+        public ViewFields() {}
 
         public String getTitle() {
             return toolbar.getTitle() == null ? "" : toolbar.getTitle().toString();

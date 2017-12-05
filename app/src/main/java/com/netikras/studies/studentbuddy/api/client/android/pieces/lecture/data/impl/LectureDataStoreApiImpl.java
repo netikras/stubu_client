@@ -123,6 +123,16 @@ public class LectureDataStoreApiImpl extends ApiBasedDataStore<String, LectureDt
         }, subscribers);
     }
 
+    @Override
+    public void getAllByGuest(String id, Long after, Long before, Subscriber<Collection<LectureDto>>... subscribers) {
+        orderData(new ServiceRequest<Collection<LectureDto>>() {
+            @Override
+            public Collection<LectureDto> request() {
+                return lecturesApiConsumer.getLectureDtoAllByGuestIdStartingBetween(id, after, before);
+            }
+        }, subscribers);
+    }
+
 
 
     @Override
@@ -161,6 +171,16 @@ public class LectureDataStoreApiImpl extends ApiBasedDataStore<String, LectureDt
             @Override
             public Collection<LectureDto> request() {
                 return lecturesApiConsumer.getLectureDtoAllByStudentIdStartingIn(id, unit.getText(), amount);
+            }
+        }, subscribers);
+    }
+
+    @Override
+    public void getAllByGuest(String id, TimeUnit unit, long amount, Subscriber<Collection<LectureDto>>... subscribers) {
+        orderData(new ServiceRequest<Collection<LectureDto>>() {
+            @Override
+            public Collection<LectureDto> request() {
+                return lecturesApiConsumer.getLectureDtoAllByGuestIdStartingIn(id, unit.getText(), amount);
             }
         }, subscribers);
     }

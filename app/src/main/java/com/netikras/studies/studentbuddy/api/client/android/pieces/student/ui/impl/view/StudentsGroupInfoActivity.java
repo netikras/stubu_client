@@ -19,6 +19,7 @@ import com.netikras.studies.studentbuddy.core.data.api.dto.school.SchoolDto;
 import com.netikras.studies.studentbuddy.core.data.api.dto.school.StudentDto;
 import com.netikras.studies.studentbuddy.core.data.api.dto.school.StudentsGroupDto;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
@@ -42,6 +43,7 @@ public class StudentsGroupInfoActivity extends BaseActivity implements StudentsG
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_students_group_info);
+        setUp();
     }
 
     @Override
@@ -58,6 +60,7 @@ public class StudentsGroupInfoActivity extends BaseActivity implements StudentsG
         return fields;
     }
 
+    @Override
     public void show(StudentsGroupDto dto) {
         getFields().reset();
 
@@ -163,6 +166,9 @@ public class StudentsGroupInfoActivity extends BaseActivity implements StudentsG
         @BindView(R.id.btn_students_group_members)
         Button members;
 
+        @BindView(R.id.txt_lbl_students_group_id)
+        TextView lblId;
+
         public String getId() {
             return getString( id);
         }
@@ -239,7 +245,25 @@ public class StudentsGroupInfoActivity extends BaseActivity implements StudentsG
 
         @Override
         protected Collection<TextView> getAllFields() {
-            return null;
+            return Arrays.asList(id, name, email, created, school, members);
+        }
+
+        @Override
+        protected Collection<TextView> getEditableFields() {
+            return Arrays.asList(name, email);
+        }
+
+        @Override
+        public void enableEdit(boolean enable) {
+            super.enableEdit(enable);
+
+            if (enable) {
+                setVisible(lblId, true);
+                setVisible(id, true);
+            } else {
+                setVisible(lblId, false);
+                setVisible(id, null);
+            }
         }
     }
 

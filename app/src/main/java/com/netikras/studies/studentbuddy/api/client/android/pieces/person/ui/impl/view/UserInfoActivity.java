@@ -3,27 +3,20 @@ package com.netikras.studies.studentbuddy.api.client.android.pieces.person.ui.im
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.netikras.studies.studentbuddy.api.client.android.App;
 import com.netikras.studies.studentbuddy.api.client.android.R;
 import com.netikras.studies.studentbuddy.api.client.android.conf.di.DepInjector;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.base.BaseActivity;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.base.BaseViewFields;
-import com.netikras.studies.studentbuddy.api.client.android.pieces.base.list.ListHandler;
-import com.netikras.studies.studentbuddy.api.client.android.pieces.base.list.ListRow;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.person.ui.presenter.UserMvpPresenter;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.person.ui.view.UserMvpView;
-import com.netikras.studies.studentbuddy.api.client.android.service.ServiceRequest;
 import com.netikras.studies.studentbuddy.api.client.android.service.ServiceRequest.Subscriber;
 import com.netikras.studies.studentbuddy.core.data.api.dto.PersonDto;
 import com.netikras.studies.studentbuddy.core.data.api.dto.meta.UserDto;
-import com.netikras.studies.studentbuddy.core.data.api.dto.school.LectureDto;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -143,12 +136,18 @@ public class UserInfoActivity extends BaseActivity implements UserMvpView {
     @OnClick(R.id.btn_user_person)
     void showPerson() {
         UserDto userDto = collect();
-        startView(PersonInfoActivity.class, new ViewTask<PersonInfoActivity>() {
+
+        presenter.fetchPerson(new ErrorsAwareSubscriber<UserDto>() {
             @Override
-            public void execute() {
-                getActivity().showPerson(userDto.getPerson());
+            public void onSuccess(UserDto response) {
+                startView(PersonInfoActivity.class, new ViewTask<PersonInfoActivity>() {
+                    @Override
+                    public void execute() {
+                        getActivity().showPerson(response.getPerson());
+                    }
+                });
             }
-        });
+        }, userDto);
     }
 
     private UserDto collect() {
@@ -242,11 +241,12 @@ public class UserInfoActivity extends BaseActivity implements UserMvpView {
         public void enableEdit(boolean enable) {
             super.enableEdit(enable);
             if (enable) {
-                hideField(labelId, false);
-                hideField(id, false);
+                setVisible(labelId, true);
+                setVisible(id, true);
             } else {
-                labelId.setVisibility(View.INVISIBLE);
-                hideField(id, true);
+//                labelId.setVisibility(View.INVISIBLE);
+                setVisible(labelId, false);
+                setVisible(id, null);
             }
         }
 

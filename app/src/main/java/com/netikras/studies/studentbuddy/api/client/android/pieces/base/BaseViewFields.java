@@ -1,8 +1,11 @@
 package com.netikras.studies.studentbuddy.api.client.android.pieces.base;
 
+import android.content.Intent;
 import android.text.InputType;
 import android.view.View;
 import android.widget.TextView;
+
+import com.netikras.studies.studentbuddy.api.client.android.R;
 
 import java.util.Collection;
 import java.util.Date;
@@ -71,28 +74,37 @@ public abstract class BaseViewFields {
 
     public void enableEdit(boolean enable) {
         if (getEditableFields() != null) {
-            if (enable) {
-                for (TextView textView : getEditableFields()) {
-                    textView.setCursorVisible(true);
-                    textView.setFocusableInTouchMode(true);
-                    textView.setInputType(InputType.TYPE_CLASS_TEXT);
-//                textView.requestFocus(); //to trigger the soft input
-                }
-            } else {
-                for (TextView textView : getEditableFields()) {
-                    textView.setCursorVisible(false);
-                    textView.setFocusableInTouchMode(false);
-                    textView.setInputType(InputType.TYPE_NULL);
-                }
+            for (TextView textView : getEditableFields()) {
+                setEditable(textView, enable);
             }
         }
     }
 
-    public void hideField(TextView view, boolean hide) {
-        if (hide) {
-            view.setVisibility(View.GONE);
+    public void setEditable(TextView view, boolean editable) {
+        if (editable) {
+            view.setCursorVisible(true);
+            view.setFocusableInTouchMode(true);
+
+            Integer oldType = (Integer) view.getTag(R.id.TAG_ONLINE_ID);
+            view.setInputType(oldType == null ? InputType.TYPE_CLASS_TEXT : oldType);
         } else {
+            view.setCursorVisible(false);
+            view.setFocusableInTouchMode(false);
+
+            view.setTag(R.id.TAG_ONLINE_ID, view.getInputType());
+            view.setInputType(InputType.TYPE_NULL);
+        }
+    }
+
+    public void setVisible(TextView view, Boolean visible) {
+        if (visible == null) {
+            view.setVisibility(View.GONE);
+            return;
+        }
+        if (visible) {
             view.setVisibility(View.VISIBLE);
+        } else {
+            view.setVisibility(View.INVISIBLE);
         }
     }
 

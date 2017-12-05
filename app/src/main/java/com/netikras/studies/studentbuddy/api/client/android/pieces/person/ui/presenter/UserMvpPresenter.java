@@ -18,4 +18,6 @@ public interface UserMvpPresenter<V extends UserMvpView> extends MvpPresenter<V>
     void update(Subscriber<UserDto> subscriber, UserDto collect);
 
     void changePassword(Subscriber<Boolean> subscriber, UserDto collect);
+
+    void fetchPerson(Subscriber<UserDto> subscriber, UserDto userDto);
 }

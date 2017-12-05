@@ -19,5 +19,4 @@ public interface MvpPresenter <V extends MvpView> {
     void setUserAsLoggedOut();
 
     void startView(Context fromContext);
-
 }

@@ -222,6 +222,7 @@
     <string name="yesno_choice_yes">Taip</string>
     <string name="yesno_choice_no">Ne</string>
     <string name="yesno_question_delete">Ar tikrai norite pašalinti įrašą?</string>
+    <string name="main_menu_refresh">Atnaujinti</string>
 
 
 </resources>

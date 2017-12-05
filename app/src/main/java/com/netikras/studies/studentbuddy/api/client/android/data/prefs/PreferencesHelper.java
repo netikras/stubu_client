@@ -36,4 +36,7 @@ public interface PreferencesHelper {
     String getLoginUsername();
 
 
+    long getLecturesListDuration();
+
+    void setLecturesListDuration(long hours);
 }

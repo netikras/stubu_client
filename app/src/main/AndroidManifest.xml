@@ -46,6 +46,10 @@
         <activity android:name=".pieces.lecture.ui.impl.view.LecturesListActivity" />
         <activity android:name=".pieces.settings.ui.impl.view.SettingsActivity" />
         <activity android:name=".pieces.comments.ui.impl.view.CommentsActivity" />
+        <activity android:name=".pieces.lecture.ui.impl.view.AssignmentActivity" />
+        <activity android:name=".pieces.lecture.ui.impl.view.TestInfoActivity" />
+        <activity android:name=".pieces.school.ui.impl.view.SchoolActivity" />
+        <!--<activity android:name="" />-->
 
         <service
             android:name=".service.ApiService"

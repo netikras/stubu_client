@@ -89,6 +89,9 @@ public class AssignmentActivity extends BaseActivity implements AssignmentMvpVie
         @BindView(R.id.txt_edit_assignment_due_time)
         EditText dueTime;
 
+        @BindView(R.id.txt_lbl_assignment_id)
+        TextView lblId;
+
         public String getId() {
             return getString(id);
         }
@@ -166,12 +169,25 @@ public class AssignmentActivity extends BaseActivity implements AssignmentMvpVie
 
         @Override
         protected Collection<TextView> getAllFields() {
-            return Arrays.asList(id, title, description, announcedDate, announcedTime, dueDate, dueTime);
+            return Arrays.asList(id, title, description, announcedDate, announcedTime, dueDate, dueTime, announcedDate, announcedTime);
         }
 
         @Override
         protected Collection<TextView> getEditableFields() {
             return Arrays.asList(title, description, announcedDate, announcedTime, dueDate, dueTime);
+        }
+
+        @Override
+        public void enableEdit(boolean enable) {
+            super.enableEdit(enable);
+
+            if (enable) {
+                setVisible(id, true);
+                setVisible(lblId, true);
+            } else {
+                setVisible(id, null);
+                setVisible(lblId, false);
+            }
         }
     }
 }

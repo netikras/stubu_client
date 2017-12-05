@@ -55,6 +55,7 @@
             android:focusable="false"
             android:inputType="textPersonName"
             android:text="@string/dummy_txt_assignment_id"
+            android:visibility="visible"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/txt_lbl_assignment_id"
             app:layout_constraintTop_toBottomOf="@+id/img_assignment_banner" />

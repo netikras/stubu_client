@@ -7,21 +7,15 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.netikras.studies.studentbuddy.api.client.android.App;
 import com.netikras.studies.studentbuddy.api.client.android.R;
 import com.netikras.studies.studentbuddy.api.client.android.conf.di.DepInjector;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.base.BaseActivity;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.base.BaseViewFields;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.person.ui.presenter.PersonMvpPresenter;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.person.ui.view.PersonMvpView;
-import com.netikras.studies.studentbuddy.api.client.android.service.ServiceRequest;
 import com.netikras.studies.studentbuddy.api.client.android.service.ServiceRequest.Subscriber;
-import com.netikras.studies.studentbuddy.api.client.android.util.AppConstants;
-import com.netikras.studies.studentbuddy.api.client.android.util.CommonUtils;
 import com.netikras.studies.studentbuddy.core.data.api.dto.PersonDto;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
@@ -30,7 +24,6 @@ import java.util.List;
 import javax.inject.Inject;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
 
 import static com.netikras.studies.studentbuddy.api.client.android.util.CommonUtils.dateToDatetime;
 import static com.netikras.studies.studentbuddy.api.client.android.util.CommonUtils.datetimeToDate;
@@ -238,11 +231,12 @@ public class PersonInfoActivity extends BaseActivity implements PersonMvpView {
         public void enableEdit(boolean enable) {
             super.enableEdit(enable);
             if (enable) {
-                hideField(labelId, false);
-                hideField(id, false);
+                setVisible(labelId, false);
+                setVisible(id, false);
             } else {
-                labelId.setVisibility(View.INVISIBLE);
-                hideField(id, true);
+//                labelId.setVisibility(View.INVISIBLE);
+                setVisible(labelId, true);
+                setVisible(id, null);
             }
         }
     }

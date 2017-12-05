@@ -1,6 +1,7 @@
 package com.netikras.studies.studentbuddy.api.client.android.pieces.location.ui.impl.view;
 
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -44,6 +45,7 @@ public class LocationInfoActivity extends BaseActivity implements LocationMvpVie
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_location_info);
+        setUp();
     }
 
     @Override
@@ -63,6 +65,8 @@ public class LocationInfoActivity extends BaseActivity implements LocationMvpVie
 
     @Override
     public void show(AddressDto addressDto, BuildingDto buildingDto, BuildingSectionDto sectionDto, BuildingFloorDto floorDto, LectureRoomDto roomDto) {
+        getFields().reset();
+
         if (roomDto != null) {
             if (floorDto == null) {
                 floorDto = roomDto.getFloor();
@@ -169,6 +173,16 @@ public class LocationInfoActivity extends BaseActivity implements LocationMvpVie
 
         @BindView(R.id.list_location_comments)
         ListView comments;
+
+
+        @BindView(R.id.txt_lbl_location_buildingid)
+        TextView lblBuildingId;
+        @BindView(R.id.txt_lbl_location_building_sectionid)
+        TextView lblSectionId;
+        @BindView(R.id.txt_lbl_location_floorid)
+        TextView lblFloorId;
+        @BindView(R.id.txt_lbl_location_roomid)
+        TextView lblRoomId;
 
         public String getBuildingId() {
             return getString( buildingId);
@@ -319,7 +333,39 @@ public class LocationInfoActivity extends BaseActivity implements LocationMvpVie
 
         @Override
         protected Collection<TextView> getAllFields() {
-            return null;
+            return Arrays.asList(name, buildingId, sectionId, floorId, roomId, address, room, floor, building, section);
+        }
+
+        @Override
+        protected Collection<TextView> getEditableFields() {
+            return Arrays.asList(name);
+        }
+
+        @Override
+        public void enableEdit(boolean enable) {
+            super.enableEdit(enable);
+
+            if (enable) {
+                setVisible(lblBuildingId, true);
+                setVisible(lblSectionId, true);
+                setVisible(lblFloorId, true);
+                setVisible(lblRoomId, true);
+
+                setVisible(buildingId, true);
+                setVisible(sectionId, true);
+                setVisible(floorId, true);
+                setVisible(roomId, true);
+            } else {
+                setVisible(lblBuildingId, false);
+                setVisible(lblSectionId, false);
+                setVisible(lblFloorId, false);
+                setVisible(lblRoomId, false);
+
+                setVisible(buildingId, null);
+                setVisible(sectionId, null);
+                setVisible(floorId, null);
+                setVisible(roomId, null);
+            }
         }
     }
 }

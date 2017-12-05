@@ -1,6 +1,7 @@
 package com.netikras.studies.studentbuddy.api.client.android.pieces.lecture.ui.impl.view;
 
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -81,6 +82,8 @@ public class LectureInfoActivity extends BaseActivity implements LectureMvpView 
 
     @Override
     public void show(LectureDto lectureDto) {
+        getFields().reset();
+
         if (lectureDto == null) {
             fields.clean();
             return;
@@ -173,7 +176,7 @@ public class LectureInfoActivity extends BaseActivity implements LectureMvpView 
         startView(LocationInfoActivity.class, new ViewTask<LocationInfoActivity>() {
             @Override
             public void execute() {
-                getActivity().show(null, null, null, null, getFields().getLocation());
+                getActivity().showClean(null, null, null, null, getFields().getLocation());
             }
         });
     }
@@ -265,6 +268,9 @@ public class LectureInfoActivity extends BaseActivity implements LectureMvpView 
 
         @BindView(R.id.btn_lecture_tests)
         Button tests;
+
+        @BindView(R.id.txt_lbl_lecture_id)
+        TextView lblId;
 
         public String getId() {
             return getString(id);
@@ -505,7 +511,24 @@ public class LectureInfoActivity extends BaseActivity implements LectureMvpView 
 
         @Override
         protected Collection<TextView> getAllFields() {
-            return null;
+            return Arrays.asList(id, name, startDate, startTime, lecturer, studentsGroup, startTime, timeRemaining, startDate, assignments, comments, guests);
+        }
+
+        @Override
+        protected Collection<TextView> getEditableFields() {
+            return Arrays.asList(name, startDate, startTime);
+        }
+
+        @Override
+        public void enableEdit(boolean enable) {
+            super.enableEdit(enable);
+            if (enable) {
+                setVisible(lblId, true);
+                setVisible(id, true);
+            } else {
+                setVisible(lblId, false);
+                setVisible(id, null);
+            }
         }
     }
 

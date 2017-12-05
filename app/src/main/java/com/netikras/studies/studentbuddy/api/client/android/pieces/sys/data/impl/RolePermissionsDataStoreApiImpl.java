@@ -64,16 +64,27 @@ public class RolePermissionsDataStoreApiImpl extends ApiBasedDataStore<String, R
 
     @Override
     @Deprecated
-    public void delete(String id, Subscriber<Boolean>[] subscribers) {
+    public void delete(String id, Subscriber<Boolean>... subscribers) {
         notifyNotImplemented(subscribers);
     }
 
     @Override
-    public void delete(String roleName, String resourceName, String actionName, String resourceId, Subscriber<Boolean>... subscribers) {
+    public void deleteById(String rolename, String id, Subscriber<Boolean>... subscribers) {
         orderData(new ServiceRequest<Boolean>() {
             @Override
             public Boolean request() {
-                adminApiConsumer.deleteRolePermissionDto(roleName, resourceName, actionName, resourceId);
+                adminApiConsumer.deleteRolePermissionDtoById(rolename, id);
+                return Boolean.TRUE;
+            }
+        }, subscribers);
+    }
+
+    @Override
+    public void delete(String roleName, String resourceName, String actionName, String resourceId, Boolean strict, Subscriber<Boolean>... subscribers) {
+        orderData(new ServiceRequest<Boolean>() {
+            @Override
+            public Boolean request() {
+                adminApiConsumer.deleteRolePermissionDto(roleName, resourceName, actionName, resourceId, strict);
                 return Boolean.TRUE;
             }
         }, subscribers);

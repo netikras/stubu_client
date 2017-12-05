@@ -99,6 +99,9 @@ public class TestInfoActivity extends BaseActivity implements TestMvpView {
         @BindView(R.id.btn_test_lecture)
         Button lecture;
 
+        @BindView(R.id.txt_lbl_test_id)
+        TextView lblId;
+
         public String getId() {
             return getString(id);
         }
@@ -162,6 +165,23 @@ public class TestInfoActivity extends BaseActivity implements TestMvpView {
         @Override
         protected Collection<TextView> getAllFields() {
             return Arrays.asList(id, description, startDate, startTime, lecture);
+        }
+
+        @Override
+        protected Collection<TextView> getEditableFields() {
+            return Arrays.asList(description, startDate, startTime);
+        }
+
+        @Override
+        public void enableEdit(boolean enable) {
+            super.enableEdit(enable);
+            if (enable) {
+                setVisible(id, true);
+                setVisible(lblId, true);
+            } else {
+                setVisible(id, null);
+                setVisible(lblId, false);
+            }
         }
     }
 
