@@ -1,7 +1,6 @@
 package com.netikras.studies.studentbuddy.api.client.android.pieces.lecture.ui.impl.view;
 
 import android.os.Bundle;
-import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -18,6 +17,7 @@ import com.netikras.studies.studentbuddy.api.client.android.pieces.lecturer.ui.i
 import com.netikras.studies.studentbuddy.api.client.android.pieces.location.ui.impl.view.LocationInfoActivity;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.student.ui.impl.view.GuestActivity;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.student.ui.impl.view.StudentsGroupInfoActivity;
+import com.netikras.studies.studentbuddy.api.client.android.service.ServiceRequest;
 import com.netikras.studies.studentbuddy.core.data.api.dto.location.LectureRoomDto;
 import com.netikras.studies.studentbuddy.core.data.api.dto.meta.CommentDto;
 import com.netikras.studies.studentbuddy.core.data.api.dto.school.AssignmentDto;
@@ -32,6 +32,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
@@ -43,6 +44,7 @@ import static com.netikras.studies.studentbuddy.api.client.android.util.AppConst
 import static com.netikras.studies.studentbuddy.api.client.android.util.AppConstants.MINUTE_IN_MS;
 import static com.netikras.studies.studentbuddy.api.client.android.util.CommonUtils.datetimeToDate;
 import static com.netikras.studies.studentbuddy.api.client.android.util.CommonUtils.datetimeToTime;
+import static com.netikras.tools.common.security.IntegrityUtils.coalesce;
 import static com.netikras.tools.common.security.IntegrityUtils.isNullOrEmpty;
 import static java.lang.String.valueOf;
 
@@ -99,6 +101,60 @@ public class LectureInfoActivity extends BaseActivity implements LectureMvpView 
         getFields().setLocation(lectureDto.getRoom());
         getFields().setDiscipline(lectureDto.getDiscipline());
 
+        prepare(lectureDto);
+
+    }
+
+    public LectureDto collect() {
+        LectureDto dto = new LectureDto();
+
+        dto.setId(getFields().getId());
+        dto.setDiscipline(getFields().getDiscipline());
+        dto.setTests(getFields().getTests());
+        dto.setAssignments(getFields().getAssignments());
+//        dto.setCourse(getFields().getCourse()); // FIXME
+        dto.setLecturer(getFields().getLecturer());
+        dto.setRoom(getFields().getLocation());
+        dto.setStudentsGroup(getFields().getStudentsGroup());
+//        dto.setVisitors(getFields().getVisitors()); // FIXME
+
+        return dto;
+    }
+
+    @Override
+    protected boolean isPartial() {
+        LectureDto dto = collect();
+        if (dto == null) {
+            return true;
+        }
+        Object item = coalesce(dto.getDiscipline(), dto.getLecturer(), dto.getRoom());
+        return item == null;
+    }
+
+    private ServiceRequest.Result<LectureDto> fetch(LectureDto dto) {
+        ServiceRequest.Result<LectureDto> result = new ServiceRequest.Result<>();
+        showLoading();
+        presenter.getById(new ErrorsAwareSubscriber<LectureDto>() {
+            @Override
+            public void onSuccess(LectureDto response) {
+                result.setValue(response);
+            }
+        }, dto.getId());
+
+        return result;
+    }
+
+    private void prepare(LectureDto entity) {
+        if (entity == null || isNullOrEmpty(entity.getId())) {
+            return;
+        }
+        if (isPartial()) {
+            ServiceRequest.Result<LectureDto> result = fetch(entity);
+            LectureDto dto = result.get(5, TimeUnit.SECONDS);
+            if (!result.isTimedOut()) {
+                show(dto);
+            }
+        }
     }
 
     @OnClick(R.id.btn_lecture_assignments)
@@ -271,6 +327,7 @@ public class LectureInfoActivity extends BaseActivity implements LectureMvpView 
 
         @BindView(R.id.txt_lbl_lecture_id)
         TextView lblId;
+
 
         public String getId() {
             return getString(id);
@@ -511,7 +568,7 @@ public class LectureInfoActivity extends BaseActivity implements LectureMvpView 
 
         @Override
         protected Collection<TextView> getAllFields() {
-            return Arrays.asList(id, name, startDate, startTime, lecturer, studentsGroup, startTime, timeRemaining, startDate, assignments, comments, guests);
+            return Arrays.asList(id, name, startDate, startTime, lecturer, studentsGroup, startTime, timeRemaining, startDate, assignments, tests, comments, guests);
         }
 
         @Override

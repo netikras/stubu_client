@@ -231,11 +231,11 @@ public class PersonInfoActivity extends BaseActivity implements PersonMvpView {
         public void enableEdit(boolean enable) {
             super.enableEdit(enable);
             if (enable) {
-                setVisible(labelId, false);
-                setVisible(id, false);
+                setVisible(labelId, true);
+                setVisible(id, true);
             } else {
 //                labelId.setVisibility(View.INVISIBLE);
-                setVisible(labelId, true);
+                setVisible(labelId, false);
                 setVisible(id, null);
             }
         }

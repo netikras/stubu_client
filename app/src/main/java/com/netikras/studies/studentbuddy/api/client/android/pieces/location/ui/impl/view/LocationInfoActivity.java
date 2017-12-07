@@ -1,7 +1,6 @@
 package com.netikras.studies.studentbuddy.api.client.android.pieces.location.ui.impl.view;
 
 import android.os.Bundle;
-import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -27,6 +26,8 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+
+import static com.netikras.tools.common.security.IntegrityUtils.isNullOrEmpty;
 
 public class LocationInfoActivity extends BaseActivity implements LocationMvpView {
 
@@ -108,7 +109,7 @@ public class LocationInfoActivity extends BaseActivity implements LocationMvpVie
             getFields().setSection(sectionDto);
         }
         if (buildingDto != null) {
-            getFields().setBuildingId(buildingDto.getId());
+            getFields().setBuilding(buildingDto);
         }
         if (addressDto != null) {
             getFields().setAddress(addressDto);
@@ -185,7 +186,7 @@ public class LocationInfoActivity extends BaseActivity implements LocationMvpVie
         TextView lblRoomId;
 
         public String getBuildingId() {
-            return getString( buildingId);
+            return getString(buildingId);
         }
 
         public void setBuildingId(String buildingId) {
@@ -193,7 +194,7 @@ public class LocationInfoActivity extends BaseActivity implements LocationMvpVie
         }
 
         public String getSectionId() {
-            return getString( sectionId);
+            return getString(sectionId);
         }
 
         public void setSectionId(String sectionId) {
@@ -201,7 +202,7 @@ public class LocationInfoActivity extends BaseActivity implements LocationMvpVie
         }
 
         public String getFloorId() {
-            return getString( floorId);
+            return getString(floorId);
         }
 
         public void setFloorId(String floorId) {
@@ -209,7 +210,7 @@ public class LocationInfoActivity extends BaseActivity implements LocationMvpVie
         }
 
         public String getRoomId() {
-            return getString( roomId);
+            return getString(roomId);
         }
 
         public void setRoomId(String roomId) {
@@ -217,7 +218,7 @@ public class LocationInfoActivity extends BaseActivity implements LocationMvpVie
         }
 
         public String getName() {
-            return getString( name);
+            return getString(name);
         }
 
         public void setName(String name) {
@@ -225,7 +226,7 @@ public class LocationInfoActivity extends BaseActivity implements LocationMvpVie
         }
 
         public String getAddressText() {
-            return getString( address);
+            return getString(address);
         }
 
         public void setAddressText(String address) {
@@ -241,7 +242,7 @@ public class LocationInfoActivity extends BaseActivity implements LocationMvpVie
         }
 
         public String getSectionName() {
-            return getString( section);
+            return getString(section);
         }
 
         public void setSectionName(String section) {
@@ -249,7 +250,7 @@ public class LocationInfoActivity extends BaseActivity implements LocationMvpVie
         }
 
         public String getFloorName() {
-            return getString( floor);
+            return getString(floor);
         }
 
         public void setFloorName(String floor) {
@@ -257,7 +258,7 @@ public class LocationInfoActivity extends BaseActivity implements LocationMvpVie
         }
 
         public String getRoomName() {
-            return getString( room);
+            return getString(room);
         }
 
         public void setRoomName(String room) {
@@ -271,7 +272,18 @@ public class LocationInfoActivity extends BaseActivity implements LocationMvpVie
         public void setAddress(AddressDto address) {
             setTag(this.address, address);
             if (address != null) {
-                setAddressText(address.getStreet() + " g. " + address.getBuildingNo() + ", " + address.getCity());
+                StringBuilder builder = new StringBuilder();
+                if (!isNullOrEmpty(address.getStreet())) {
+                    builder.append(address.getStreet()).append(" g. ");
+                }
+                if (!isNullOrEmpty(address.getBuildingNo())) {
+                    builder.append(address.getBuildingNo()).append(" ");
+                }
+                if (!isNullOrEmpty(address.getCity())) {
+                    builder.append(address.getCity()).append(" ");
+                }
+
+                setAddressText(builder.toString());
             }
         }
 

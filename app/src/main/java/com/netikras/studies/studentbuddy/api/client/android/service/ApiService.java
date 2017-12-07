@@ -11,14 +11,16 @@ import com.netikras.tools.common.exception.FriendlyExceptionBase;
 
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 
 
 public class ApiService extends IntentService {
 
 
+    private static Thread serviceThread;
 
-
-    private static Queue<ServiceRequest> requestsQueue = new ConcurrentLinkedQueue<>();
+//    private static Queue<ServiceRequest> requestsQueue = new ConcurrentLinkedQueue<>();
+    private static Queue<ServiceRequest> requestsQueue = new LinkedBlockingQueue<>();
 
     public ApiService() {
         super("ApiService");
@@ -36,7 +38,23 @@ public class ApiService extends IntentService {
 
     public static void processQueue(Context fromContext) {
         Intent intent = new Intent(fromContext, ApiService.class);
-        fromContext.startService(intent);
+//        fromContext.startService(intent);
+        startThread();
+    }
+
+
+    private static synchronized void startThread() {
+        if (serviceThread == null) {
+            serviceThread = new Thread() {
+                @Override
+                public void run() {
+                    while (true) {
+                        processRequests();
+                    }
+                }
+            };
+            serviceThread.start();
+        }
     }
 
 
@@ -59,7 +77,7 @@ public class ApiService extends IntentService {
     }
 
 
-    private void processRequests() {
+    private static void processRequests() {
         while (!requestsQueue.isEmpty()) {
             ServiceRequest request = requestsQueue.poll();
             if (request != null) {

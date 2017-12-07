@@ -62,21 +62,21 @@ public class MainActivity extends BaseActivity implements MainMvpView {
         presenter.fetchLecturesForGuest(new Subscriber<Collection<LectureDto>>() {
             @Override
             public void onSuccess(Collection<LectureDto> response) {
-                guestHandler.updateData((List<LectureDto>) response);
+                runOnUiThread(() -> guestHandler.updateData((List<LectureDto>) response));
             }
         }, getCurrentUser().getPerson());
 
         presenter.fetchLecturesForStudent(new Subscriber<Collection<LectureDto>>() {
             @Override
             public void onSuccess(Collection<LectureDto> response) {
-                studentHandler.updateData((List<LectureDto>) response);
+                runOnUiThread(() -> studentHandler.updateData((List<LectureDto>) response));
             }
         }, getCurrentUser().getPerson());
 
         presenter.fetchLecturesForLecturer(new Subscriber<Collection<LectureDto>>() {
             @Override
             public void onSuccess(Collection<LectureDto> response) {
-                lecturerHandler.updateData((List<LectureDto>) response);
+                runOnUiThread(() -> lecturerHandler.updateData((List<LectureDto>) response));
             }
         }, getCurrentUser().getPerson());
     }

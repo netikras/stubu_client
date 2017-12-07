@@ -426,6 +426,10 @@ public abstract class BaseActivity extends AppCompatActivity
 
     protected abstract void setUp();
 
+    protected boolean isPartial() {
+        return true;
+    }
+
     public void startActivity(Context fromContext, Class<? extends MvpView> activity, ViewTask task) {
         Intent intent = new Intent(fromContext, activity);
         intent.putExtra("task", exchange.put(task));

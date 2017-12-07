@@ -10,14 +10,9 @@ import android.content.Intent;
 import com.netikras.studies.studentbuddy.api.client.android.App;
 import com.netikras.studies.studentbuddy.api.client.android.data.DataManager;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.base.BaseActivity.ViewTask;
-import com.netikras.studies.studentbuddy.api.client.android.service.ServiceRequest.Subscriber;
 import com.netikras.studies.studentbuddy.api.client.android.util.Exchange;
-import com.netikras.tools.common.exception.ErrorBody;
-import com.netikras.tools.common.exception.ErrorsCollection;
 
 import javax.inject.Inject;
-
-import static com.netikras.tools.common.security.IntegrityUtils.isNullOrEmpty;
 
 
 /**
@@ -72,57 +67,6 @@ public class BasePresenter<V extends MvpView> implements MvpPresenter<V> {
         return mDataManager;
     }
 
-    @Override
-    public void handleApiError(ErrorBody error) {
-
-//        if (error == null || error.getErrorBody() == null) {
-//            getMvpView().onError(R.string.api_default_error);
-//            return;
-//        }
-//
-//        if (error.getErrorCode() == AppConstants.API_STATUS_CODE_LOCAL_ERROR
-//                && error.getErrorDetail().equals(ANConstants.CONNECTION_ERROR)) {
-//            getMvpView().onError(R.string.connection_error);
-//            return;
-//        }
-//
-//        if (error.getErrorCode() == AppConstants.API_STATUS_CODE_LOCAL_ERROR
-//                && error.getErrorDetail().equals(ANConstants.REQUEST_CANCELLED_ERROR)) {
-//            getMvpView().onError(R.string.api_retry_error);
-//            return;
-//        }
-//
-//        final GsonBuilder builder = new GsonBuilder().excludeFieldsWithoutExposeAnnotation();
-//        final Gson gson = builder.create();
-//
-//        try {
-//            ApiError apiError = gson.fromJson(error.getErrorBody(), ApiError.class);
-//
-//            if (apiError == null || apiError.getMessage() == null) {
-//                getMvpView().onError(R.string.api_default_error);
-//                return;
-//            }
-//
-//            switch (error.getErrorCode()) {
-//                case HttpsURLConnection.HTTP_UNAUTHORIZED:
-//                case HttpsURLConnection.HTTP_FORBIDDEN:
-//                    setUserAsLoggedOut();
-//                    getMvpView().openActivityOnTokenExpire();
-//                case HttpsURLConnection.HTTP_INTERNAL_ERROR:
-//                case HttpsURLConnection.HTTP_NOT_FOUND:
-//                default:
-//                    getMvpView().onError(apiError.getMessage());
-//            }
-//        } catch (JsonSyntaxException | NullPointerException e) {
-//            Log.e(TAG, "handleApiError", e);
-//            getMvpView().onError(R.string.api_default_error);
-//        }
-    }
-
-    @Override
-    public void setUserAsLoggedOut() {
-//        getDataManager().setAccessToken(null);
-    }
 
     @Override
     public void startView(Context fromContext) {
@@ -137,7 +81,6 @@ public class BasePresenter<V extends MvpView> implements MvpPresenter<V> {
     }
 
     /**
-     *
      * @param fromContext current context - the one activity is to be called from
      * @param viewClass   activity class
      * @param task        something to do when view is started. <br/>

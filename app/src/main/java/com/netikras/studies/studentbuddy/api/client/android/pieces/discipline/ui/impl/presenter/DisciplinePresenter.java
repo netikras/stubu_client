@@ -7,6 +7,9 @@ import com.netikras.studies.studentbuddy.api.client.android.pieces.discipline.ui
 import com.netikras.studies.studentbuddy.api.client.android.pieces.discipline.ui.view.DisciplineMvpView;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.school.ui.presenter.SchoolMvpPresenter;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.school.ui.view.SchoolMvpView;
+import com.netikras.studies.studentbuddy.api.client.android.service.ServiceRequest;
+import com.netikras.studies.studentbuddy.api.client.android.service.ServiceRequest.Subscriber;
+import com.netikras.studies.studentbuddy.core.data.api.dto.school.DisciplineDto;
 
 import javax.inject.Inject;
 
@@ -28,4 +31,9 @@ public class DisciplinePresenter<V extends DisciplineMvpView> extends BasePresen
         return getDataManager().getStore(DisciplineDataStore.class);
     }
 
+    @Override
+    public void getById(Subscriber<DisciplineDto> subscriber, String id) {
+        getDataStore().getById(id, subscriber);
+        getDataStore().processOrders(getContext());
+    }
 }

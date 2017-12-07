@@ -1,5 +1,13 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 
+/*
+* Alright. Since this is the top-level file of the project I leave my memo here.
+*
+* SSL not enabled. If needed - feel free to enable it. Change HttpClient implementation in RestServiceProvider
+* API calls are enqueued in and executed from
+*
+* */
+
 buildscript {
     
     repositories {

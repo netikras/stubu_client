@@ -7,6 +7,9 @@ import com.netikras.studies.studentbuddy.api.client.android.pieces.comments.ui.p
 import com.netikras.studies.studentbuddy.api.client.android.pieces.comments.ui.view.CommentsMvpView;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.person.ui.presenter.PersonMvpPresenter;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.person.ui.view.PersonMvpView;
+import com.netikras.studies.studentbuddy.api.client.android.service.ServiceRequest;
+import com.netikras.studies.studentbuddy.api.client.android.service.ServiceRequest.Subscriber;
+import com.netikras.studies.studentbuddy.core.data.api.dto.meta.CommentDto;
 
 import javax.inject.Inject;
 
@@ -28,4 +31,9 @@ public class CommentsPresenter<V extends CommentsMvpView> extends BasePresenter<
         return getDataManager().getStore(CommentsDataStore.class);
     }
 
+    @Override
+    public void getById(Subscriber<CommentDto> subscriber, String id) {
+        getDataStore().getById(id);
+        getDataStore().processOrders(getContext());
+    }
 }

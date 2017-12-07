@@ -13,6 +13,7 @@ import com.netikras.studies.studentbuddy.api.client.android.pieces.base.BaseActi
 import com.netikras.studies.studentbuddy.api.client.android.pieces.base.BaseViewFields;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.person.ui.presenter.UserMvpPresenter;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.person.ui.view.UserMvpView;
+import com.netikras.studies.studentbuddy.api.client.android.service.ServiceRequest.Result;
 import com.netikras.studies.studentbuddy.api.client.android.service.ServiceRequest.Subscriber;
 import com.netikras.studies.studentbuddy.core.data.api.dto.PersonDto;
 import com.netikras.studies.studentbuddy.core.data.api.dto.meta.UserDto;
@@ -20,12 +21,14 @@ import com.netikras.studies.studentbuddy.core.data.api.dto.meta.UserDto;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.OnClick;
 
+import static com.netikras.tools.common.security.IntegrityUtils.coalesce;
 import static com.netikras.tools.common.security.IntegrityUtils.isNullOrEmpty;
 
 public class UserInfoActivity extends BaseActivity implements UserMvpView {
@@ -130,6 +133,44 @@ public class UserInfoActivity extends BaseActivity implements UserMvpView {
 
         getFields().setUsername(userDto.getName());
         getFields().setId(userDto.getId());
+
+        prepare(userDto);
+    }
+
+    @Override
+    protected boolean isPartial() {
+        UserDto dto = collect();
+        if (dto == null) {
+            return true;
+        }
+        Object item = coalesce(dto.getPerson(), dto.getRoles());
+        return item == null;
+    }
+
+    private Result<UserDto> fetch(UserDto dto) {
+        Result<UserDto> result = new Result<>();
+        showLoading();
+        presenter.getById(new ErrorsAwareSubscriber<UserDto>() {
+            @Override
+            public void onSuccess(UserDto response) {
+                result.setValue(response);
+            }
+        }, dto.getId());
+
+        return result;
+    }
+
+    private void prepare(UserDto entity) {
+        if (entity == null || isNullOrEmpty(entity.getId())) {
+            return;
+        }
+        if (isPartial()) {
+            Result<UserDto> result = fetch(entity);
+            UserDto dto = result.get(5, TimeUnit.SECONDS);
+            if (!result.isTimedOut()) {
+                showUser(dto);
+            }
+        }
     }
 
 

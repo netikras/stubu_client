@@ -8,6 +8,7 @@ import android.widget.BaseAdapter;
 import com.netikras.studies.studentbuddy.api.client.android.R;
 import com.netikras.studies.studentbuddy.core.data.api.dto.school.LectureDto;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -34,6 +35,11 @@ public class ListHandler<T> {
 
     public List<T> getListData() {
         return Arrays.asList();
+    }
+
+    public List<T> getData() {
+        List<T> data = getListData();
+        return data != null ? data : new ArrayList<>();
     }
 
     public void onRowClick(T item) {

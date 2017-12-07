@@ -15,18 +15,21 @@ import com.netikras.studies.studentbuddy.api.client.android.pieces.base.list.Lis
 import com.netikras.studies.studentbuddy.api.client.android.pieces.base.list.ListRow;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.school.ui.presenter.SchoolMvpPresenter;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.school.ui.view.SchoolMvpView;
+import com.netikras.studies.studentbuddy.api.client.android.service.ServiceRequest.Result;
 import com.netikras.studies.studentbuddy.core.data.api.dto.school.SchoolDepartmentDto;
 import com.netikras.studies.studentbuddy.core.data.api.dto.school.SchoolDto;
 
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.OnClick;
 
+import static com.netikras.tools.common.security.IntegrityUtils.coalesce;
 import static com.netikras.tools.common.security.IntegrityUtils.isNullOrEmpty;
 
 /**
@@ -84,6 +87,44 @@ public class SchoolActivity extends BaseActivity implements SchoolMvpView {
         getFields().setId(schoolDto.getId());
         getFields().setTitle(schoolDto.getTitle());
         getFields().setDepartments(schoolDto.getDepartments());
+
+        prepare(collect());
+    }
+
+    @Override
+    protected boolean isPartial() {
+        SchoolDto dto = collect();
+        if (dto == null) {
+            return true;
+        }
+        Object item = coalesce(dto.getDepartments());
+        return item == null;
+    }
+
+    private Result<SchoolDto> fetch(SchoolDto dto) {
+        Result<SchoolDto> result = new Result<>();
+        showLoading();
+        presenter.getById(new ErrorsAwareSubscriber<SchoolDto>() {
+            @Override
+            public void onSuccess(SchoolDto response) {
+                result.setValue(response);
+            }
+        }, dto.getId());
+
+        return result;
+    }
+
+    private void prepare(SchoolDto entity) {
+        if (entity == null || isNullOrEmpty(entity.getId())) {
+            return;
+        }
+        if (isPartial()) {
+            Result<SchoolDto> result = fetch(entity);
+            SchoolDto dto = result.get(5, TimeUnit.SECONDS);
+            if (!result.isTimedOut()) {
+                show(dto);
+            }
+        }
     }
 
     @OnClick(R.id.btn_school_departments)

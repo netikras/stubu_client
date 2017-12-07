@@ -20,4 +20,6 @@ public interface UserMvpPresenter<V extends UserMvpView> extends MvpPresenter<V>
     void changePassword(Subscriber<Boolean> subscriber, UserDto collect);
 
     void fetchPerson(Subscriber<UserDto> subscriber, UserDto userDto);
+
+    void getById(Subscriber<UserDto> subscriber, String id);
 }

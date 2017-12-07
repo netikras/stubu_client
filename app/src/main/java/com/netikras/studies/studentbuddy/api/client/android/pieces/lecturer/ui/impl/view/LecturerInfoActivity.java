@@ -16,19 +16,23 @@ import com.netikras.studies.studentbuddy.api.client.android.pieces.discipline.ui
 import com.netikras.studies.studentbuddy.api.client.android.pieces.lecturer.ui.presenter.LecturerMvpPresenter;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.lecturer.ui.view.LecturerMvpView;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.person.ui.impl.view.PersonInfoActivity;
+import com.netikras.studies.studentbuddy.api.client.android.service.ServiceRequest;
 import com.netikras.studies.studentbuddy.core.data.api.dto.PersonDto;
 import com.netikras.studies.studentbuddy.core.data.api.dto.school.DisciplineDto;
 import com.netikras.studies.studentbuddy.core.data.api.dto.school.LecturerDto;
+import com.netikras.studies.studentbuddy.core.data.api.dto.school.SchoolDto;
 
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.OnClick;
 
+import static com.netikras.tools.common.security.IntegrityUtils.coalesce;
 import static com.netikras.tools.common.security.IntegrityUtils.isNullOrEmpty;
 
 public class LecturerInfoActivity extends BaseActivity implements LecturerMvpView {
@@ -77,6 +81,54 @@ public class LecturerInfoActivity extends BaseActivity implements LecturerMvpVie
         getFields().setDegree(lecturer.getDegree());
         getFields().setPerson(lecturer.getPerson());
         getFields().setDisciplines(lecturer.getDisciplines());
+        getFields().setSchool(lecturer.getSchool());
+
+        prepare(lecturer);
+    }
+
+    public LecturerDto collect() {
+        LecturerDto dto = new LecturerDto();
+        dto.setId(getFields().getId());
+        dto.setDegree(getFields().getDegree());
+        dto.setPerson(getFields().getPerson());
+        dto.setSchool(getFields().getSchool());
+        return dto;
+    }
+
+    @Override
+    protected boolean isPartial() {
+        LecturerDto dto = collect();
+        if (dto == null) {
+            return true;
+        }
+        Object item = coalesce(dto.getPerson(), dto.getSchool());
+        return item == null;
+    }
+
+    private ServiceRequest.Result<LecturerDto> fetch(LecturerDto dto) {
+        ServiceRequest.Result<LecturerDto> result = new ServiceRequest.Result<>();
+        showLoading();
+        presenter.getById(new ErrorsAwareSubscriber<LecturerDto>() {
+            @Override
+            public void onSuccess(LecturerDto response) {
+                result.setValue(response);
+            }
+        }, dto.getId());
+
+        return result;
+    }
+
+    private void prepare(LecturerDto entity) {
+        if (entity == null || isNullOrEmpty(entity.getId())) {
+            return;
+        }
+        if (isPartial()) {
+            ServiceRequest.Result<LecturerDto> result = fetch(entity);
+            LecturerDto dto = result.get(5, TimeUnit.SECONDS);
+            if (!result.isTimedOut()) {
+                show(dto);
+            }
+        }
     }
 
     @OnClick(R.id.btn_lecturer_name)
@@ -156,6 +208,8 @@ public class LecturerInfoActivity extends BaseActivity implements LecturerMvpVie
         @BindView(R.id.txt_lbl_lecturer_id)
         TextView lblId;
 
+        SchoolDto school;
+
         public String getId() {
             return getString(id);
         }
@@ -209,6 +263,15 @@ public class LecturerInfoActivity extends BaseActivity implements LecturerMvpVie
                 setName(person.getFirstName() + " " + person.getLastName());
             }
         }
+
+        public SchoolDto getSchool() {
+            return school;
+        }
+
+        public void setSchool(SchoolDto school) {
+            this.school = school;
+        }
+
 
 
         @Override

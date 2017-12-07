@@ -73,7 +73,7 @@ public class SimpleListActivity extends BaseActivity {
 
         getFields().setTitle(handler.getToolbarText());
 
-        ArrayAdapter<LectureDto> adapter = new ArrayAdapter<LectureDto>(this, handler.getRowLayout(), handler.getListData()) {
+        ArrayAdapter<LectureDto> adapter = new ArrayAdapter<LectureDto>(this, handler.getRowLayout(), handler.getData()) {
 
             @Override
             public View getView(int position, View convertView, ViewGroup parent) {

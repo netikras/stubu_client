@@ -5,6 +5,9 @@ import com.netikras.studies.studentbuddy.api.client.android.pieces.base.BasePres
 import com.netikras.studies.studentbuddy.api.client.android.pieces.school.data.SchoolDepartmentDataStore;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.school.ui.presenter.SchoolDepartmentMvpPresenter;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.school.ui.view.SchoolDepartmentMvpView;
+import com.netikras.studies.studentbuddy.api.client.android.service.ServiceRequest;
+import com.netikras.studies.studentbuddy.api.client.android.service.ServiceRequest.Subscriber;
+import com.netikras.studies.studentbuddy.core.data.api.dto.school.SchoolDepartmentDto;
 
 import javax.inject.Inject;
 
@@ -23,4 +26,9 @@ public class SchoolDepartmentPresenter<V extends SchoolDepartmentMvpView> extend
         return getDataManager().getStore(SchoolDepartmentDataStore.class);
     }
 
+    @Override
+    public void getById(Subscriber<SchoolDepartmentDto> subscriber, String id) {
+        getDataStore().getById(id, subscriber);
+        getDataStore().processOrders(getContext());
+    }
 }

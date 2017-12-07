@@ -186,10 +186,10 @@
     <string name="dummy_txt_comment_id">@string/dummy_txt_id</string>
     <string name="title_comment">Komentaras</string>
 
-    <string name="err_no_departments">Padaliniai neurodyti</string>
-    <string name="err_no_disciplines">Disciplinos neurodytos</string>
-    <string name="err_no_buildings">Pastatai neurodyti</string>
-    <string name="err_no_building_sections">Korpusai neurodyti</string>
+    <string name="err_no_departments">Padaliniai nenurodyti</string>
+    <string name="err_no_disciplines">Disciplinos nenurodytos</string>
+    <string name="err_no_buildings">Pastatai nenurodyti</string>
+    <string name="err_no_building_sections">Korpusai nenurodyti</string>
     <string name="err_no_comments">Komentarų nėra</string>
     <string name="err_no_courses">Kursų nėra</string>
     <string name="err_no_students">Studentai nenurodyti</string>

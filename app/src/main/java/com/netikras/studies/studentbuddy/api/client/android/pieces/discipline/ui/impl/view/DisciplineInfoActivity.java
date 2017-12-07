@@ -16,6 +16,7 @@ import com.netikras.studies.studentbuddy.api.client.android.pieces.discipline.ui
 import com.netikras.studies.studentbuddy.api.client.android.pieces.discipline.ui.view.DisciplineMvpView;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.lecturer.ui.impl.view.LecturerInfoActivity;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.school.ui.impl.view.SchoolActivity;
+import com.netikras.studies.studentbuddy.api.client.android.service.ServiceRequest;
 import com.netikras.studies.studentbuddy.core.data.api.dto.school.DisciplineDto;
 import com.netikras.studies.studentbuddy.core.data.api.dto.school.LecturerDto;
 import com.netikras.studies.studentbuddy.core.data.api.dto.school.SchoolDto;
@@ -23,11 +24,15 @@ import com.netikras.studies.studentbuddy.core.data.api.dto.school.SchoolDto;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+
+import static com.netikras.tools.common.security.IntegrityUtils.coalesce;
+import static com.netikras.tools.common.security.IntegrityUtils.isNullOrEmpty;
 
 public class DisciplineInfoActivity extends BaseActivity implements DisciplineMvpView {
 
@@ -78,6 +83,8 @@ public class DisciplineInfoActivity extends BaseActivity implements DisciplineMv
         getFields().setSchool(disciplineDto.getSchool());
 //        getFields().setLecturers(disciplineDto.getCourses());
         // FIXME fix discipline dto to return all courses, not just one
+
+        prepare(disciplineDto);
     }
 
     public DisciplineDto collect() {
@@ -89,6 +96,42 @@ public class DisciplineInfoActivity extends BaseActivity implements DisciplineMv
         dto.setTitle(getFields().getName());
 
         return dto;
+    }
+    
+    @Override
+    protected boolean isPartial() {
+        DisciplineDto dto = collect();
+        if (dto == null) {
+            return true;
+        }
+        Object item = coalesce(dto.getCourses(), dto.getSchool());
+        return item == null;
+    }
+
+    private ServiceRequest.Result<DisciplineDto> fetch(DisciplineDto dto) {
+        ServiceRequest.Result<DisciplineDto> result = new ServiceRequest.Result<>();
+        presenter.getById(new ErrorsAwareSubscriber<DisciplineDto>() {
+            @Override
+            public void onSuccess(DisciplineDto response) {
+                result.setValue(response);
+            }
+        }, dto.getId());
+
+        return result;
+    }
+
+    private void prepare(DisciplineDto entity) {
+        if (entity == null || isNullOrEmpty(entity.getId())) {
+            return;
+        }
+        if (isPartial()) {
+            showLoading();
+            ServiceRequest.Result<DisciplineDto> result = fetch(entity);
+            DisciplineDto dto = result.get(5, TimeUnit.SECONDS);
+            if (!result.isTimedOut()) {
+                show(dto);
+            }
+        }
     }
 
     @OnClick(R.id.btn_discipline_school)

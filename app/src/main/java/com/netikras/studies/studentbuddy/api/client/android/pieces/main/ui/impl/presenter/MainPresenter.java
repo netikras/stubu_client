@@ -20,6 +20,7 @@ import com.netikras.studies.studentbuddy.core.data.api.dto.school.LectureDto;
 import com.netikras.studies.studentbuddy.core.data.api.dto.school.LectureGuestDto;
 import com.netikras.studies.studentbuddy.core.data.api.dto.school.LecturerDto;
 import com.netikras.studies.studentbuddy.core.data.api.dto.school.StudentDto;
+import com.netikras.studies.studentbuddy.core.data.api.dto.school.StudentsGroupDto;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -109,7 +110,7 @@ public class MainPresenter<V extends MainMvpView> extends BasePresenter<V> imple
         l1.setDiscipline(d1);
         l1.setAssignments(Arrays.asList(null, null));
         l1.setTests(Arrays.asList(null, null));
-        l1.setStartsOn(new Date(System.currentTimeMillis() + 20000));
+        l1.setStartsOn(new Date(System.currentTimeMillis() + 100000));
 
         DisciplineDto d2 = new DisciplineDto();
         d2.setTitle("Anglų k.");
@@ -117,10 +118,20 @@ public class MainPresenter<V extends MainMvpView> extends BasePresenter<V> imple
         l2.setDiscipline(d2);
         l2.setAssignments(Arrays.asList(null, null));
         l2.setTests(Arrays.asList(null, null));
-        l2.setStartsOn(new Date(System.currentTimeMillis() + 32000));
+        l2.setStartsOn(new Date(System.currentTimeMillis() + 332000));
+
+        DisciplineDto d3= new DisciplineDto();
+        d3.setTitle("Vokiečių k.");
+        LectureDto l3 = new LectureDto();
+        l3.setDiscipline(d3);
+        l3.setAssignments(Arrays.asList(null, null));
+        l3.setTests(Arrays.asList(null, null));
+        l3.setStartsOn(new Date(System.currentTimeMillis() + 452000));
+
 
         data.add(l1);
         data.add(l2);
+        data.add(l3);
 
         return data;
     }
@@ -128,11 +139,11 @@ public class MainPresenter<V extends MainMvpView> extends BasePresenter<V> imple
     @Override
     public void fetchLecturesForStudent(Subscriber<Collection<LectureDto>> subscriber, PersonDto personDto) {
 
-        subscriber.executeOnSuccess(getTestLectures());
-
-        if (getTestLectures() != null) {
-            return;
-        }
+//        subscriber.executeOnSuccess(getTestLectures());
+//
+//        if (getTestLectures() != null) {
+//            return;
+//        }
 
         if (!studentsFetched.getValue()) {
             getStudentDataStore().getAllByPerson(personDto.getId(), new Subscriber<Collection<StudentDto>>() {
@@ -146,6 +157,7 @@ public class MainPresenter<V extends MainMvpView> extends BasePresenter<V> imple
                     }
                 }
             });
+            getStudentDataStore().processOrders(getContext());
         } else {
             doGetLecturesForStudents(getStudents(), getHours(), subscriber);
         }
@@ -156,6 +168,7 @@ public class MainPresenter<V extends MainMvpView> extends BasePresenter<V> imple
             for (StudentDto studentDto : students) {
                 getLectureDataStore().getAllByStudent(studentDto.getId(), TimeUnit.HOURS, hours, wrapLecturesSubscriber(subscriber));
             }
+            getLectureDataStore().processOrders(getContext());
         }
     }
 
@@ -175,6 +188,7 @@ public class MainPresenter<V extends MainMvpView> extends BasePresenter<V> imple
                     }
                 }
             });
+            getLecturerDataStore().processOrders(getContext());
         } else {
             doGetLecturesForLecturers(getLecturers(), getHours(), subscriber);
         }
@@ -185,6 +199,7 @@ public class MainPresenter<V extends MainMvpView> extends BasePresenter<V> imple
             for (LecturerDto lecturerDto : lecturers) {
                 getLectureDataStore().getAllByLecturer(lecturerDto.getId(), TimeUnit.HOURS, hours, wrapLecturesSubscriber(subscriber));
             }
+            getLectureDataStore().processOrders(getContext());
         }
 
     }
@@ -204,6 +219,7 @@ public class MainPresenter<V extends MainMvpView> extends BasePresenter<V> imple
                     }
                 }
             });
+            getGuestDataStore().processOrders(getContext());
         } else {
             doGetLecturesForGuests(getGuests(), getHours(), subscriber);
         }
@@ -214,6 +230,7 @@ public class MainPresenter<V extends MainMvpView> extends BasePresenter<V> imple
             for (LectureGuestDto guestDto : guests) {
                 getLectureDataStore().getAllByGuest(guestDto.getId(), TimeUnit.HOURS, hours, wrapLecturesSubscriber(subscriber));
             }
+            getLectureDataStore().processOrders(getContext());
         }
     }
 }

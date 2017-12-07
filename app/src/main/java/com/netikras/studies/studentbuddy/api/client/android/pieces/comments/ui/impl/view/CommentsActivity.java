@@ -13,6 +13,7 @@ import com.netikras.studies.studentbuddy.api.client.android.pieces.base.list.Lis
 import com.netikras.studies.studentbuddy.api.client.android.pieces.comments.ui.presenter.CommentsMvpPresenter;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.comments.ui.view.CommentsMvpView;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.person.ui.impl.view.PersonInfoActivity;
+import com.netikras.studies.studentbuddy.api.client.android.service.ServiceRequest;
 import com.netikras.studies.studentbuddy.core.data.api.dto.PersonDto;
 import com.netikras.studies.studentbuddy.core.data.api.dto.meta.CommentDto;
 
@@ -20,6 +21,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
@@ -28,6 +30,7 @@ import butterknife.OnClick;
 
 import static com.netikras.studies.studentbuddy.api.client.android.util.CommonUtils.datetimeToTimestamp;
 import static com.netikras.studies.studentbuddy.api.client.android.util.CommonUtils.timestampToDatetime;
+import static com.netikras.tools.common.security.IntegrityUtils.coalesce;
 import static com.netikras.tools.common.security.IntegrityUtils.isNullOrEmpty;
 
 /**
@@ -79,6 +82,56 @@ public class CommentsActivity extends BaseActivity implements CommentsMvpView {
         getFields().setTitle(commentDto.getTitle());
         getFields().setText(commentDto.getText());
         getFields().setTags(commentDto.getTags());
+
+        prepare(commentDto);
+    }
+
+    public CommentDto collect() {
+        CommentDto dto = new CommentDto();
+        dto.setId(getFields().getId());
+        dto.setAuthor(getFields().getAuthor());
+        dto.setEntityId(getFields().getEntityId());
+        dto.setEntityType(getFields().getEntityType());
+        dto.setText(getFields().getText());
+        dto.setTitle(getFields().getTitle());
+        dto.setTags(getFields().getTags());
+        return dto;
+    }
+
+    @Override
+    protected boolean isPartial() {
+        CommentDto dto = collect();
+        if (dto == null) {
+            return true;
+        }
+        Object item = coalesce(dto.getAuthor(), dto.getTags());
+        return item == null;
+    }
+
+    private ServiceRequest.Result<CommentDto> fetch(CommentDto dto) {
+        ServiceRequest.Result<CommentDto> result = new ServiceRequest.Result<>();
+        showLoading();
+        presenter.getById(new ErrorsAwareSubscriber<CommentDto>() {
+            @Override
+            public void onSuccess(CommentDto response) {
+                result.setValue(response);
+            }
+        }, dto.getId());
+
+        return result;
+    }
+
+    private void prepare(CommentDto entity) {
+        if (entity == null || isNullOrEmpty(entity.getId())) {
+            return;
+        }
+        if (isPartial()) {
+            ServiceRequest.Result<CommentDto> result = fetch(entity);
+            CommentDto dto = result.get(5, TimeUnit.SECONDS);
+            if (!result.isTimedOut()) {
+                showComment(dto);
+            }
+        }
     }
 
     @OnClick(R.id.btn_comment_author)
@@ -125,6 +178,9 @@ public class CommentsActivity extends BaseActivity implements CommentsMvpView {
         Button author;
         @BindView(R.id.btn_comment_tags)
         Button tags;
+
+        String entityId = "";
+        String entityType = "";
 
         public String getId() {
             return getString(id);
@@ -207,6 +263,22 @@ public class CommentsActivity extends BaseActivity implements CommentsMvpView {
         @Override
         protected Collection<TextView> getAllFields() {
             return null;
+        }
+
+        public String getEntityId() {
+            return entityId;
+        }
+
+        public String getEntityType() {
+            return entityType;
+        }
+
+        public void setEntityId(String entityId) {
+            this.entityId = entityId;
+        }
+
+        public void setEntityType(String entityType) {
+            this.entityType = entityType;
         }
     }
 }

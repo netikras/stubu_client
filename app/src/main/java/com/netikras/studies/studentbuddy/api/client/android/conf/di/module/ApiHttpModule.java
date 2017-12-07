@@ -1,5 +1,7 @@
 package com.netikras.studies.studentbuddy.api.client.android.conf.di.module;
 
+import android.util.Log;
+
 import com.netikras.studies.studentbuddy.api.client.android.conf.di.module.carrier.RestConfig;
 import com.netikras.studies.studentbuddy.api.client.android.data.prefs.AppPreferencesHelper;
 import com.netikras.studies.studentbuddy.api.client.android.data.prefs.PreferencesHelper;
@@ -63,6 +65,11 @@ public class ApiHttpModule {
 
             @Override
             public Object onServerErrorResponse(HttpRequest request, HttpResponse response) {
+                if (HttpResponseJsonImpl.class.isAssignableFrom(response.getClass())) {
+                    Log.w("RequestListener", "Error status code: " + response.getStatus());
+                    Log.w("RequestListener", "Error message: " + ((HttpResponseJsonImpl)response).getErrorMessage());
+                    Log.w("RequestListener", "Error body: " + ((HttpResponseJsonImpl)response).getErrorBody());
+                }
                 onError(response.getObject());
                 return super.onServerErrorResponse(request, response);
             }

@@ -57,6 +57,9 @@ dependencies {
     implementation group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: "${databindVersion}"
 
     implementation files('libs/api-public-1.0.jar')
+
+    // This is likely to change in the future. Along with nexus server info in main build.gradle.
+    // See https://github.com/netikras/common - if anything changed it's likely to be mentioned there
     implementation group: 'com.netikras', name: 'commons', version: "${netikrasCommonsVersion}", changing: true
 //    implementation files('libs/common-1.0-SNAPSHOT.jar')
 

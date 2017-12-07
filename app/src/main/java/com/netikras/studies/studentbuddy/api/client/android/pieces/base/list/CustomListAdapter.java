@@ -17,7 +17,7 @@ import com.netikras.studies.studentbuddy.core.data.api.dto.school.LectureDto;
 public class CustomListAdapter {
 
     public void bind(Context context, ListView listView, ListHandler handler) {
-        ArrayAdapter<LectureDto> adapter = new ArrayAdapter<LectureDto>(context, handler.getRowLayout(), handler.getListData()) {
+        ArrayAdapter<LectureDto> adapter = new ArrayAdapter<LectureDto>(context, handler.getRowLayout(), handler.getData()) {
 
             @Override
             public View getView(int position, View convertView, ViewGroup parent) {

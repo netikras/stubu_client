@@ -9,6 +9,8 @@ import com.netikras.studies.studentbuddy.api.client.android.pieces.lecturer.ui.p
 import com.netikras.studies.studentbuddy.api.client.android.pieces.lecturer.ui.view.LecturerMvpView;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.person.ui.presenter.PersonMvpPresenter;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.person.ui.view.PersonMvpView;
+import com.netikras.studies.studentbuddy.api.client.android.service.ServiceRequest;
+import com.netikras.studies.studentbuddy.core.data.api.dto.school.LecturerDto;
 
 import javax.inject.Inject;
 
@@ -33,4 +35,9 @@ public class LecturerPresenter<V extends LecturerMvpView> extends BasePresenter<
         return getDataManager().getStore(LecturerDataStore.class);
     }
 
+    @Override
+    public void getById(ServiceRequest.Subscriber<LecturerDto> subscriber, String id) {
+        getDataStore().getById(id, subscriber);
+        getDataStore().processOrders(getContext());
+    }
 }

@@ -7,6 +7,9 @@ import com.netikras.studies.studentbuddy.api.client.android.pieces.school.ui.vie
 import com.netikras.studies.studentbuddy.api.client.android.pieces.student.data.StudentsGroupDataStore;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.student.ui.presenter.StudentsGroupMvpPresenter;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.student.ui.view.StudentsGroupMvpView;
+import com.netikras.studies.studentbuddy.api.client.android.service.ServiceRequest;
+import com.netikras.studies.studentbuddy.api.client.android.service.ServiceRequest.Subscriber;
+import com.netikras.studies.studentbuddy.core.data.api.dto.school.StudentsGroupDto;
 
 import javax.inject.Inject;
 
@@ -26,5 +29,11 @@ public class StudentsGroupPresenter<V extends StudentsGroupMvpView> extends Base
 
     private StudentsGroupDataStore getDataStore() {
         return getDataManager().getStore(StudentsGroupDataStore.class);
+    }
+
+    @Override
+    public void getById(Subscriber<StudentsGroupDto> subscriber, String id) {
+        getDataStore().getById(id, subscriber);
+        getDataStore().processOrders(getContext());
     }
 }

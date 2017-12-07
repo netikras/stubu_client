@@ -15,14 +15,17 @@ import com.netikras.studies.studentbuddy.api.client.android.pieces.base.list.Lis
 import com.netikras.studies.studentbuddy.api.client.android.pieces.school.ui.impl.view.SchoolActivity;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.student.ui.presenter.StudentsGroupMvpPresenter;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.student.ui.view.StudentsGroupMvpView;
+import com.netikras.studies.studentbuddy.api.client.android.service.ServiceRequest.Result;
 import com.netikras.studies.studentbuddy.core.data.api.dto.school.SchoolDto;
 import com.netikras.studies.studentbuddy.core.data.api.dto.school.StudentDto;
 import com.netikras.studies.studentbuddy.core.data.api.dto.school.StudentsGroupDto;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
@@ -30,6 +33,8 @@ import butterknife.BindView;
 import butterknife.OnClick;
 
 import static com.netikras.studies.studentbuddy.api.client.android.util.CommonUtils.datetimeToDate;
+import static com.netikras.tools.common.security.IntegrityUtils.coalesce;
+import static com.netikras.tools.common.security.IntegrityUtils.isNullOrEmpty;
 
 public class StudentsGroupInfoActivity extends BaseActivity implements StudentsGroupMvpView {
 
@@ -74,6 +79,8 @@ public class StudentsGroupInfoActivity extends BaseActivity implements StudentsG
         getFields().setSchool(dto.getSchool());
         getFields().setMembers(dto.getMembers());
         getFields().setCreatedDatetime(dto.getCreatedOn());
+
+        prepare(dto);
     }
 
     public StudentsGroupDto collect() {
@@ -88,6 +95,43 @@ public class StudentsGroupInfoActivity extends BaseActivity implements StudentsG
         return dto;
     }
 
+
+    @Override
+    protected boolean isPartial() {
+        StudentsGroupDto dto = collect();
+        if (dto == null) {
+            return true;
+        }
+        Object item = coalesce(dto.getSchool());
+        return item == null;
+    }
+
+    private Result<StudentsGroupDto> fetch(StudentsGroupDto dto) {
+        Result<StudentsGroupDto> result = new Result<>();
+        showLoading();
+        presenter.getById(new ErrorsAwareSubscriber<StudentsGroupDto>() {
+            @Override
+            public void onSuccess(StudentsGroupDto response) {
+                result.setValue(response);
+            }
+        }, dto.getId());
+
+        return result;
+    }
+
+    private void prepare(StudentsGroupDto entity) {
+        if (entity == null || isNullOrEmpty(entity.getId())) {
+            return;
+        }
+        if (isPartial()) {
+            Result<StudentsGroupDto> result = fetch(entity);
+            StudentsGroupDto dto = result.get(5, TimeUnit.SECONDS);
+            if (!result.isTimedOut()) {
+                show(dto);
+            }
+        }
+    }
+
     @OnClick(R.id.btn_students_group_school)
     public void showSchool() {
         startView(SchoolActivity.class, new ViewTask<SchoolActivity>() {
@@ -100,7 +144,7 @@ public class StudentsGroupInfoActivity extends BaseActivity implements StudentsG
 
     @OnClick(R.id.btn_students_group_members)
     public void showGroupMembers() {
-        showList(this, new ListHandler<StudentDto>(){
+        showList(this, new ListHandler<StudentDto>() {
 
             @Override
             public ListRow getNewRow(View convertView) {
@@ -109,7 +153,8 @@ public class StudentsGroupInfoActivity extends BaseActivity implements StudentsG
 
             @Override
             public List<StudentDto> getListData() {
-                return getFields().getMembers();
+                List<StudentDto> members = getFields().getMembers();
+                return members != null ? members : new ArrayList<>();
             }
 
             @Override
@@ -170,7 +215,7 @@ public class StudentsGroupInfoActivity extends BaseActivity implements StudentsG
         TextView lblId;
 
         public String getId() {
-            return getString( id);
+            return getString(id);
         }
 
         public void setId(String id) {
@@ -178,7 +223,7 @@ public class StudentsGroupInfoActivity extends BaseActivity implements StudentsG
         }
 
         public String getName() {
-            return getString( name);
+            return getString(name);
         }
 
         public void setName(String name) {
@@ -186,7 +231,7 @@ public class StudentsGroupInfoActivity extends BaseActivity implements StudentsG
         }
 
         public String getEmail() {
-            return getString( email);
+            return getString(email);
         }
 
         public void setEmail(String email) {
@@ -194,7 +239,7 @@ public class StudentsGroupInfoActivity extends BaseActivity implements StudentsG
         }
 
         public String getCreated() {
-            return getString( created);
+            return getString(created);
         }
 
         public void setCreated(String created) {
@@ -206,7 +251,7 @@ public class StudentsGroupInfoActivity extends BaseActivity implements StudentsG
         }
 
         public String getSchoolName() {
-            return getString( school);
+            return getString(school);
         }
 
         public void setSchoolName(String school) {
@@ -214,7 +259,7 @@ public class StudentsGroupInfoActivity extends BaseActivity implements StudentsG
         }
 
         public String getMembersCount() {
-            return getString( members);
+            return getString(members);
         }
 
         public void setMembersCount(String members) {
@@ -227,7 +272,7 @@ public class StudentsGroupInfoActivity extends BaseActivity implements StudentsG
 
         public void setSchool(SchoolDto dto) {
             setTag(this.school, dto);
-            if (school != null) {
+            if (dto != null) {
                 setSchoolName(dto.getTitle());
             }
         }

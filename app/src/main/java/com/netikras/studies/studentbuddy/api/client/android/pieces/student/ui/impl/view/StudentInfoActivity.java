@@ -7,19 +7,21 @@ import android.widget.TextView;
 
 import com.netikras.studies.studentbuddy.api.client.android.R;
 import com.netikras.studies.studentbuddy.api.client.android.conf.di.DepInjector;
-import com.netikras.studies.studentbuddy.api.client.android.conf.di.PerActivity;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.base.BaseActivity;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.base.BaseViewFields;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.person.ui.impl.view.PersonInfoActivity;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.student.ui.presenter.StudentMvpPresenter;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.student.ui.view.StudentMvpView;
+import com.netikras.studies.studentbuddy.api.client.android.service.ServiceRequest.Result;
 import com.netikras.studies.studentbuddy.core.data.api.dto.PersonDto;
 import com.netikras.studies.studentbuddy.core.data.api.dto.school.SchoolDepartmentDto;
 import com.netikras.studies.studentbuddy.core.data.api.dto.school.SchoolDto;
 import com.netikras.studies.studentbuddy.core.data.api.dto.school.StudentDto;
 import com.netikras.studies.studentbuddy.core.data.api.dto.school.StudentsGroupDto;
 
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
@@ -27,6 +29,8 @@ import butterknife.BindView;
 import butterknife.OnClick;
 
 import static com.netikras.studies.studentbuddy.api.client.android.util.CommonUtils.datetimeToDate;
+import static com.netikras.tools.common.security.IntegrityUtils.coalesce;
+import static com.netikras.tools.common.security.IntegrityUtils.isNullOrEmpty;
 
 public class StudentInfoActivity extends BaseActivity implements StudentMvpView {
 
@@ -39,6 +43,7 @@ public class StudentInfoActivity extends BaseActivity implements StudentMvpView 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_student_info);
+        setUp();
     }
 
     @Override
@@ -71,6 +76,8 @@ public class StudentInfoActivity extends BaseActivity implements StudentMvpView 
         getFields().setDepartment(studentDto.getDepartment());
         getFields().setCreated(datetimeToDate(studentDto.getCreatedOn()));
         getFields().setPerson(studentDto.getPerson());
+
+        prepare(studentDto);
     }
 
     public StudentDto collect() {
@@ -85,6 +92,41 @@ public class StudentInfoActivity extends BaseActivity implements StudentMvpView 
         return dto;
     }
 
+    @Override
+    protected boolean isPartial() {
+        StudentDto dto = collect();
+        if (dto == null) {
+            return true;
+        }
+        Object item = coalesce(dto.getGroup(), dto.getPerson(), dto.getSchool());
+        return item == null;
+    }
+
+    private Result<StudentDto> fetch(StudentDto studentDto) {
+        Result<StudentDto> result = new Result<>();
+        showLoading();
+        presenter.getById(new ErrorsAwareSubscriber<StudentDto>() {
+            @Override
+            public void onSuccess(StudentDto response) {
+                result.setValue(response);
+            }
+        }, studentDto.getId());
+
+        return result;
+    }
+
+    private void prepare(StudentDto studentDto) {
+        if (studentDto == null || isNullOrEmpty(studentDto.getId())) {
+            return;
+        }
+        if (isPartial()) {
+            Result<StudentDto> result = fetch(studentDto);
+            StudentDto dto = result.get(5, TimeUnit.SECONDS);
+            if (!result.isTimedOut()) {
+                show(dto);
+            }
+        }
+    }
 
     @OnClick(value = {R.id.btn_student_name})
     public void showPerson() {
@@ -104,7 +146,7 @@ public class StudentInfoActivity extends BaseActivity implements StudentMvpView 
         EditText identificator;
         @BindView(R.id.txt_edit_student_date_created)
         EditText created;
-        
+
         @BindView(R.id.btn_student_name)
         Button name;
         @BindView(R.id.btn_student_school)
@@ -115,7 +157,7 @@ public class StudentInfoActivity extends BaseActivity implements StudentMvpView 
         Button group;
 
         public String getId() {
-            return getString( id);
+            return getString(id);
         }
 
         public void setId(String id) {
@@ -135,7 +177,7 @@ public class StudentInfoActivity extends BaseActivity implements StudentMvpView 
         }
 
         public String getIdentificator() {
-            return getString( identificator);
+            return getString(identificator);
         }
 
         public void setIdentificator(String identificator) {
@@ -143,7 +185,7 @@ public class StudentInfoActivity extends BaseActivity implements StudentMvpView 
         }
 
         public String getCreated() {
-            return getString( created);
+            return getString(created);
         }
 
         public void setCreated(String created) {
@@ -151,7 +193,7 @@ public class StudentInfoActivity extends BaseActivity implements StudentMvpView 
         }
 
         public String getName() {
-            return getString( name);
+            return getString(name);
         }
 
         public void setName(String name) {
@@ -159,7 +201,7 @@ public class StudentInfoActivity extends BaseActivity implements StudentMvpView 
         }
 
         public String getSchoolName() {
-            return getString( school);
+            return getString(school);
         }
 
         public void setSchoolName(String school) {
@@ -167,7 +209,7 @@ public class StudentInfoActivity extends BaseActivity implements StudentMvpView 
         }
 
         public String getDepartmentName() {
-            return getString( department);
+            return getString(department);
         }
 
         public void setDepartmentName(String department) {
@@ -175,7 +217,7 @@ public class StudentInfoActivity extends BaseActivity implements StudentMvpView 
         }
 
         public String getGroupName() {
-            return getString( group);
+            return getString(group);
         }
 
         public void setGroupName(String group) {
@@ -217,8 +259,9 @@ public class StudentInfoActivity extends BaseActivity implements StudentMvpView 
 
         @Override
         protected Collection<TextView> getAllFields() {
-            return null;
+            return Arrays.asList(id, identificator, created, name, school, department, group);
         }
+
     }
 
 }
