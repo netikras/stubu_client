@@ -1,6 +1,7 @@
 package com.netikras.studies.studentbuddy.api.client.android.data;
 
 import com.netikras.studies.studentbuddy.api.client.android.conf.di.AllDatastores;
+import com.netikras.studies.studentbuddy.api.client.android.data.cache.CacheManager;
 import com.netikras.studies.studentbuddy.api.client.android.data.stores.BaseDataStore;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.discipline.data.CourseDataStore;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.discipline.data.DisciplineDataStore;
@@ -33,6 +34,9 @@ public class DataManagerImpl implements DataManager {
     @Inject
     @AllDatastores
     Map<Class<? extends BaseDataStore>, BaseDataStore> stores;
+
+    @Inject
+    CacheManager cacheManager;
 
     @Inject
     public DataManagerImpl() {
@@ -71,22 +75,6 @@ public class DataManagerImpl implements DataManager {
     }
 
     private void fillStores() {
-//        stores.put(UserDataStore.class, userDataStore);
-//        stores.put(PersonDataStore.class, personDataStore);
-//
-//        stores.put(DisciplineDataStore.class, disciplineDataStore);
-//        stores.put(CourseDataStore.class, courseDataStore);
-//
-//        stores.put(GuestDataStore.class, guestDataStore);
-//        stores.put(StudentDataStore.class, studentDataStore);
-//        stores.put(LecturerDataStore.class, lecturerDataStore);
-//
-//        stores.put(LectureDataStore.class, lectureDataStore);
-//        stores.put(StudentsGroupDataStore.class, studentsGroupDataStore);
-//
-//        stores.put(SchoolDataStore.class, schoolDataStore);
-//        stores.put(SchoolDepartmentDataStore.class, schoolDepartmentDataStore);
-
 
         addStore(userDataStore);
         addStore(personDataStore);

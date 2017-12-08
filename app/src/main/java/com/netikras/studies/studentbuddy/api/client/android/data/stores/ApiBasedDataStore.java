@@ -39,6 +39,18 @@ public abstract class ApiBasedDataStore<I, E> implements BaseDataStore<I, E> {
         orderData(request);
     }
 
+    protected <T> void respondSuccess(T response, ServiceRequest.Subscriber<T>... subscribers) {
+        if (!isNullOrEmpty(subscribers)) {
+            for (ServiceRequest.Subscriber<T> subscriber : subscribers) {
+                subscriber.onSuccess(response);
+            }
+        }
+    }
+
+    protected boolean isCacheEnabled() {
+        return false;
+    }
+
     @Override
     public void processOrders(Context context) {
         ApiService.processQueue(context);

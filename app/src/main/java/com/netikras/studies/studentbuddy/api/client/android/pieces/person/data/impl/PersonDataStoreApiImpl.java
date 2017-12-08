@@ -1,5 +1,7 @@
 package com.netikras.studies.studentbuddy.api.client.android.pieces.person.data.impl;
 
+import com.netikras.studies.studentbuddy.api.client.android.data.cache.CacheManager;
+import com.netikras.studies.studentbuddy.api.client.android.data.cache.db.dao.PersonDao;
 import com.netikras.studies.studentbuddy.api.client.android.data.stores.ApiBasedDataStore;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.person.data.PersonDataStore;
 import com.netikras.studies.studentbuddy.api.client.android.service.ServiceRequest;
@@ -12,6 +14,8 @@ import java.util.Collection;
 
 import javax.inject.Inject;
 
+import static com.netikras.tools.common.security.IntegrityUtils.isNullOrEmpty;
+
 /**
  * Created by netikras on 17.10.31.
  */
@@ -23,16 +27,47 @@ public class PersonDataStoreApiImpl extends ApiBasedDataStore<String, PersonDto>
     @Inject
     AdminPersonApiConsumer adminApiConsumer;
 
+    private final PersonDao cache;
+
     @Inject
-    public PersonDataStoreApiImpl() {
+    public PersonDataStoreApiImpl(CacheManager cacheManager) {
+        cache = new PersonDao(cacheManager);
     }
+
+    private PersonDto updateCache(PersonDto item) {
+        if (cache != null) {
+            cache.put(item);
+        }
+        return item;
+    }
+
+    private void evict(PersonDto personDto) {
+        if (personDto != null) {
+            evict(personDto.getId());
+        }
+    }
+
+    private void evict(String id) {
+        if (cache != null) {
+            cache.deleteById(id);
+        }
+    }
+
 
     @Override
     public void getById(String id, Subscriber<PersonDto>... subscribers) {
+        if (cache != null) {
+            PersonDto cached = cache.get(id);
+            if (cached != null) {
+                respondSuccess(cached, subscribers);
+                return;
+            }
+        }
         orderData(new ServiceRequest<PersonDto>(){
             @Override
             public PersonDto request() {
-                return apiConsumer.retrievePersonDto(id);
+                PersonDto dto = apiConsumer.retrievePersonDto(id);
+                return updateCache(dto);
             }
         }, subscribers);
     }
@@ -42,7 +77,8 @@ public class PersonDataStoreApiImpl extends ApiBasedDataStore<String, PersonDto>
         orderData(new ServiceRequest<PersonDto>(){
             @Override
             public PersonDto request() {
-                return adminApiConsumer.createPersonDto(item);
+                PersonDto dto = adminApiConsumer.createPersonDto(item);
+                return updateCache(dto);
             }
         }, subscribers);
     }
@@ -52,7 +88,7 @@ public class PersonDataStoreApiImpl extends ApiBasedDataStore<String, PersonDto>
         orderData(new ServiceRequest<PersonDto>(){
             @Override
             public PersonDto request() {
-                return adminApiConsumer.updatePersonDto(item);
+                return updateCache(adminApiConsumer.updatePersonDto(item));
             }
         }, subscribers);
     }
@@ -63,6 +99,7 @@ public class PersonDataStoreApiImpl extends ApiBasedDataStore<String, PersonDto>
             @Override
             public Boolean request() {
                 adminApiConsumer.deletePersonDto(id);
+                evict(id);
                 return Boolean.TRUE;
             }
         }, subscribers);
@@ -74,6 +111,7 @@ public class PersonDataStoreApiImpl extends ApiBasedDataStore<String, PersonDto>
             @Override
             public Boolean request() {
                 adminApiConsumer.purgePersonDto(id);
+                evict(id);
                 return Boolean.TRUE;
             }
         }, subscribers);
@@ -94,7 +132,7 @@ public class PersonDataStoreApiImpl extends ApiBasedDataStore<String, PersonDto>
         orderData(new ServiceRequest<PersonDto>(){
             @Override
             public PersonDto request() {
-                return apiConsumer.getPersonDtoByIdentifier(identifier);
+                return updateCache(apiConsumer.getPersonDtoByIdentifier(identifier));
             }
         }, subscribers);
     }
@@ -104,7 +142,7 @@ public class PersonDataStoreApiImpl extends ApiBasedDataStore<String, PersonDto>
         orderData(new ServiceRequest<PersonDto>(){
             @Override
             public PersonDto request() {
-                return apiConsumer.getPersonDtoByCode(value);
+                return updateCache(apiConsumer.getPersonDtoByCode(value));
             }
         }, subscribers);
     }

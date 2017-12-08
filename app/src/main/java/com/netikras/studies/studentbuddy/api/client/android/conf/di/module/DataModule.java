@@ -5,6 +5,7 @@ import com.netikras.studies.studentbuddy.api.client.android.conf.di.AllDatastore
 import com.netikras.studies.studentbuddy.api.client.android.conf.di.PreferenceInfo;
 import com.netikras.studies.studentbuddy.api.client.android.data.DataManager;
 import com.netikras.studies.studentbuddy.api.client.android.data.DataManagerImpl;
+import com.netikras.studies.studentbuddy.api.client.android.data.cache.CacheManager;
 import com.netikras.studies.studentbuddy.api.client.android.data.prefs.AppPreferencesHelper;
 import com.netikras.studies.studentbuddy.api.client.android.data.prefs.PreferencesHelper;
 import com.netikras.studies.studentbuddy.api.client.android.data.stores.BaseDataStore;
@@ -58,6 +59,8 @@ import com.netikras.studies.studentbuddy.api.client.android.pieces.sys.data.impl
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.inject.Singleton;
+
 import dagger.Module;
 import dagger.Provides;
 
@@ -82,6 +85,14 @@ public class DataModule {
     @Provides
     PreferencesHelper preferencesHelper(App app, @PreferenceInfo String prefsFileName) {
         return new AppPreferencesHelper(app, prefsFileName);
+    }
+
+    @Singleton
+    @Provides
+    CacheManager cacheManager(App app) {
+        CacheManager manager = new CacheManager();
+        manager.setAppContext(app);
+        return manager;
     }
 
 //    @Singleton

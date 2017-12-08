@@ -51,7 +51,7 @@ public class CommentsDataStoreApiImpl extends ApiBasedDataStore<String, CommentD
     }
 
     /**
-     * Not implemented. Fallback to delete()
+     * Not implemented. Fallback to deleteById()
      */
     @Override
     @Deprecated

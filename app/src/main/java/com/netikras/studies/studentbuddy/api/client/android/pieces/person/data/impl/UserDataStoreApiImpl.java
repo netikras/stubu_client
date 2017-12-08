@@ -1,5 +1,7 @@
 package com.netikras.studies.studentbuddy.api.client.android.pieces.person.data.impl;
 
+import com.netikras.studies.studentbuddy.api.client.android.data.cache.CacheManager;
+import com.netikras.studies.studentbuddy.api.client.android.data.cache.db.dao.UserDao;
 import com.netikras.studies.studentbuddy.api.client.android.data.stores.ApiBasedDataStore;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.person.data.UserDataStore;
 import com.netikras.studies.studentbuddy.api.client.android.service.ServiceRequest;
@@ -27,9 +29,12 @@ public class UserDataStoreApiImpl extends ApiBasedDataStore<String, UserDto> imp
     @Inject
     AdminUserApiConsumer adminApiConsumer;
 
+    private UserDao cache;
+
 
     @Inject
-    public UserDataStoreApiImpl() {
+    public UserDataStoreApiImpl(CacheManager cacheManager) {
+        cache = new UserDao(cacheManager);
     }
 
 
