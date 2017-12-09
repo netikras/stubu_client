@@ -24,7 +24,7 @@ import static com.netikras.tools.common.security.IntegrityUtils.isNullOrEmpty;
 
 public abstract class GenericDao<E> extends SQLiteOpenHelper {
 
-    private static int version = 1;
+    private static int version = 2;
     private static String dbName = "stubu.db";
     protected String tableName;
 
@@ -40,6 +40,10 @@ public abstract class GenericDao<E> extends SQLiteOpenHelper {
         this.tableName = tableName;
         this.cacheManager = cacheManager;
         cacheManager.registerDao(this);
+    }
+
+    public CacheManager getManager() {
+        return cacheManager;
     }
 
     public <D extends GenericDao> D getDao(Class<D> type) {
@@ -73,6 +77,12 @@ public abstract class GenericDao<E> extends SQLiteOpenHelper {
 
     protected String getTableName() {
         return tableName;
+    }
+
+    @Override
+    public void onOpen(SQLiteDatabase db) {
+        super.onOpen(db);
+        onCreate(db);
     }
 
     @Override
@@ -182,8 +192,32 @@ public abstract class GenericDao<E> extends SQLiteOpenHelper {
         return 0;
     }
 
+
+    public E fill(E entity) {
+        return entity;
+    }
+
+    protected  <T> T prefill(T entity, GenericDao<T> cache) {
+        if (entity != null && cache != null) {
+            if (!isNullOrEmpty(cache.getId(entity))) {
+                return cache.get(cache.getId(entity));
+            }
+        }
+
+        return entity;
+    }
+
+    public <C extends Collection<E>> C fillAll(C entities) {
+        if (!isNullOrEmpty(entities)) {
+            for (E entity : entities) {
+                fill(entity);
+            }
+        }
+        return entities;
+    }
+
     public E put(E entity) {
-        if (entity == null) {
+        if (entity != null) {
             E existing = get(getId(entity));
             if (existing == null) {
                 create(entity);
@@ -194,8 +228,21 @@ public abstract class GenericDao<E> extends SQLiteOpenHelper {
         return entity;
     }
 
+    public E putWithImmediates(E entity) {
+        return put(entity);
+    }
+
+    public Collection<E> putAllWithImmediates(Collection<E> entities) {
+        if (!isNullOrEmpty(entities)) {
+            for (E entity : entities) {
+                putWithImmediates(entity);
+            }
+        }
+        return entities;
+    }
+
     public Collection<E> putAll(Collection<E> entities) {
-        if (isNullOrEmpty(entities)) {
+        if (!isNullOrEmpty(entities)) {
             for (E entity : entities) {
                 put(entity);
             }
@@ -204,7 +251,7 @@ public abstract class GenericDao<E> extends SQLiteOpenHelper {
     }
 
     public E[]  putAll(E... entities) {
-        if (isNullOrEmpty(entities)) {
+        if (!isNullOrEmpty(entities)) {
             for (E entity : entities) {
                 put(entity);
             }

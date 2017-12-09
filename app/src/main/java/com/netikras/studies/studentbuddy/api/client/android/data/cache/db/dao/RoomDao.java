@@ -7,6 +7,8 @@ import com.netikras.studies.studentbuddy.core.data.api.dto.location.BuildingFloo
 import com.netikras.studies.studentbuddy.core.data.api.dto.location.LectureRoomDto;
 import com.netikras.studies.studentbuddy.core.data.api.dto.school.SchoolDto;
 
+import java.util.List;
+
 import static com.netikras.tools.common.security.IntegrityUtils.isNullOrEmpty;
 
 /**
@@ -15,9 +17,14 @@ import static com.netikras.tools.common.security.IntegrityUtils.isNullOrEmpty;
 
 public class RoomDao extends GenericDao<LectureRoomDto> {
 
-
+    FloorDao floorCache;
+    SchoolDao schoolCache;
     public RoomDao(CacheManager cacheManager) {
         super(cacheManager, "room");
+
+        floorCache = cacheManager.getDao(FloorDao.class);
+        schoolCache = cacheManager.getDao(SchoolDao.class);
+
     }
 
     @Override
@@ -27,7 +34,7 @@ public class RoomDao extends GenericDao<LectureRoomDto> {
 
     @Override
     protected String getCreateQuery() {
-        return "create table " + getTableName() + " (id text, number text, title text, created_on integer, updated_on integer, school_id text, floor_id text)";
+        return "create table if not exists " + getTableName() + " (id text, number text, title text, created_on integer, updated_on integer, school_id text, floor_id text)";
     }
 
     @Override
@@ -69,5 +76,35 @@ public class RoomDao extends GenericDao<LectureRoomDto> {
         }
 
         return roomDto;
+    }
+
+    @Override
+    public LectureRoomDto fill(LectureRoomDto entity) {
+        if (entity == null) {
+            return entity;
+        }
+
+        entity.setFloor(prefill(entity.getFloor(), floorCache));
+        entity.setSchool(prefill(entity.getSchool(), schoolCache));
+
+        return entity;
+    }
+
+    @Override
+    public LectureRoomDto putWithImmediates(LectureRoomDto entity) {
+        if (entity == null) {
+            return entity;
+        }
+
+        super.putWithImmediates(entity);
+
+        floorCache.put(entity.getFloor());
+        schoolCache.put(entity.getSchool());
+
+        return entity;
+    }
+
+    public List<LectureRoomDto> getAllByFloorId(String id) {
+        return getAllWhere("floor_id = ?", id);
     }
 }

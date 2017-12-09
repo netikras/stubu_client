@@ -14,8 +14,15 @@ import static com.netikras.tools.common.security.IntegrityUtils.isNullOrEmpty;
 
 public class DisciplineDao extends GenericDao<DisciplineDto> {
 
+
+    SchoolDao schoolCache;
+    CourseDao courseCache;
+
     public DisciplineDao(CacheManager cacheManager) {
         super(cacheManager, "discipline");
+
+        schoolCache = cacheManager.getDao(SchoolDao.class);
+        courseCache = cacheManager.getDao(CourseDao.class);
     }
 
     @Override
@@ -25,7 +32,7 @@ public class DisciplineDao extends GenericDao<DisciplineDto> {
 
     @Override
     protected String getCreateQuery() {
-        return "create table " + getTableName() + " (id text, title text, description text, updated_on integer, school_id text)";
+        return "create table if not exists " + getTableName() + " (id text, title text, description text, updated_on integer, school_id text)";
     }
 
     @Override
@@ -57,5 +64,30 @@ public class DisciplineDao extends GenericDao<DisciplineDto> {
         }
 
         return discipline;
+    }
+
+    @Override
+    public DisciplineDto fill(DisciplineDto entity) {
+        if (entity == null) {
+            return entity;
+        }
+
+        entity.setSchool(prefill(entity.getSchool(), schoolCache));
+
+        return entity;
+    }
+
+    @Override
+    public DisciplineDto putWithImmediates(DisciplineDto entity) {
+        if (entity == null) {
+            return entity;
+        }
+
+        super.putWithImmediates(entity);
+
+        schoolCache.put(entity.getSchool());
+        courseCache.putAll(entity.getCourses());
+
+        return entity;
     }
 }

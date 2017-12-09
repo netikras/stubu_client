@@ -5,7 +5,11 @@ import android.content.ContentValues;
 import com.netikras.studies.studentbuddy.api.client.android.data.cache.CacheManager;
 import com.netikras.studies.studentbuddy.core.data.api.dto.school.CourseDto;
 import com.netikras.studies.studentbuddy.core.data.api.dto.school.DisciplineDto;
+import com.netikras.studies.studentbuddy.core.data.api.dto.school.LectureDto;
+import com.netikras.studies.studentbuddy.core.data.api.dto.school.LecturerDto;
 import com.netikras.studies.studentbuddy.core.data.api.dto.school.StudentsGroupDto;
+
+import java.util.List;
 
 import static com.netikras.tools.common.security.IntegrityUtils.isNullOrEmpty;
 
@@ -15,8 +19,20 @@ import static com.netikras.tools.common.security.IntegrityUtils.isNullOrEmpty;
 
 public class CourseDao extends GenericDao<CourseDto> {
 
+
+    GroupDao groupCache;
+    DisciplineDao disciplineCache;
+    LecturerDao lecturerCache;
+    LectureDao lectureCache;
+
     public CourseDao(CacheManager cacheManager) {
         super(cacheManager, "course");
+
+        groupCache = cacheManager.getDao(GroupDao.class);
+        disciplineCache = cacheManager.getDao(DisciplineDao.class);
+        lectureCache = cacheManager.getDao(LectureDao.class);
+        lecturerCache = cacheManager.getDao(LecturerDao.class);
+
     }
 
     @Override
@@ -26,7 +42,7 @@ public class CourseDao extends GenericDao<CourseDto> {
 
     @Override
     protected String getCreateQuery() {
-        return "create table " + getTableName() + " (id text, title text, created_on integer, updated_on integer, discipline_id text, group_id text)";
+        return "create table if not exists " + getTableName() + " (id text, title text, created_on integer, updated_on integer, discipline_id text, group_id text)";
     }
 
     @Override
@@ -67,7 +83,39 @@ public class CourseDao extends GenericDao<CourseDto> {
             course.getGroup().setId(id);
         }
 
-
         return course;
+    }
+
+    @Override
+    public CourseDto fill(CourseDto entity) {
+        if (entity == null) {
+            return entity;
+        }
+
+        entity.setGroup(prefill(entity.getGroup(), groupCache));
+        entity.setDiscipline(prefill(entity.getDiscipline(), disciplineCache));
+
+        if (!isNullOrEmpty(entity.getId())) {
+            List<LectureDto> lectures = lectureCache.getAllByCourseId(entity.getId());
+            entity.setLectures(lectures);
+        }
+
+        return entity;
+    }
+
+    @Override
+    public CourseDto putWithImmediates(CourseDto entity) {
+        if (entity == null) {
+            return entity;
+        }
+
+        super.putWithImmediates(entity);
+
+        groupCache.put(entity.getGroup());
+        disciplineCache.put(entity.getDiscipline());
+        lecturerCache.putAll(entity.getLecturers());
+        lectureCache.putAll(entity.getLectures());
+
+        return entity;
     }
 }

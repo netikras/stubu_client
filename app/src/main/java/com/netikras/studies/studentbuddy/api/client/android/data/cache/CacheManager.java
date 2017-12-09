@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.netikras.studies.studentbuddy.api.client.android.data.cache.db.dao.GenericDao;
 
+import java.lang.reflect.Constructor;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -32,7 +33,24 @@ public class CacheManager {
     }
 
     public <D extends GenericDao> D getDao(Class<D> type) {
+
+        D dao = (D) caches.get(type);
+
+        if (dao == null) {
+            try {
+                Constructor<D> constructor = type.getConstructor(getClass());
+                if (constructor != null) {
+                    dao = constructor.newInstance(this);
+                    registerDao(dao);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
         return (D) caches.get(type);
     }
+
+
 
 }

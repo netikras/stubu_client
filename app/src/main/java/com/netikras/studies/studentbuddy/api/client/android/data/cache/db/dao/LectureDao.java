@@ -4,11 +4,15 @@ import android.content.ContentValues;
 
 import com.netikras.studies.studentbuddy.api.client.android.data.cache.CacheManager;
 import com.netikras.studies.studentbuddy.core.data.api.dto.location.LectureRoomDto;
+import com.netikras.studies.studentbuddy.core.data.api.dto.school.AssignmentDto;
 import com.netikras.studies.studentbuddy.core.data.api.dto.school.CourseDto;
 import com.netikras.studies.studentbuddy.core.data.api.dto.school.DisciplineDto;
+import com.netikras.studies.studentbuddy.core.data.api.dto.school.DisciplineTestDto;
 import com.netikras.studies.studentbuddy.core.data.api.dto.school.LectureDto;
 import com.netikras.studies.studentbuddy.core.data.api.dto.school.LecturerDto;
 import com.netikras.studies.studentbuddy.core.data.api.dto.school.StudentsGroupDto;
+
+import java.util.List;
 
 import static com.netikras.tools.common.security.IntegrityUtils.isNullOrEmpty;
 
@@ -18,9 +22,28 @@ import static com.netikras.tools.common.security.IntegrityUtils.isNullOrEmpty;
 
 public class LectureDao extends GenericDao<LectureDto> {
 
+    private StudentDao studentCache;
+    private DisciplineDao disciplineCache;
+    private LecturerDao lecturerCache;
+    private RoomDao roomCache;
+    private GroupDao groupsCache;
+    private CourseDao courseCache;
+    private CommentDao commentCache;
+    private AssignmentDao assignmentCache;
+    private TestDao testsCache;
 
     public LectureDao(CacheManager cacheManager) {
         super(cacheManager, "lecture");
+
+        studentCache = cacheManager.getDao(StudentDao.class);
+        disciplineCache = cacheManager.getDao(DisciplineDao.class);
+        lecturerCache = cacheManager.getDao(LecturerDao.class);
+        roomCache = cacheManager.getDao(RoomDao.class);
+        groupsCache = cacheManager.getDao(GroupDao.class);
+        courseCache = cacheManager.getDao(CourseDao.class);
+        commentCache = cacheManager.getDao(CommentDao.class);
+        assignmentCache = cacheManager.getDao(AssignmentDao.class);
+        testsCache = cacheManager.getDao(TestDao.class);
     }
 
     @Override
@@ -30,7 +53,7 @@ public class LectureDao extends GenericDao<LectureDto> {
 
     @Override
     protected String getCreateQuery() {
-        return "create table " + getTableName() + " (id text, starts_on integer, ends_on integer, group_id text, room_id text, lecture_id text, discipline_id text, course_id text)";
+        return "create table if not exists " + getTableName() + " (id text, starts_on integer, ends_on integer, group_id text, room_id text, lecturer_id text, discipline_id text, course_id text)";
     }
 
     @Override
@@ -101,5 +124,50 @@ public class LectureDao extends GenericDao<LectureDto> {
         }
 
         return lecture;
+    }
+
+    @Override
+    public LectureDto fill(LectureDto entity) {
+        if (entity == null) {
+            return entity;
+        }
+
+        entity.setCourse(prefill(entity.getCourse(), courseCache));
+        entity.setDiscipline(prefill(entity.getDiscipline(), disciplineCache));
+        entity.setLecturer(prefill(entity.getLecturer(), lecturerCache));
+        entity.setRoom(prefill(entity.getRoom(), roomCache));
+
+        if (!isNullOrEmpty(entity.getId())) {
+            List<DisciplineTestDto> tests = testsCache.getAllByLectureId(entity.getId());
+            entity.setTests(tests);
+
+            List<AssignmentDto> assignments = assignmentCache.getAllByLectureId(entity.getId());
+            entity.setAssignments(assignments);
+        }
+
+        return entity;
+    }
+
+    @Override
+    public LectureDto putWithImmediates(LectureDto entity) {
+
+        if (entity == null) {
+            return entity;
+        }
+
+        super.putWithImmediates(entity);
+
+        courseCache.put(entity.getCourse());
+        disciplineCache.put(entity.getDiscipline());
+        lecturerCache.put(entity.getLecturer());
+        roomCache.put(entity.getRoom());
+        testsCache.putAll(entity.getTests());
+        assignmentCache.putAll(entity.getAssignments());
+
+        return entity;
+    }
+
+    public List<LectureDto> getAllByCourseId(String id) {
+        return getAllWhere("course_id = ?", id);
     }
 }

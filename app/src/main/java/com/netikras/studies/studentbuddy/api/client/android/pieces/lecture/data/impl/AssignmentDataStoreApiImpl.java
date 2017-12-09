@@ -1,5 +1,7 @@
 package com.netikras.studies.studentbuddy.api.client.android.pieces.lecture.data.impl;
 
+import com.netikras.studies.studentbuddy.api.client.android.data.cache.CacheManager;
+import com.netikras.studies.studentbuddy.api.client.android.data.cache.db.dao.AssignmentDao;
 import com.netikras.studies.studentbuddy.api.client.android.data.stores.ApiBasedDataStore;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.lecture.data.AssignmentDataStore;
 import com.netikras.studies.studentbuddy.api.client.android.service.ServiceRequest;
@@ -20,8 +22,12 @@ public class AssignmentDataStoreApiImpl extends ApiBasedDataStore<String, Assign
     @Inject
     AssignmentApiConsumer assignmentApiConsumer;
 
+    AssignmentDao cache;
+
     @Inject
-    public AssignmentDataStoreApiImpl() {}
+    public AssignmentDataStoreApiImpl(CacheManager cacheManager) {
+
+    }
 
     @Override
     public void getById(String id, Subscriber<AssignmentDto>... subscribers) {

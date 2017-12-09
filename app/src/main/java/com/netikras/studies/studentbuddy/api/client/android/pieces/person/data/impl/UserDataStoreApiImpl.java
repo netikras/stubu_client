@@ -34,7 +34,7 @@ public class UserDataStoreApiImpl extends ApiBasedDataStore<String, UserDto> imp
 
     @Inject
     public UserDataStoreApiImpl(CacheManager cacheManager) {
-        cache = new UserDao(cacheManager);
+        cache = cacheManager.getDao(UserDao.class);
     }
 
 

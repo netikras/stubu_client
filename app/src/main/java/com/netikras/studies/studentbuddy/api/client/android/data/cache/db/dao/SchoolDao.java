@@ -28,7 +28,7 @@ public class SchoolDao extends GenericDao<SchoolDto> {
 
     @Override
     protected String getCreateQuery() {
-        return "create table " + getTableName() + " (id text, title text, department_ids text)";
+        return "create table if not exists " + getTableName() + " (id text, title text, department_ids text)";
     }
 
     @Override
@@ -63,5 +63,25 @@ public class SchoolDao extends GenericDao<SchoolDto> {
         }
 
         return school;
+    }
+
+    @Override
+    public SchoolDto fill(SchoolDto entity) {
+        if (entity == null) {
+            return entity;
+        }
+
+        return entity;
+    }
+
+    @Override
+    public SchoolDto putWithImmediates(SchoolDto entity) {
+        if (entity == null) {
+            return entity;
+        }
+
+        super.putWithImmediates(entity);
+
+        return entity;
     }
 }

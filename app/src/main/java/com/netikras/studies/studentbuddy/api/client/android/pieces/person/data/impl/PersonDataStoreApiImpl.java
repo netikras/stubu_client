@@ -31,7 +31,7 @@ public class PersonDataStoreApiImpl extends ApiBasedDataStore<String, PersonDto>
 
     @Inject
     public PersonDataStoreApiImpl(CacheManager cacheManager) {
-        cache = new PersonDao(cacheManager);
+        cache = cacheManager.getDao(PersonDao.class);
     }
 
     private PersonDto updateCache(PersonDto item) {
@@ -63,7 +63,7 @@ public class PersonDataStoreApiImpl extends ApiBasedDataStore<String, PersonDto>
                 return;
             }
         }
-        orderData(new ServiceRequest<PersonDto>(){
+        orderData(new ServiceRequest<PersonDto>() {
             @Override
             public PersonDto request() {
                 PersonDto dto = apiConsumer.retrievePersonDto(id);
@@ -74,7 +74,7 @@ public class PersonDataStoreApiImpl extends ApiBasedDataStore<String, PersonDto>
 
     @Override
     public void create(PersonDto item, Subscriber<PersonDto>... subscribers) {
-        orderData(new ServiceRequest<PersonDto>(){
+        orderData(new ServiceRequest<PersonDto>() {
             @Override
             public PersonDto request() {
                 PersonDto dto = adminApiConsumer.createPersonDto(item);
@@ -85,7 +85,7 @@ public class PersonDataStoreApiImpl extends ApiBasedDataStore<String, PersonDto>
 
     @Override
     public void update(PersonDto item, Subscriber<PersonDto>... subscribers) {
-        orderData(new ServiceRequest<PersonDto>(){
+        orderData(new ServiceRequest<PersonDto>() {
             @Override
             public PersonDto request() {
                 return updateCache(adminApiConsumer.updatePersonDto(item));
@@ -95,7 +95,7 @@ public class PersonDataStoreApiImpl extends ApiBasedDataStore<String, PersonDto>
 
     @Override
     public void purge(String id, Subscriber<Boolean>... subscribers) {
-        orderData(new ServiceRequest<Boolean>(){
+        orderData(new ServiceRequest<Boolean>() {
             @Override
             public Boolean request() {
                 adminApiConsumer.deletePersonDto(id);
@@ -107,7 +107,7 @@ public class PersonDataStoreApiImpl extends ApiBasedDataStore<String, PersonDto>
 
     @Override
     public void delete(String id, Subscriber<Boolean>... subscribers) {
-        orderData(new ServiceRequest<Boolean>(){
+        orderData(new ServiceRequest<Boolean>() {
             @Override
             public Boolean request() {
                 adminApiConsumer.purgePersonDto(id);
@@ -119,7 +119,7 @@ public class PersonDataStoreApiImpl extends ApiBasedDataStore<String, PersonDto>
 
     @Override
     public void getAll(Subscriber<Collection<PersonDto>>... subscribers) {
-        orderData(new ServiceRequest<Collection<PersonDto>>(){
+        orderData(new ServiceRequest<Collection<PersonDto>>() {
             @Override
             public Collection<PersonDto> request() {
                 return apiConsumer.getPersonDtoAll();
@@ -129,7 +129,7 @@ public class PersonDataStoreApiImpl extends ApiBasedDataStore<String, PersonDto>
 
     @Override
     public void getByIdentifier(String identifier, Subscriber<PersonDto>... subscribers) {
-        orderData(new ServiceRequest<PersonDto>(){
+        orderData(new ServiceRequest<PersonDto>() {
             @Override
             public PersonDto request() {
                 return updateCache(apiConsumer.getPersonDtoByIdentifier(identifier));
@@ -139,7 +139,7 @@ public class PersonDataStoreApiImpl extends ApiBasedDataStore<String, PersonDto>
 
     @Override
     public void getByCode(String value, Subscriber<PersonDto>... subscribers) {
-        orderData(new ServiceRequest<PersonDto>(){
+        orderData(new ServiceRequest<PersonDto>() {
             @Override
             public PersonDto request() {
                 return updateCache(apiConsumer.getPersonDtoByCode(value));
@@ -149,7 +149,7 @@ public class PersonDataStoreApiImpl extends ApiBasedDataStore<String, PersonDto>
 
     @Override
     public void getByFirstName(String fname, Subscriber<Collection<PersonDto>>... subscribers) {
-        orderData(new ServiceRequest<Collection<PersonDto>>(){
+        orderData(new ServiceRequest<Collection<PersonDto>>() {
             @Override
             public Collection<PersonDto> request() {
                 return apiConsumer.getPersonDtoAllByFirstName(fname);
@@ -159,7 +159,7 @@ public class PersonDataStoreApiImpl extends ApiBasedDataStore<String, PersonDto>
 
     @Override
     public void getByLastName(String lname, Subscriber<Collection<PersonDto>>... subscribers) {
-        orderData(new ServiceRequest<Collection<PersonDto>>(){
+        orderData(new ServiceRequest<Collection<PersonDto>>() {
             @Override
             public Collection<PersonDto> request() {
                 return apiConsumer.getPersonDtoAllByLastName(lname);
@@ -169,7 +169,7 @@ public class PersonDataStoreApiImpl extends ApiBasedDataStore<String, PersonDto>
 
     @Override
     public void getByFirstAndLastName(String fname, String lname, Subscriber<Collection<PersonDto>>... subscribers) {
-        orderData(new ServiceRequest<Collection<PersonDto>>(){
+        orderData(new ServiceRequest<Collection<PersonDto>>() {
             @Override
             public Collection<PersonDto> request() {
                 return apiConsumer.getPersonDtoAllByFirstAndLastName(fname, lname);

@@ -1,7 +1,16 @@
 package com.netikras.studies.studentbuddy.api.client.android.pieces.lecture.data.impl;
 
 import com.netikras.studies.studentbuddy.api.client.android.data.cache.CacheManager;
+import com.netikras.studies.studentbuddy.api.client.android.data.cache.db.dao.AssignmentDao;
+import com.netikras.studies.studentbuddy.api.client.android.data.cache.db.dao.CommentDao;
+import com.netikras.studies.studentbuddy.api.client.android.data.cache.db.dao.CourseDao;
+import com.netikras.studies.studentbuddy.api.client.android.data.cache.db.dao.DisciplineDao;
+import com.netikras.studies.studentbuddy.api.client.android.data.cache.db.dao.GroupDao;
 import com.netikras.studies.studentbuddy.api.client.android.data.cache.db.dao.LectureDao;
+import com.netikras.studies.studentbuddy.api.client.android.data.cache.db.dao.LecturerDao;
+import com.netikras.studies.studentbuddy.api.client.android.data.cache.db.dao.RoomDao;
+import com.netikras.studies.studentbuddy.api.client.android.data.cache.db.dao.StudentDao;
+import com.netikras.studies.studentbuddy.api.client.android.data.cache.db.dao.TestDao;
 import com.netikras.studies.studentbuddy.api.client.android.data.stores.ApiBasedDataStore;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.lecture.data.LectureDataStore;
 import com.netikras.studies.studentbuddy.api.client.android.service.ServiceRequest;
@@ -10,6 +19,9 @@ import com.netikras.studies.studentbuddy.api.misc.TimeUnit;
 import com.netikras.studies.studentbuddy.api.timetable.controller.generated.LecturesApiConsumer;
 import com.netikras.studies.studentbuddy.core.data.api.dto.PersonDto;
 import com.netikras.studies.studentbuddy.core.data.api.dto.school.LectureDto;
+import com.netikras.studies.studentbuddy.core.data.api.dto.school.StudentDto;
+
+import junit.framework.TestCase;
 
 import java.util.Collection;
 import java.util.List;
@@ -29,17 +41,22 @@ public class LectureDataStoreApiImpl extends ApiBasedDataStore<String, LectureDt
     LecturesApiConsumer lecturesApiConsumer;
 
     private LectureDao cache;
+    private StudentDao studentCache;
 
     @Inject
     public LectureDataStoreApiImpl(CacheManager cacheManager) {
-        cache = new LectureDao(cacheManager);
+        cache = cacheManager.getDao(LectureDao.class);
+        studentCache = cacheManager.getDao(StudentDao.class);
     }
 
 
     private <C extends Collection<LectureDto>> C updateCache(C items) {
         if (isCacheEnabled()) {
             if (!isNullOrEmpty(items)) {
-                cache.putAll(items);
+                for (LectureDto item : items) {
+                    cache.putWithImmediates(item);
+                }
+//                cache.putAll(items);
             }
         }
         return items;
@@ -73,7 +90,7 @@ public class LectureDataStoreApiImpl extends ApiBasedDataStore<String, LectureDt
     public void getById(String id, Subscriber<LectureDto>... subscribers) {
 
         if (isCacheEnabled()) {
-            LectureDto cached = cache.get(id);
+            LectureDto cached = cache.fill(cache.get(id));
             if (cached != null) {
                 respondSuccess(cached, subscribers);
                 return;
@@ -143,8 +160,9 @@ public class LectureDataStoreApiImpl extends ApiBasedDataStore<String, LectureDt
 
         if (isCacheEnabled()) {
             List<LectureDto> cached = cache.getAllWhere("group_id = ? and starts_on > ? and starts_on < ?", id, "" + after, "" + before);
+            cache.fillAll(cached);
             if (!isNullOrEmpty(cached)) {
-                respondSuccess(cached);
+                respondSuccess(cached, subscribers);
             }
         }
 
@@ -160,8 +178,9 @@ public class LectureDataStoreApiImpl extends ApiBasedDataStore<String, LectureDt
     public void getAllByLecturer(String id, Long after, Long before, Subscriber<Collection<LectureDto>>... subscribers) {
         if (isCacheEnabled()) {
             List<LectureDto> cached = cache.getAllWhere("lecturer_id = ? and starts_on > ? and starts_on < ?", id, "" + after, "" + before);
+            cache.fillAll(cached);
             if (!isNullOrEmpty(cached)) {
-                respondSuccess(cached);
+                respondSuccess(cached, subscribers);
             }
         }
 
@@ -177,8 +196,9 @@ public class LectureDataStoreApiImpl extends ApiBasedDataStore<String, LectureDt
     public void getAllByRoom(String id, Long after, Long before, Subscriber<Collection<LectureDto>>... subscribers) {
         if (isCacheEnabled()) {
             List<LectureDto> cached = cache.getAllWhere("room_id = ? and starts_on > ? and starts_on < ?", id, "" + after, "" + before);
+            cache.fillAll(cached);
             if (!isNullOrEmpty(cached)) {
-                respondSuccess(cached);
+                respondSuccess(cached, subscribers);
             }
         }
         orderData(new ServiceRequest<Collection<LectureDto>>() {
@@ -192,10 +212,14 @@ public class LectureDataStoreApiImpl extends ApiBasedDataStore<String, LectureDt
     @Override
     public void getAllByStudent(String id, Long after, Long before, Subscriber<Collection<LectureDto>>... subscribers) {
 
-        if (isCacheEnabled()) {
-            List<LectureDto> cached = cache.getAllWhere("student_id = ? and starts_on > ? and starts_on < ?", id, "" + after, "" + before);
-            if (!isNullOrEmpty(cached)) {
-                respondSuccess(cached);
+        if (isCacheEnabled() && studentCache != null) {
+            StudentDto studentDto = studentCache.get(id);
+            if (studentDto != null && studentDto.getGroup() != null && !isNullOrEmpty(studentDto.getGroup().getId())) {
+                List<LectureDto> cached = cache.getAllWhere("group_id = ? and starts_on > ? and starts_on < ?", studentDto.getGroup().getId(), "" + after, "" + before);
+                cache.fillAll(cached);
+                if (!isNullOrEmpty(cached)) {
+                    respondSuccess(cached, subscribers);
+                }
             }
         }
 
@@ -210,12 +234,12 @@ public class LectureDataStoreApiImpl extends ApiBasedDataStore<String, LectureDt
     @Override
     public void getAllByGuest(String id, Long after, Long before, Subscriber<Collection<LectureDto>>... subscribers) {
 
-        if (isCacheEnabled()) {
-            List<LectureDto> cached = cache.getAllWhere("guest_id = ? and starts_on > ? and starts_on < ?", id, "" + after, "" + before);
-            if (!isNullOrEmpty(cached)) {
-                respondSuccess(cached);
-            }
-        }
+//        if (isCacheEnabled()) {
+//            List<LectureDto> cached = cache.getAllWhere("guest_id = ? and starts_on > ? and starts_on < ?", id, "" + after, "" + before);
+//            if (!isNullOrEmpty(cached)) {
+//                respondSuccess(cached, subscribers);
+//            }
+//        }
 
         orderData(new ServiceRequest<Collection<LectureDto>>() {
             @Override
@@ -231,8 +255,9 @@ public class LectureDataStoreApiImpl extends ApiBasedDataStore<String, LectureDt
 
         if (isCacheEnabled()) {
             List<LectureDto> cached = cache.getAllWhere("group_id = ? and starts_on > ? and starts_on < ?", id, "" + now(), "" + now() + unit.convert(amount, TimeUnit.MILLISECONDS));
+            cache.fillAll(cached);
             if (!isNullOrEmpty(cached)) {
-                respondSuccess(cached);
+                respondSuccess(cached, subscribers);
             }
         }
 
@@ -248,8 +273,9 @@ public class LectureDataStoreApiImpl extends ApiBasedDataStore<String, LectureDt
     public void getAllByLecturer(String id, TimeUnit unit, Long amount, Subscriber<Collection<LectureDto>>... subscribers) {
         if (isCacheEnabled()) {
             List<LectureDto> cached = cache.getAllWhere("lecturer_id = ? and starts_on > ? and starts_on < ?", id, "" + now(), "" + now() + unit.convert(amount, TimeUnit.MILLISECONDS));
+            cache.fillAll(cached);
             if (!isNullOrEmpty(cached)) {
-                respondSuccess(cached);
+                respondSuccess(cached, subscribers);
             }
         }
 
@@ -265,8 +291,9 @@ public class LectureDataStoreApiImpl extends ApiBasedDataStore<String, LectureDt
     public void getAllByRoom(String id, TimeUnit unit, Long amount, Subscriber<Collection<LectureDto>>... subscribers) {
         if (isCacheEnabled()) {
             List<LectureDto> cached = cache.getAllWhere("room_id = ? and starts_on > ? and starts_on < ?", id, "" + now(), "" + now() + unit.convert(amount, TimeUnit.MILLISECONDS));
+            cache.fillAll(cached);
             if (!isNullOrEmpty(cached)) {
-                respondSuccess(cached);
+                respondSuccess(cached, subscribers);
             }
         }
 
@@ -281,9 +308,13 @@ public class LectureDataStoreApiImpl extends ApiBasedDataStore<String, LectureDt
     @Override
     public void getAllByStudent(String id, TimeUnit unit, Long amount, Subscriber<Collection<LectureDto>>... subscribers) {
         if (isCacheEnabled()) {
-            List<LectureDto> cached = cache.getAllWhere("student_id = ? and starts_on > ? and starts_on < ?", id, "" + now(), "" + now() + unit.convert(amount, TimeUnit.MILLISECONDS));
-            if (!isNullOrEmpty(cached)) {
-                respondSuccess(cached);
+            StudentDto studentDto = studentCache.get(id);
+            if (studentDto != null && studentDto.getGroup() != null && !isNullOrEmpty(studentDto.getGroup().getId())) {
+                List<LectureDto> cached = cache.getAllWhere("group_id = ? and starts_on > ? and starts_on < ?", studentDto.getGroup().getId(), "" + now(), "" + now() + unit.convert(amount, TimeUnit.MILLISECONDS));
+                cache.fillAll(cached);
+                if (!isNullOrEmpty(cached)) {
+                    respondSuccess(cached, subscribers);
+                }
             }
         }
 
@@ -297,12 +328,12 @@ public class LectureDataStoreApiImpl extends ApiBasedDataStore<String, LectureDt
 
     @Override
     public void getAllByGuest(String id, TimeUnit unit, long amount, Subscriber<Collection<LectureDto>>... subscribers) {
-        if (isCacheEnabled()) {
-            List<LectureDto> cached = cache.getAllWhere("guest_id = ? and starts_on > ? and starts_on < ?", id, "" + now(), "" + now() + unit.convert(amount, TimeUnit.MILLISECONDS));
-            if (!isNullOrEmpty(cached)) {
-                respondSuccess(cached);
-            }
-        }
+//        if (isCacheEnabled()) {
+//            List<LectureDto> cached = cache.getAllWhere("guest_id = ? and starts_on > ? and starts_on < ?", id, "" + now(), "" + now() + unit.convert(amount, TimeUnit.MILLISECONDS));
+//            if (!isNullOrEmpty(cached)) {
+//                respondSuccess(cached, subscribers);
+//            }
+//        }
 
         orderData(new ServiceRequest<Collection<LectureDto>>() {
             @Override
@@ -310,20 +341,6 @@ public class LectureDataStoreApiImpl extends ApiBasedDataStore<String, LectureDt
                 return updateCache(lecturesApiConsumer.getLectureDtoAllByGuestIdStartingIn(id, unit.getText(), amount));
             }
         }, subscribers);
-    }
-
-
-    private long toMs(String units, long value) {
-        if (!isNullOrEmpty(units)) {
-            try {
-                TimeUnit unit = TimeUnit.fromText(units);
-                return unit.convert(value, TimeUnit.MILLISECONDS);
-            } catch (Exception e) {
-
-            }
-        }
-
-        return 0;
     }
 
     private long now() {

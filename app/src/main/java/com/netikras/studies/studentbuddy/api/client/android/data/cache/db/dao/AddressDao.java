@@ -23,7 +23,7 @@ public class AddressDao extends GenericDao<AddressDto> {
 
     @Override
     protected String getCreateQuery() {
-        return "create table " + getTableName() + " (id text, country text, city text, street text, building text, postal_code text, longitude text, latitude text)";
+        return "create table if not exists " + getTableName() + " (id text, country text, city text, street text, building text, postal_code text, longitude text, latitude text)";
     }
 
     @Override
@@ -53,4 +53,6 @@ public class AddressDao extends GenericDao<AddressDto> {
 
         return address;
     }
+
+
 }

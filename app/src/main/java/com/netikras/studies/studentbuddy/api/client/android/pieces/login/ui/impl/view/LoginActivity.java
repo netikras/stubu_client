@@ -46,7 +46,7 @@ public class LoginActivity extends BaseActivity implements LoginMvpView {
 
     @Override
     protected List<Integer> excludeMenuItems() {
-        return Arrays.asList(R.id.main_menu_create, R.id.main_menu_delete, R.id.main_menu_edit);
+        return Arrays.asList(R.id.main_menu_create, R.id.main_menu_save, R.id.main_menu_refresh, R.id.main_menu_login, R.id.main_menu_delete, R.id.main_menu_edit);
     }
 
     @Override

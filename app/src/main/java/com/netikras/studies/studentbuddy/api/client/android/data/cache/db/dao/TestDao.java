@@ -7,6 +7,8 @@ import com.netikras.studies.studentbuddy.core.data.api.dto.school.DisciplineDto;
 import com.netikras.studies.studentbuddy.core.data.api.dto.school.DisciplineTestDto;
 import com.netikras.studies.studentbuddy.core.data.api.dto.school.LectureDto;
 
+import java.util.List;
+
 import static com.netikras.tools.common.security.IntegrityUtils.isNullOrEmpty;
 
 /**
@@ -15,8 +17,14 @@ import static com.netikras.tools.common.security.IntegrityUtils.isNullOrEmpty;
 
 public class TestDao extends GenericDao<DisciplineTestDto> {
 
+    LectureDao lectureCache;
+    DisciplineDao disciplineCache;
+
     public TestDao(CacheManager cacheManager) {
         super(cacheManager, "test");
+
+        lectureCache = cacheManager.getDao(LectureDao.class);
+        disciplineCache = cacheManager.getDao(DisciplineDao.class);
     }
 
     @Override
@@ -26,7 +34,7 @@ public class TestDao extends GenericDao<DisciplineTestDto> {
 
     @Override
     protected String getCreateQuery() {
-        return "create table " + getTableName() + " (id text, description text, exam integer, starts_on integer, updated_on integer, discipline_id text, lecture_id text)";
+        return "create table if not exists " + getTableName() + " (id text, description text, exam integer, starts_on integer, updated_on integer, discipline_id text, lecture_id text)";
     }
 
     @Override
@@ -70,5 +78,35 @@ public class TestDao extends GenericDao<DisciplineTestDto> {
         }
 
         return testDto;
+    }
+
+    @Override
+    public DisciplineTestDto fill(DisciplineTestDto entity) {
+        if (entity == null) {
+            return entity;
+        }
+
+        entity.setLecture(prefill(entity.getLecture(), lectureCache));
+        entity.setDiscipline(prefill(entity.getDiscipline(), disciplineCache));
+
+        return entity;
+    }
+
+    @Override
+    public DisciplineTestDto putWithImmediates(DisciplineTestDto entity) {
+        if (entity == null) {
+            return entity;
+        }
+
+        super.putWithImmediates(entity);
+
+        lectureCache.put(entity.getLecture());
+        disciplineCache.put(entity.getDiscipline());
+
+        return entity;
+    }
+
+    public List<DisciplineTestDto> getAllByLectureId(String id) {
+        return getAllWhere("lecture_id = ?", id);
     }
 }

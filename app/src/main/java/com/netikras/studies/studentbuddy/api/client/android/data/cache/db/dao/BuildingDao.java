@@ -5,6 +5,10 @@ import android.content.ContentValues;
 import com.netikras.studies.studentbuddy.api.client.android.data.cache.CacheManager;
 import com.netikras.studies.studentbuddy.core.data.api.dto.location.AddressDto;
 import com.netikras.studies.studentbuddy.core.data.api.dto.location.BuildingDto;
+import com.netikras.studies.studentbuddy.core.data.api.dto.location.BuildingFloorDto;
+import com.netikras.studies.studentbuddy.core.data.api.dto.location.BuildingSectionDto;
+
+import java.util.List;
 
 import static com.netikras.tools.common.security.IntegrityUtils.isNullOrEmpty;
 
@@ -14,8 +18,17 @@ import static com.netikras.tools.common.security.IntegrityUtils.isNullOrEmpty;
 
 public class BuildingDao extends GenericDao<BuildingDto> {
 
+
+    AddressDao addressCache;
+    SectionDao sectionCache;
+    FloorDao floorCache;
+
     public BuildingDao(CacheManager cacheManager) {
         super(cacheManager, "building");
+
+        addressCache = cacheManager.getDao(AddressDao.class);
+        sectionCache = cacheManager.getDao(SectionDao.class);
+        floorCache = cacheManager.getDao(FloorDao.class);
     }
 
     @Override
@@ -25,7 +38,7 @@ public class BuildingDao extends GenericDao<BuildingDto> {
 
     @Override
     protected String getCreateQuery() {
-        return "create table " + getTableName() + " (id text, title text, updated_on integer, address_id text)";
+        return "create table if not exists " + getTableName() + " (id text, title text, updated_on integer, address_id text)";
     }
 
     @Override
@@ -54,4 +67,39 @@ public class BuildingDao extends GenericDao<BuildingDto> {
 
         return building;
     }
+
+    @Override
+    public BuildingDto fill(BuildingDto entity) {
+
+        if (entity == null) {
+            return entity;
+        }
+
+        entity.setAddress(prefill(entity.getAddress(), addressCache));
+
+        if (!isNullOrEmpty(entity.getId())) {
+            List<BuildingFloorDto> floors = floorCache.getAllByBuildingId(entity.getId());
+            entity.setFloors(floors);
+
+            List<BuildingSectionDto> sections = sectionCache.getAllByBuildingId(entity.getId());
+            entity.setBuildingSections(sections);
+        }
+
+        return entity;
+    }
+
+    @Override
+    public BuildingDto putWithImmediates(BuildingDto entity) {
+        if (entity == null) {
+            return entity;
+        }
+
+        super.putWithImmediates(entity);
+
+        addressCache.put(entity.getAddress());
+        floorCache.putAll(entity.getFloors());
+        sectionCache.putAll(entity.getBuildingSections());
+        return entity;
+    }
+
 }

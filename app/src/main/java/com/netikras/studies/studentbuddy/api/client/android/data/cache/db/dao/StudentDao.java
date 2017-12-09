@@ -20,8 +20,17 @@ import static com.netikras.tools.common.security.IntegrityUtils.isNullOrEmpty;
 public class StudentDao extends GenericDao<StudentDto> {
 
 
+    GroupDao groupCache;
+    SchoolDao schoolCache;
+    PersonDao personCache;
+
     public StudentDao(CacheManager cacheManager) {
         super(cacheManager, "student");
+
+        groupCache = cacheManager.getDao(GroupDao.class);
+        schoolCache = cacheManager.getDao(SchoolDao.class);
+        personCache = cacheManager.getDao(PersonDao.class);
+
     }
 
     @Override
@@ -31,7 +40,7 @@ public class StudentDao extends GenericDao<StudentDto> {
 
     @Override
     protected String getCreateQuery() {
-        return "create table " + getTableName() + " (id text, created_on integer, updated_on integer, group_id text, person_id text, school_id text, department_id text)";
+        return "create table if not exists " + getTableName() + " (id text, created_on integer, updated_on integer, group_id text, person_id text, school_id text, department_id text)";
     }
 
     @Override
@@ -94,8 +103,42 @@ public class StudentDao extends GenericDao<StudentDto> {
         return student;
     }
 
+    @Override
+    public StudentDto fill(StudentDto entity) {
+        if (entity == null) {
+            return entity;
+        }
+
+        entity.setGroup(prefill(entity.getGroup(), groupCache));
+//        entity.setDepartment(prefill(entity.getDepartment(), ));
+        entity.setSchool(prefill(entity.getSchool(), schoolCache));
+        entity.setPerson(prefill(entity.getPerson(), personCache));
+
+        return entity;
+    }
+
+    @Override
+    public StudentDto putWithImmediates(StudentDto entity) {
+        if (entity == null) {
+            return entity;
+        }
+
+        super.putWithImmediates(entity);
+
+        groupCache.put(entity.getGroup());
+//        entity.getDepartment());
+        schoolCache.put(entity.getSchool());
+        personCache.put(entity.getPerson());
+
+        return entity;
+    }
+
     public List<StudentDto> getAllByPersonId(String personId) {
         return getAllWhere("person_id = ?", personId);
+    }
+
+    public List<StudentDto> getAllByGroupId(String id) {
+        return getAllWhere("group_id = ?", id);
     }
 
 }

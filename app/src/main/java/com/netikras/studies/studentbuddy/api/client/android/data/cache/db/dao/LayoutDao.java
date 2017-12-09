@@ -6,6 +6,8 @@ import com.netikras.studies.studentbuddy.api.client.android.data.cache.CacheMana
 import com.netikras.studies.studentbuddy.core.data.api.dto.location.BuildingFloorDto;
 import com.netikras.studies.studentbuddy.core.data.api.dto.location.FloorLayoutDto;
 
+import java.util.List;
+
 import static com.netikras.tools.common.security.IntegrityUtils.isNullOrEmpty;
 
 /**
@@ -14,8 +16,12 @@ import static com.netikras.tools.common.security.IntegrityUtils.isNullOrEmpty;
 
 public class LayoutDao extends GenericDao<FloorLayoutDto> {
 
+    FloorDao floorCache;
+
     public LayoutDao(CacheManager cacheManager) {
         super(cacheManager, "floor_layout");
+
+        floorCache = cacheManager.getDao(FloorDao.class);
     }
 
     @Override
@@ -25,7 +31,7 @@ public class LayoutDao extends GenericDao<FloorLayoutDto> {
 
     @Override
     protected String getCreateQuery() {
-        return "create table " + getTableName() + " (id text, active integer, updated_on integer, map blob, floor_id text)";
+        return "create table if not exists " + getTableName() + " (id text, active integer, updated_on integer, map blob, floor_id text)";
     }
 
     @Override
@@ -55,5 +61,33 @@ public class LayoutDao extends GenericDao<FloorLayoutDto> {
         }
 
         return layoutDto;
+    }
+
+    @Override
+    public FloorLayoutDto fill(FloorLayoutDto entity) {
+        if (entity == null) {
+            return entity;
+        }
+
+        entity.setFloor(prefill(entity.getFloor(), floorCache));
+
+        return entity;
+    }
+
+    @Override
+    public FloorLayoutDto putWithImmediates(FloorLayoutDto entity) {
+        if (entity == null) {
+            return entity;
+        }
+
+        super.putWithImmediates(entity);
+
+        floorCache.put(entity.getFloor());
+
+        return entity;
+    }
+
+    public List<FloorLayoutDto> getAllByFloorId(String id) {
+        return getAllWhere("floor_id = ?", id);
     }
 }

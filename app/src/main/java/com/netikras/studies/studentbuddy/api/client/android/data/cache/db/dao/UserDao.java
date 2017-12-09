@@ -13,8 +13,12 @@ import static com.netikras.tools.common.security.IntegrityUtils.isNullOrEmpty;
 
 public class UserDao extends GenericDao<UserDto> {
 
+    PersonDao personCache;
+
     public UserDao(CacheManager cacheManager) {
         super(cacheManager, "user_");
+
+        personCache = cacheManager.getDao(PersonDao.class);
     }
 
     @Override
@@ -24,7 +28,7 @@ public class UserDao extends GenericDao<UserDto> {
 
     @Override
     protected String getCreateQuery() {
-        return "create table "+ getTableName() + " (id text, name text, created_on integer, updated_on integer, person_id text, roles text)";
+        return "create table if not exists " + getTableName() + " (id text, name text, created_on integer, updated_on integer, person_id text, roles text)";
     }
 
     @Override
@@ -63,5 +67,28 @@ public class UserDao extends GenericDao<UserDto> {
         user.setRoles(toCollection(results.getString("roles")));
 
         return user;
+    }
+
+    @Override
+    public UserDto fill(UserDto entity) {
+        if (entity == null) {
+            return entity;
+        }
+
+        entity.setPerson(prefill(entity.getPerson(), personCache));
+
+        return entity;
+    }
+
+    @Override
+    public UserDto putWithImmediates(UserDto entity) {
+        if (entity == null) {
+            return entity;
+        }
+
+        super.putWithImmediates(entity);
+        personCache.put(entity.getPerson());
+
+        return entity;
     }
 }

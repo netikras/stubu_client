@@ -23,7 +23,7 @@ public class PersonDao extends GenericDao<PersonDto> {
 
     @Override
     protected String getCreateQuery() {
-        return "create table "+ getTableName() + " (id text, id2 text, first_name text, last_name text, email text, phone text, code text, created_on integer, updated_on integer)";
+        return "create table if not exists " + getTableName() + " (id text, id2 text, first_name text, last_name text, email text, phone text, code text, created_on integer, updated_on integer)";
     }
 
     @Override

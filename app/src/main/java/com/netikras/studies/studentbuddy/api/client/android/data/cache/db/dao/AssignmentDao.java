@@ -5,6 +5,9 @@ import android.content.ContentValues;
 import com.netikras.studies.studentbuddy.api.client.android.data.cache.CacheManager;
 import com.netikras.studies.studentbuddy.core.data.api.dto.school.AssignmentDto;
 import com.netikras.studies.studentbuddy.core.data.api.dto.school.DisciplineDto;
+import com.netikras.studies.studentbuddy.core.data.api.dto.school.LectureDto;
+
+import java.util.List;
 
 import static com.netikras.tools.common.security.IntegrityUtils.isNullOrEmpty;
 
@@ -14,8 +17,13 @@ import static com.netikras.tools.common.security.IntegrityUtils.isNullOrEmpty;
 
 public class AssignmentDao extends GenericDao<AssignmentDto> {
 
-    public AssignmentDao(CacheManager cacheManager, String tableName) {
-        super(cacheManager, tableName);
+
+    LectureDao lectureCache;
+
+    public AssignmentDao(CacheManager cacheManager) {
+        super(cacheManager, "assignment");
+
+        lectureCache = cacheManager.getDao(LectureDao.class);
     }
 
     @Override
@@ -25,7 +33,7 @@ public class AssignmentDao extends GenericDao<AssignmentDto> {
 
     @Override
     protected String getCreateQuery() {
-        return "create table " + getTableName() + " (id text, description text, created_on integer, updated_on integer, due integer, discipline_id text)";
+        return "create table if not exists " + getTableName() + " (id text, description text, created_on integer, updated_on integer, due integer, discipline_id text, lecture_id text)";
     }
 
     @Override
@@ -38,6 +46,14 @@ public class AssignmentDao extends GenericDao<AssignmentDto> {
 
         if (entity.getDiscipline() != null) {
             values.put("discipline_id", entity.getDiscipline().getId());
+        }
+
+        if (entity.getLectureDto() != null) {
+            values.put("lecture_id", entity.getLectureDto().getId());
+        }
+
+        if (entity.getLectureDto() != null) {
+            values.put("lecture_id", entity.getLectureDto().getId());
         }
     }
 
@@ -58,6 +74,39 @@ public class AssignmentDao extends GenericDao<AssignmentDto> {
             assignment.getDiscipline().setId(id);
         }
 
+        id = results.getString("lecture_id");
+        if (!isNullOrEmpty(id)) {
+            assignment.setLectureDto(new LectureDto());
+            assignment.getLectureDto().setId(id);
+        }
+
         return assignment;
+    }
+
+    @Override
+    public AssignmentDto fill(AssignmentDto entity) {
+        if (entity == null) {
+            return entity;
+        }
+
+        entity.setLectureDto(prefill(entity.getLectureDto(), lectureCache));
+
+        return entity;
+    }
+
+    @Override
+    public AssignmentDto putWithImmediates(AssignmentDto entity) {
+        if (entity == null) {
+            return entity;
+        }
+        super.putWithImmediates(entity);
+
+        lectureCache.put(entity.getLectureDto());
+
+        return entity;
+    }
+
+    public List<AssignmentDto> getAllByLectureId(String id) {
+        return getAllWhere("lecture_id = ?", id);
     }
 }

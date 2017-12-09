@@ -28,7 +28,7 @@ public class CommentDao extends GenericDao<CommentDto> {
 
     @Override
     protected String getCreateQuery() {
-        return "create table " + getTableName() + " (id text, title text, text_ text, entity_type text, entity_id text, category text, created_on integer, updated_on integer, tags text, author_id text)";
+        return "create table if not exists " + getTableName() + " (id text, title text, text_ text, entity_type text, entity_id text, category text, created_on integer, updated_on integer, tags text, author_id text)";
     }
 
     @Override
