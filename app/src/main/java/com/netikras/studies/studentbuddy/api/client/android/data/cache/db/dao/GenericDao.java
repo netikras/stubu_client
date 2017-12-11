@@ -51,7 +51,7 @@ public abstract class GenericDao<E> extends SQLiteOpenHelper {
     }
 
 
-    protected abstract String getId(E entity);
+    public abstract String getId(E entity);
 
     protected abstract String getCreateQuery();
 
@@ -107,15 +107,19 @@ public abstract class GenericDao<E> extends SQLiteOpenHelper {
         return null;
     }
 
-    public E getFirstWhere(String conditions) {
+    public E getFirstWhere(String conditions, String... args) {
         if (!isNullOrEmpty(conditions)) {
             Cursor cursor = getReadableDatabase()
-                    .query(getTableName(), null, conditions, null, null, null, null);
+                    .query(getTableName(), null, conditions, args, null, null, null);
             if (cursor.moveToFirst()) {
                 return restore(new DBResults(cursor));
             }
         }
         return null;
+    }
+
+    public List<E> getAll() {
+        return getAllWhere(null);
     }
 
     public List<E> getAllWhere(String conditions, String... args) {
@@ -155,7 +159,7 @@ public abstract class GenericDao<E> extends SQLiteOpenHelper {
     }
 
     public long create(E entity) {
-        if (entity != null) {
+        if (entity != null && !isNullOrEmpty(getId(entity))) {
             ContentValues values = new ContentValues();
             persist(entity, values);
 
@@ -181,7 +185,7 @@ public abstract class GenericDao<E> extends SQLiteOpenHelper {
     }
 
     public int update(E entity) {
-        if (entity != null) {
+        if (entity != null && !isNullOrEmpty(getId(entity))) {
             ContentValues values = new ContentValues();
             persist(entity, values);
 

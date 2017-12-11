@@ -1,5 +1,8 @@
 package com.netikras.studies.studentbuddy.api.client.android.pieces.student.data.impl;
 
+import com.netikras.studies.studentbuddy.api.client.android.data.cache.CacheManager;
+import com.netikras.studies.studentbuddy.api.client.android.data.cache.db.dao.GenericDao;
+import com.netikras.studies.studentbuddy.api.client.android.data.cache.db.dao.GroupDao;
 import com.netikras.studies.studentbuddy.api.client.android.data.stores.ApiBasedDataStore;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.student.data.StudentsGroupDataStore;
 import com.netikras.studies.studentbuddy.api.client.android.service.ServiceRequest;
@@ -13,6 +16,8 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import static com.netikras.tools.common.security.IntegrityUtils.isNullOrEmpty;
+
 /**
  * Created by netikras on 17.11.11.
  */
@@ -25,24 +30,47 @@ public class StudentsGroupDataStoreApiImpl extends ApiBasedDataStore<String, Stu
     AdminStudentApiConsumer adminStudentApiConsumer;
 
     @Inject
-    public StudentsGroupDataStoreApiImpl() {}
-    
+    public StudentsGroupDataStoreApiImpl(CacheManager cacheManager) {
+        setCache(cacheManager.getDao(GroupDao.class));
+    }
+
+    @Override
+    protected GroupDao getCache() {
+        return super.getCache();
+    }
+
     @Override
     public void getById(String id, Subscriber<StudentsGroupDto>... subscribers) {
+        if (isCacheEnabled()) {
+            StudentsGroupDto dto = getCached(id);
+            if (dto != null) {
+                fillFromCache(dto);
+                respondCacheHit(dto, subscribers);
+            }
+        }
         orderData(new ServiceRequest<StudentsGroupDto>() {
             @Override
             public StudentsGroupDto request() {
-                return studentApiConsumer.retrieveStudentsGroupDto(id);
+                return updateCache(studentApiConsumer.retrieveStudentsGroupDto(id));
             }
         }, subscribers);
     }
 
     @Override
     public void getByTitle(String name, Subscriber<StudentsGroupDto>... subscribers) {
+
+        if (isCacheEnabled()) {
+            StudentsGroupDto dto = getCache().getByTitle(name);
+            if (dto != null) {
+                fillFromCache(dto);
+                respondCacheHit(dto, subscribers);
+            }
+        }
+
         orderData(new ServiceRequest<StudentsGroupDto>() {
             @Override
             public StudentsGroupDto request() {
-                return studentApiConsumer.getStudentsGroupDtoByTitle(name);
+                return updateCache(studentApiConsumer.getStudentsGroupDtoByTitle(name));
             }
         }, subscribers);
     }
@@ -52,7 +80,7 @@ public class StudentsGroupDataStoreApiImpl extends ApiBasedDataStore<String, Stu
         orderData(new ServiceRequest<StudentsGroupDto>() {
             @Override
             public StudentsGroupDto request() {
-                return adminStudentApiConsumer.createStudentsGroupDto(item);
+                return updateCache(adminStudentApiConsumer.createStudentsGroupDto(item));
             }
         }, subscribers);
     }
@@ -68,6 +96,7 @@ public class StudentsGroupDataStoreApiImpl extends ApiBasedDataStore<String, Stu
             @Override
             public Boolean request() {
                 adminStudentApiConsumer.purgeStudentsGroupDto(id);
+                evict(id);
                 return Boolean.TRUE;
             }
         }, subscribers);
@@ -79,6 +108,7 @@ public class StudentsGroupDataStoreApiImpl extends ApiBasedDataStore<String, Stu
             @Override
             public Boolean request() {
                 adminStudentApiConsumer.purgeStudentsGroupDto(id);
+                evict(id);
                 return Boolean.TRUE;
             }
         }, subscribers);
@@ -86,10 +116,18 @@ public class StudentsGroupDataStoreApiImpl extends ApiBasedDataStore<String, Stu
 
     @Override
     public void getAll(Subscriber<Collection<StudentsGroupDto>>... subscribers) {
+
+        if (isCacheEnabled()) {
+            Collection<StudentsGroupDto> groupDtos = getCache().getAll();
+            if (!isNullOrEmpty(groupDtos)) {
+                respondCacheHit(groupDtos, subscribers);
+            }
+        }
+
         orderData(new ServiceRequest<Collection<StudentsGroupDto>>() {
             @Override
             public Collection<StudentsGroupDto> request() {
-                return studentApiConsumer.getStudentsGroupDtoAll();
+                return updateCache(studentApiConsumer.getStudentsGroupDtoAll());
             }
         }, subscribers);
     }

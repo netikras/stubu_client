@@ -5,6 +5,8 @@ import android.content.ContentValues;
 import com.netikras.studies.studentbuddy.api.client.android.data.cache.CacheManager;
 import com.netikras.studies.studentbuddy.core.data.api.dto.PersonDto;
 
+import java.util.Collection;
+
 /**
  * Created by netikras on 17.12.8.
  */
@@ -17,7 +19,7 @@ public class PersonDao extends GenericDao<PersonDto> {
 
 
     @Override
-    protected String getId(PersonDto entity) {
+    public String getId(PersonDto entity) {
         return entity.getId();
     }
 
@@ -54,5 +56,25 @@ public class PersonDao extends GenericDao<PersonDto> {
         person.setUpdatedOn(fromTimestamp(results.getLong("updated_on")));
 
         return person;
+    }
+
+    public PersonDto getByIdentifier(String identifier) {
+        return getFirstWhere("id1 = ?", identifier);
+    }
+
+    public PersonDto getByCode(String value) {
+        return getFirstWhere("code = ?", value);
+    }
+
+    public Collection<PersonDto> getAllByFirstName(String fname) {
+        return getAllWhere("first_name = ?", fname);
+    }
+
+    public Collection<PersonDto> getAllByLastName(String lname) {
+        return getAllWhere("last_name = ?", lname);
+    }
+
+    public Collection<PersonDto> getAllByFirsAndLasttName(String fname, String lname) {
+        return getAllWhere("first_name = ? and last_name = ?", fname, lname);
     }
 }

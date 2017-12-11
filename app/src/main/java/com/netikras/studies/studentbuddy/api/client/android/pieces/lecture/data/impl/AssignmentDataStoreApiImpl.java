@@ -13,6 +13,8 @@ import java.util.Collection;
 
 import javax.inject.Inject;
 
+import static com.netikras.tools.common.security.IntegrityUtils.isNullOrEmpty;
+
 /**
  * Created by netikras on 17.11.11.
  */
@@ -22,19 +24,30 @@ public class AssignmentDataStoreApiImpl extends ApiBasedDataStore<String, Assign
     @Inject
     AssignmentApiConsumer assignmentApiConsumer;
 
-    AssignmentDao cache;
-
     @Inject
     public AssignmentDataStoreApiImpl(CacheManager cacheManager) {
+        setCache(cacheManager.getDao(AssignmentDao.class));
+    }
 
+    @Override
+    protected AssignmentDao getCache() {
+        return super.getCache();
     }
 
     @Override
     public void getById(String id, Subscriber<AssignmentDto>... subscribers) {
+        if (isCacheEnabled()) {
+            AssignmentDto dto = getCached(id);
+            if (dto != null) {
+                fillFromCache(dto);
+                respondCacheHit(dto, subscribers);
+            }
+        }
+
         orderData(new ServiceRequest<AssignmentDto>() {
             @Override
             public AssignmentDto request() {
-                return assignmentApiConsumer.retrieveAssignmentDto(id);
+                return updateCache(assignmentApiConsumer.retrieveAssignmentDto(id));
             }
         }, subscribers);
     }
@@ -44,7 +57,7 @@ public class AssignmentDataStoreApiImpl extends ApiBasedDataStore<String, Assign
         orderData(new ServiceRequest<AssignmentDto>() {
             @Override
             public AssignmentDto request() {
-                return assignmentApiConsumer.createAssignmentDto(item);
+                return updateCache(assignmentApiConsumer.createAssignmentDto(item));
             }
         }, subscribers);
     }
@@ -54,7 +67,7 @@ public class AssignmentDataStoreApiImpl extends ApiBasedDataStore<String, Assign
         orderData(new ServiceRequest<AssignmentDto>() {
             @Override
             public AssignmentDto request() {
-                return assignmentApiConsumer.createAssignmentDtoNew(lectureId, description);
+                return updateCache(assignmentApiConsumer.createAssignmentDtoNew(lectureId, description));
             }
         }, subscribers);
     }
@@ -64,7 +77,7 @@ public class AssignmentDataStoreApiImpl extends ApiBasedDataStore<String, Assign
         orderData(new ServiceRequest<AssignmentDto>() {
             @Override
             public AssignmentDto request() {
-                return assignmentApiConsumer.updateAssignmentDto(item);
+                return updateCache(assignmentApiConsumer.updateAssignmentDto(item));
             }
         }, subscribers);
     }
@@ -75,6 +88,7 @@ public class AssignmentDataStoreApiImpl extends ApiBasedDataStore<String, Assign
             @Override
             public Boolean request() {
                 assignmentApiConsumer.purgeAssignmentDto(id);
+                evict(id);
                 return Boolean.TRUE;
             }
         }, subscribers);
@@ -86,6 +100,7 @@ public class AssignmentDataStoreApiImpl extends ApiBasedDataStore<String, Assign
             @Override
             public Boolean request() {
                 assignmentApiConsumer.deleteAssignmentDto(id);
+                evict(id);
                 return Boolean.TRUE;
             }
         }, subscribers);
@@ -93,40 +108,71 @@ public class AssignmentDataStoreApiImpl extends ApiBasedDataStore<String, Assign
 
     @Override
     public void getAllByDiscipline(String id, Long after, Long before, Subscriber<Collection<AssignmentDto>>... subscribers) {
+        if (isCacheEnabled()) {
+            Collection<AssignmentDto> dtos = getCache().getAllByDisciplineDueBetween(id, after, before);
+            if (!isNullOrEmpty(dtos)) {
+                fillFromCache(dtos);
+                respondCacheHit(dtos, subscribers);
+            }
+        }
+
         orderData(new ServiceRequest<Collection<AssignmentDto>>() {
             @Override
             public Collection<AssignmentDto> request() {
-                return assignmentApiConsumer.getAssignmentDtoAllByDisciplineId(id, after, before);
+                return updateCache(assignmentApiConsumer.getAssignmentDtoAllByDisciplineId(id, after, before));
             }
         }, subscribers);
     }
 
     @Override
     public void getAllByStudentsGroup(String id, Long after, Long before, Subscriber<Collection<AssignmentDto>>... subscribers) {
+        if (isCacheEnabled()) {
+            Collection<AssignmentDto> dtos = getCache().getAllByStudentsGroupDueBetween(id, after, before);
+            if (!isNullOrEmpty(dtos)) {
+                fillFromCache(dtos);
+                respondCacheHit(dtos, subscribers);
+            }
+        }
+
         orderData(new ServiceRequest<Collection<AssignmentDto>>() {
             @Override
             public Collection<AssignmentDto> request() {
-                return assignmentApiConsumer.getAssignmentDtoAllByGroupId(id, after, before);
+                return updateCache(assignmentApiConsumer.getAssignmentDtoAllByGroupId(id, after, before));
             }
         }, subscribers);
     }
 
     @Override
     public void getAllByStudent(String id, Long after, Long before, Subscriber<Collection<AssignmentDto>>... subscribers) {
+        if (isCacheEnabled()) {
+            Collection<AssignmentDto> dtos = getCache().getAllByStudentDueBetween(id, after, before);
+            if (!isNullOrEmpty(dtos)) {
+                fillFromCache(dtos);
+                respondCacheHit(dtos, subscribers);
+            }
+        }
+
         orderData(new ServiceRequest<Collection<AssignmentDto>>() {
             @Override
             public Collection<AssignmentDto> request() {
-                return assignmentApiConsumer.getAssignmentDtoAllByStudentId(id, after, before);
+                return updateCache(assignmentApiConsumer.getAssignmentDtoAllByStudentId(id, after, before));
             }
         }, subscribers);
     }
 
     @Override
     public void getAllByDisciplineAndGroup(String disciplineId, String groupId, Long after, Long before, Subscriber<Collection<AssignmentDto>>... subscribers) {
+        if (isCacheEnabled()) {
+            Collection<AssignmentDto> dtos = getCache().getAllByDisciplineAndGroupDueBetween(disciplineId, groupId, after, before);
+            if (!isNullOrEmpty(dtos)) {
+                fillFromCache(dtos);
+                respondCacheHit(dtos, subscribers);
+            }
+        }
         orderData(new ServiceRequest<Collection<AssignmentDto>>() {
             @Override
             public Collection<AssignmentDto> request() {
-                return assignmentApiConsumer.getAssignmentDtoAllByDisciplineIdAndGroupId(disciplineId, groupId, after, before);
+                return updateCache(assignmentApiConsumer.getAssignmentDtoAllByDisciplineIdAndGroupId(disciplineId, groupId, after, before));
             }
         }, subscribers);
     }
@@ -136,17 +182,24 @@ public class AssignmentDataStoreApiImpl extends ApiBasedDataStore<String, Assign
         orderData(new ServiceRequest<Collection<AssignmentDto>>() {
             @Override
             public Collection<AssignmentDto> request() {
-                return assignmentApiConsumer.getAssignmentDtoAllByDisciplineIdAndStudentId(disciplineId, studentId, after, before);
+                return updateCache(assignmentApiConsumer.getAssignmentDtoAllByDisciplineIdAndStudentId(disciplineId, studentId, after, before));
             }
         }, subscribers);
     }
 
     @Override
     public void getAllByLecture(String id, Subscriber<Collection<AssignmentDto>>... subscribers) {
+        if (isCacheEnabled()) {
+            Collection<AssignmentDto> dtos = getCache().getAllByLectureId(id);
+            if (!isNullOrEmpty(dtos)) {
+                fillFromCache(dtos);
+                respondCacheHit(dtos, subscribers);
+            }
+        }
         orderData(new ServiceRequest<Collection<AssignmentDto>>() {
             @Override
             public Collection<AssignmentDto> request() {
-                return assignmentApiConsumer.getAssignmentDtoAllByLectureId(id);
+                return updateCache(assignmentApiConsumer.getAssignmentDtoAllByLectureId(id));
             }
         }, subscribers);
     }
@@ -155,6 +208,6 @@ public class AssignmentDataStoreApiImpl extends ApiBasedDataStore<String, Assign
     @Override
     @Deprecated
     public void getAll(Subscriber<Collection<AssignmentDto>>... subscribers) {
-
+        notifyNotImplemented(subscribers);
     }
 }

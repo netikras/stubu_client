@@ -17,6 +17,7 @@ import com.netikras.studies.studentbuddy.core.data.api.dto.location.BuildingDto;
 import com.netikras.studies.studentbuddy.core.data.api.dto.location.BuildingFloorDto;
 import com.netikras.studies.studentbuddy.core.data.api.dto.location.BuildingSectionDto;
 import com.netikras.studies.studentbuddy.core.data.api.dto.location.LectureRoomDto;
+import com.netikras.studies.studentbuddy.core.data.api.dto.meta.UserDto;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -120,6 +121,33 @@ public class LocationInfoActivity extends BaseActivity implements LocationMvpVie
     public void showClean(AddressDto addressDto, BuildingDto buildingDto, BuildingSectionDto sectionDto, BuildingFloorDto floorDto, LectureRoomDto roomDto) {
         getFields().reset();
         show(addressDto, buildingDto, sectionDto, floorDto, roomDto);
+    }
+
+    @Override
+    protected boolean isPartial() {
+        return getFields().getRoom() == null
+                || getFields().getFloor() == null
+                || getFields().getFloor().getLayouts() == null
+                || getFields().getSection() == null
+                || getFields().getBuilding() == null
+                || getFields().getAddress() == null
+                ;
+    }
+
+    private void prepare(UserDto entity) {
+        if (entity == null || isNullOrEmpty(entity.getId())) {
+            return;
+        }
+        if (isPartial()) {
+            showLoading();
+            presenter.getRoom(new ErrorsAwareSubscriber<LectureRoomDto>() {
+                @Override
+                public void onSuccess(LectureRoomDto response) {
+                    runOnUiThread(() -> show(null, null, null, null, response));
+//                    showUser(response);
+                }
+            }, entity.getId());
+        }
     }
 
 

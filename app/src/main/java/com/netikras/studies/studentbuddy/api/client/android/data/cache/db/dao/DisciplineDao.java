@@ -26,7 +26,7 @@ public class DisciplineDao extends GenericDao<DisciplineDto> {
     }
 
     @Override
-    protected String getId(DisciplineDto entity) {
+    public String getId(DisciplineDto entity) {
         return entity.getId();
     }
 

@@ -25,7 +25,7 @@ public class LayoutDao extends GenericDao<FloorLayoutDto> {
     }
 
     @Override
-    protected String getId(FloorLayoutDto entity) {
+    public String getId(FloorLayoutDto entity) {
         return entity.getId();
     }
 

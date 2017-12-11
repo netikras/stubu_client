@@ -28,7 +28,7 @@ public class GroupDao extends GenericDao<StudentsGroupDto> {
     }
 
     @Override
-    protected String getId(StudentsGroupDto entity) {
+    public String getId(StudentsGroupDto entity) {
         return entity.getId();
     }
 
@@ -98,5 +98,9 @@ public class GroupDao extends GenericDao<StudentsGroupDto> {
         studentCache.putAll(entity.getMembers());
 
         return entity;
+    }
+
+    public StudentsGroupDto getByTitle(String name) {
+        return getFirstWhere("title = ?", name);
     }
 }

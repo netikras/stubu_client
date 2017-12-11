@@ -106,29 +106,19 @@ public class SchoolDepartmentActivity extends BaseActivity implements SchoolDepa
         return item == null;
     }
 
-    private Result<SchoolDepartmentDto> fetch(SchoolDepartmentDto dto) {
-        Result<SchoolDepartmentDto> result = new Result<>();
-        showLoading();
-        presenter.getById(new ErrorsAwareSubscriber<SchoolDepartmentDto>() {
-            @Override
-            public void onSuccess(SchoolDepartmentDto response) {
-                result.setValue(response);
-            }
-        }, dto.getId());
-
-        return result;
-    }
-
     private void prepare(SchoolDepartmentDto entity) {
         if (entity == null || isNullOrEmpty(entity.getId())) {
             return;
         }
         if (isPartial()) {
-            Result<SchoolDepartmentDto> result = fetch(entity);
-            SchoolDepartmentDto dto = result.get(5, TimeUnit.SECONDS);
-            if (!result.isTimedOut()) {
-                show(dto);
-            }
+            showLoading();
+            presenter.getById(new ErrorsAwareSubscriber<SchoolDepartmentDto>() {
+                @Override
+                public void onSuccess(SchoolDepartmentDto response) {
+                    runOnUiThread(() -> show(response));
+//                    show(response);
+                }
+            }, entity.getId());
         }
     }
 

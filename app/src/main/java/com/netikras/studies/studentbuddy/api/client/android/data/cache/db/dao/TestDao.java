@@ -28,7 +28,7 @@ public class TestDao extends GenericDao<DisciplineTestDto> {
     }
 
     @Override
-    protected String getId(DisciplineTestDto entity) {
+    public String getId(DisciplineTestDto entity) {
         return entity.getId();
     }
 
@@ -108,5 +108,23 @@ public class TestDao extends GenericDao<DisciplineTestDto> {
 
     public List<DisciplineTestDto> getAllByLectureId(String id) {
         return getAllWhere("lecture_id = ?", id);
+    }
+
+    public List<DisciplineTestDto> getAllByDiscipline(String id) {
+        return getAllWhere("discipline_id = ?", id);
+    }
+
+    public List<DisciplineTestDto> getAllByDisciplineAndGroup(String disciplineId, String groupId) {
+        // TODO implement
+        return null;
+    }
+
+    public List<DisciplineTestDto> getAllByDisciplineStartingBetween(String id, Long after, Long before) {
+        return getAllWhere("discipline_id = ? and starts_on > ? and starts_on < ?", id, "" + after, "" + before);
+    }
+
+    public List<DisciplineTestDto> getAllByDisciplineAndGroupStartingBetween(String disciplineId, String groupId, Long after, Long before) {
+        // TODO implement
+        return null;
     }
 }

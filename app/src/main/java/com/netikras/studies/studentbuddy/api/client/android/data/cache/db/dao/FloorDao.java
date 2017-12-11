@@ -33,7 +33,7 @@ public class FloorDao extends GenericDao<BuildingFloorDto> {
     }
 
     @Override
-    protected String getId(BuildingFloorDto entity) {
+    public String getId(BuildingFloorDto entity) {
         return entity.getId();
     }
 

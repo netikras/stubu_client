@@ -164,7 +164,7 @@ public class AssignmentActivity extends BaseActivity implements AssignmentMvpVie
 
         public void setDueDate(Date dueDate) {
             setDueDate(datetimeToDate(dueDate));
-            setDueDate(datetimeToTime(dueDate));
+            setDueTime(datetimeToTime(dueDate));
         }
 
         @Override

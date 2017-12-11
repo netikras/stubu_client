@@ -105,29 +105,20 @@ public class LecturerInfoActivity extends BaseActivity implements LecturerMvpVie
         return item == null;
     }
 
-    private ServiceRequest.Result<LecturerDto> fetch(LecturerDto dto) {
-        ServiceRequest.Result<LecturerDto> result = new ServiceRequest.Result<>();
-        showLoading();
-        presenter.getById(new ErrorsAwareSubscriber<LecturerDto>() {
-            @Override
-            public void onSuccess(LecturerDto response) {
-                result.setValue(response);
-            }
-        }, dto.getId());
-
-        return result;
-    }
-
     private void prepare(LecturerDto entity) {
         if (entity == null || isNullOrEmpty(entity.getId())) {
             return;
         }
         if (isPartial()) {
-            ServiceRequest.Result<LecturerDto> result = fetch(entity);
-            LecturerDto dto = result.get(5, TimeUnit.SECONDS);
-            if (!result.isTimedOut()) {
-                show(dto);
-            }
+            showLoading();
+            presenter.getById(new ErrorsAwareSubscriber<LecturerDto>() {
+                @Override
+                public void onSuccess(LecturerDto response) {
+                    runOnUiThread(() -> {
+                        show(response);
+                    });
+                }
+            }, entity.getId());
         }
     }
 
@@ -271,7 +262,6 @@ public class LecturerInfoActivity extends BaseActivity implements LecturerMvpVie
         public void setSchool(SchoolDto school) {
             this.school = school;
         }
-
 
 
         @Override

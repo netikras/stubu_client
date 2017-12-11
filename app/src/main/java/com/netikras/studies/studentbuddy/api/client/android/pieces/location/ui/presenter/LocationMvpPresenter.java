@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.netikras.studies.studentbuddy.api.client.android.pieces.base.MvpPresenter;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.location.ui.view.LocationMvpView;
+import com.netikras.studies.studentbuddy.api.client.android.service.ServiceRequest.Subscriber;
 import com.netikras.studies.studentbuddy.core.data.api.dto.location.AddressDto;
 import com.netikras.studies.studentbuddy.core.data.api.dto.location.BuildingDto;
 import com.netikras.studies.studentbuddy.core.data.api.dto.location.BuildingFloorDto;
@@ -28,4 +29,6 @@ public interface LocationMvpPresenter<V extends LocationMvpView> extends MvpPres
     void showFloor(Context context, BuildingFloorDto floor);
 
     void showRoom(Context context, LectureRoomDto room);
+
+    void getRoom(Subscriber<LectureRoomDto> subscriber, String id);
 }

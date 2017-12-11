@@ -108,34 +108,30 @@ public class DisciplineInfoActivity extends BaseActivity implements DisciplineMv
         return item == null;
     }
 
-    private ServiceRequest.Result<DisciplineDto> fetch(DisciplineDto dto) {
-        ServiceRequest.Result<DisciplineDto> result = new ServiceRequest.Result<>();
-        presenter.getById(new ErrorsAwareSubscriber<DisciplineDto>() {
-            @Override
-            public void onSuccess(DisciplineDto response) {
-                result.setValue(response);
-            }
-        }, dto.getId());
-
-        return result;
-    }
-
     private void prepare(DisciplineDto entity) {
         if (entity == null || isNullOrEmpty(entity.getId())) {
             return;
         }
         if (isPartial()) {
             showLoading();
-            ServiceRequest.Result<DisciplineDto> result = fetch(entity);
-            DisciplineDto dto = result.get(5, TimeUnit.SECONDS);
-            if (!result.isTimedOut()) {
-                show(dto);
-            }
+            presenter.getById(new ErrorsAwareSubscriber<DisciplineDto>() {
+                @Override
+                public void onSuccess(DisciplineDto response) {
+                    runOnUiThread(() -> show(response));
+                }
+            }, entity.getId());
         }
     }
 
     @OnClick(R.id.btn_discipline_school)
     public void showSchool() {
+
+        SchoolDto schoolDto = getFields().getSchool();
+        if (schoolDto == null) {
+            onError(R.string.err_no_schools);
+            return;
+        }
+
         startView(SchoolActivity.class, new ViewTask<SchoolActivity>() {
             @Override
             public void execute() {

@@ -6,6 +6,7 @@ import com.netikras.studies.studentbuddy.api.client.android.data.DataManager;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.base.BaseActivity;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.base.BaseActivity.ViewTask;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.base.BasePresenter;
+import com.netikras.studies.studentbuddy.api.client.android.pieces.location.data.RoomDataStore;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.location.ui.impl.view.LocationInfoActivity;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.location.ui.presenter.AddressMvpPresenter;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.location.ui.presenter.BuildingMvpPresenter;
@@ -19,6 +20,8 @@ import com.netikras.studies.studentbuddy.api.client.android.pieces.location.ui.v
 import com.netikras.studies.studentbuddy.api.client.android.pieces.location.ui.view.FloorMvpView;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.location.ui.view.LocationMvpView;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.location.ui.view.RoomMvpView;
+import com.netikras.studies.studentbuddy.api.client.android.service.ServiceRequest;
+import com.netikras.studies.studentbuddy.api.client.android.service.ServiceRequest.Subscriber;
 import com.netikras.studies.studentbuddy.core.data.api.dto.location.AddressDto;
 import com.netikras.studies.studentbuddy.core.data.api.dto.location.BuildingDto;
 import com.netikras.studies.studentbuddy.core.data.api.dto.location.BuildingFloorDto;
@@ -84,5 +87,11 @@ public class LocationPresenter<V extends LocationMvpView> extends BasePresenter<
     @Override
     public void showRoom(Context context, LectureRoomDto room) {
         roomPresenter.show(context, room);
+    }
+
+    @Override
+    public void getRoom(Subscriber<LectureRoomDto> subscriber, String id) {
+        getDataManager().getStore(RoomDataStore.class).getById(id);
+        getDataManager().getStore(RoomDataStore.class).processOrders(getContext());
     }
 }

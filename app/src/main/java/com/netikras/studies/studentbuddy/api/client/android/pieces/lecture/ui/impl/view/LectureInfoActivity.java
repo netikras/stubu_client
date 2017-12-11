@@ -1,6 +1,7 @@
 package com.netikras.studies.studentbuddy.api.client.android.pieces.lecture.ui.impl.view;
 
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -10,6 +11,7 @@ import com.netikras.studies.studentbuddy.api.client.android.conf.di.DepInjector;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.base.BaseActivity;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.base.BaseViewFields;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.base.list.ListHandler;
+import com.netikras.studies.studentbuddy.api.client.android.pieces.base.list.ListRow;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.discipline.ui.impl.view.DisciplineInfoActivity;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.lecture.ui.presenter.LectureMvpPresenter;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.lecture.ui.view.LectureMvpView;
@@ -17,7 +19,7 @@ import com.netikras.studies.studentbuddy.api.client.android.pieces.lecturer.ui.i
 import com.netikras.studies.studentbuddy.api.client.android.pieces.location.ui.impl.view.LocationInfoActivity;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.student.ui.impl.view.GuestActivity;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.student.ui.impl.view.StudentsGroupInfoActivity;
-import com.netikras.studies.studentbuddy.api.client.android.service.ServiceRequest;
+import com.netikras.studies.studentbuddy.api.client.android.util.CommonUtils;
 import com.netikras.studies.studentbuddy.core.data.api.dto.location.LectureRoomDto;
 import com.netikras.studies.studentbuddy.core.data.api.dto.meta.CommentDto;
 import com.netikras.studies.studentbuddy.core.data.api.dto.school.AssignmentDto;
@@ -32,7 +34,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
@@ -127,21 +128,8 @@ public class LectureInfoActivity extends BaseActivity implements LectureMvpView 
         if (dto == null) {
             return true;
         }
-        Object item = coalesce(dto.getDiscipline(), dto.getLecturer(), dto.getRoom());
-        return item == null;
-    }
 
-    private ServiceRequest.Result<LectureDto> fetch(LectureDto dto) {
-        ServiceRequest.Result<LectureDto> result = new ServiceRequest.Result<>();
-        showLoading();
-        presenter.getById(new ErrorsAwareSubscriber<LectureDto>() {
-            @Override
-            public void onSuccess(LectureDto response) {
-                result.setValue(response);
-            }
-        }, dto.getId());
-
-        return result;
+        return null == coalesce(dto.getDiscipline(), dto.getLecturer(), dto.getRoom());
     }
 
     private void prepare(LectureDto entity) {
@@ -149,11 +137,15 @@ public class LectureInfoActivity extends BaseActivity implements LectureMvpView 
             return;
         }
         if (isPartial()) {
-            ServiceRequest.Result<LectureDto> result = fetch(entity);
-            LectureDto dto = result.get(5, TimeUnit.SECONDS);
-            if (!result.isTimedOut()) {
-                show(dto);
-            }
+            showLoading();
+            presenter.getById(new ErrorsAwareSubscriber<LectureDto>() {
+                @Override
+                public void onSuccess(LectureDto response) {
+                    runOnUiThread(() -> {
+                        show(response);
+                    });
+                }
+            }, entity.getId());
         }
     }
 
@@ -161,6 +153,7 @@ public class LectureInfoActivity extends BaseActivity implements LectureMvpView 
     public void showAssignments() {
         List<AssignmentDto> assignments = getFields().getAssignments();
         if (assignments == null) {
+            onError(R.string.err_no_assignments);
             return;
         }
 
@@ -184,6 +177,30 @@ public class LectureInfoActivity extends BaseActivity implements LectureMvpView 
             public String getToolbarText() {
                 return getString(R.string.title_assignments);
             }
+
+            @Override
+            public ListRow getNewRow(View convertView) {
+                return new AssignmentListRow(convertView);
+            }
+
+            class AssignmentListRow extends ListRow<AssignmentDto> {
+                TextView text;
+
+                public AssignmentListRow(View rowView) {
+                    super(null);
+                    text = getDefaultListTextView(rowView);
+                    rowView.setTag(this);
+                }
+
+                @Override
+                public void assign(AssignmentDto item) {
+                    if (item == null) {
+                        return;
+                    }
+
+                    text.setText(item.getDescription());
+                }
+            }
         });
     }
 
@@ -191,6 +208,7 @@ public class LectureInfoActivity extends BaseActivity implements LectureMvpView 
     public void showTests() {
         List<DisciplineTestDto> tests = getFields().getTests();
         if (tests == null) {
+            onError(R.string.err_no_tests);
             return;
         }
 
@@ -214,35 +232,78 @@ public class LectureInfoActivity extends BaseActivity implements LectureMvpView 
             public String getToolbarText() {
                 return getString(R.string.title_tests);
             }
+
+            @Override
+            public ListRow getNewRow(View convertView) {
+                return new TestsListRow(convertView);
+            }
+
+            class TestsListRow extends ListRow<DisciplineTestDto> {
+                TextView text;
+
+                public TestsListRow(View rowView) {
+                    super(null);
+                    text = getDefaultListTextView(rowView);
+                    rowView.setTag(this);
+                }
+
+                @Override
+                public void assign(DisciplineTestDto item) {
+                    if (item == null) {
+                        return;
+                    }
+                    text.setText(item.getDescription());
+                }
+            }
         });
     }
 
     @OnClick(R.id.btn_lecture_students_group)
     public void showGroup() {
+        StudentsGroupDto groupDto = getFields().getStudentsGroup();
+        if (groupDto == null) {
+            onError(R.string.err_no_group);
+            return;
+        }
+
         startView(StudentsGroupInfoActivity.class, new ViewTask<StudentsGroupInfoActivity>() {
             @Override
             public void execute() {
-                getActivity().show(getFields().getStudentsGroup());
+                getActivity().show(groupDto);
             }
         });
     }
 
     @OnClick(R.id.btn_lecture_location)
     public void showLocation() {
+
+        LectureRoomDto roomDto = getFields().getLocation();
+        if (roomDto == null) {
+            onError(R.string.err_no_location);
+            return;
+        }
+
         startView(LocationInfoActivity.class, new ViewTask<LocationInfoActivity>() {
             @Override
             public void execute() {
-                getActivity().showClean(null, null, null, null, getFields().getLocation());
+                getActivity().showClean(null, null, null, null, roomDto);
             }
         });
     }
 
     @OnClick(R.id.btn_lecture_lecturer)
     public void showLecturer() {
+        LecturerDto lecturer = getFields().getLecturer();
+
+        if (lecturer == null) {
+            onError(R.string.err_no_lecturers);
+            return;
+        }
+
         startView(LecturerInfoActivity.class, new ViewTask<LecturerInfoActivity>() {
             @Override
             public void execute() {
-                getActivity().show(getFields().getLecturer());
+                getActivity().show(lecturer);
             }
         });
     }
@@ -251,6 +312,7 @@ public class LectureInfoActivity extends BaseActivity implements LectureMvpView 
     public void showGuests() {
         List<LectureGuestDto> guests = getFields().getGuests();
         if (guests == null) {
+            onError(R.string.err_no_guests);
             return;
         }
 
@@ -274,15 +336,53 @@ public class LectureInfoActivity extends BaseActivity implements LectureMvpView 
             public String getToolbarText() {
                 return getString(R.string.title_guests);
             }
+
+            @Override
+            public ListRow getNewRow(View convertView) {
+                return new GuestsListRow(convertView);
+            }
+
+
+            class GuestsListRow extends ListRow<LectureGuestDto> {
+                TextView text;
+
+                public GuestsListRow(View rowView) {
+                    super(null);
+                    text = getDefaultListTextView(rowView);
+                    rowView.setTag(this);
+                }
+
+                @Override
+                public void assign(LectureGuestDto item) {
+                    if (item == null) {
+                        return;
+                    }
+                    if (item.getPerson() != null) {
+                        text.setText("(" + item.getPerson().getIdentification() + ") " + item.getPerson().getFirstName() + " " + item.getPerson().getLastName());
+                        return;
+                    } else {
+                        text.setText("" + CommonUtils.datetimeToDate(item.getCreatedOn()));
+                        return;
+                    }
+                }
+            }
+
         });
     }
 
     @OnClick(R.id.btn_lecture_name)
     public void showDiscipline() {
+
+        DisciplineDto discipline = getFields().getDiscipline();
+        if (discipline == null) {
+            onError(R.string.err_no_disciplines);
+            return;
+        }
+
         startView(DisciplineInfoActivity.class, new ViewTask<DisciplineInfoActivity>() {
             @Override
             public void execute() {
-                getActivity().show(getFields().getDiscipline());
+                getActivity().show(discipline);
             }
         });
     }
@@ -389,6 +489,8 @@ public class LectureInfoActivity extends BaseActivity implements LectureMvpView 
             setTag(this.assignments, assignments);
             if (assignments != null) {
                 setAssignmentsCount(valueOf(assignments.size()));
+            } else {
+                setAssignmentsCount(ZERO);
             }
         }
 
@@ -408,6 +510,8 @@ public class LectureInfoActivity extends BaseActivity implements LectureMvpView 
             setTag(comments, data);
             if (data != null) {
                 setCommentsCount(valueOf(data.size()));
+            } else {
+                setCommentsCount(ZERO);
             }
         }
 
@@ -427,6 +531,8 @@ public class LectureInfoActivity extends BaseActivity implements LectureMvpView 
             setTag(guests, data);
             if (data != null) {
                 setGuestsCount(valueOf(data.size()));
+            } else {
+                setGuestsCount(ZERO);
             }
         }
 
@@ -444,8 +550,12 @@ public class LectureInfoActivity extends BaseActivity implements LectureMvpView 
 
         public void setLecturer(LecturerDto data) {
             setTag(lecturer, data);
-            if (data != null && data.getPerson() != null) {
-                setLecturerName(data.getPerson().getFirstName() + " " + data.getPerson().getLastName());
+            if (data != null) {
+                if (data.getPerson() != null) {
+                    setLecturerName(data.getPerson().getFirstName() + " " + data.getPerson().getLastName());
+                } else {
+                    setLecturerName("?");
+                }
             }
         }
 
@@ -473,6 +583,9 @@ public class LectureInfoActivity extends BaseActivity implements LectureMvpView 
                 stringBuilder.append(room.getNumber());
                 if (!isNullOrEmpty(room.getTitle())) {
                     stringBuilder.append(" (").append(room.getTitle()).append(")");
+                }
+                if (stringBuilder.length() > 0) {
+                    setLocationName(stringBuilder.toString());
                 }
             }
         }
@@ -535,6 +648,8 @@ public class LectureInfoActivity extends BaseActivity implements LectureMvpView 
             setTag(tests, data);
             if (data != null) {
                 setTestsCount(valueOf(data.size()));
+            } else {
+                setTestsCount(ZERO);
             }
         }
 
@@ -557,7 +672,7 @@ public class LectureInfoActivity extends BaseActivity implements LectureMvpView 
 
                     builder.append(remaining / HOUR_IN_MS).append(":");
                     remaining %= HOUR_IN_MS;
-                    builder.append(remaining / MINUTE_IN_MS);
+                    builder.append(Math.abs(remaining) / MINUTE_IN_MS);
 
                 }
             }
@@ -568,7 +683,7 @@ public class LectureInfoActivity extends BaseActivity implements LectureMvpView 
 
         @Override
         protected Collection<TextView> getAllFields() {
-            return Arrays.asList(id, name, startDate, startTime, lecturer, studentsGroup, startTime, timeRemaining, startDate, assignments, tests, comments, guests);
+            return Arrays.asList(id, name, startDate, location, startTime, lecturer, studentsGroup, startTime, timeRemaining, startDate, assignments, tests, comments, guests);
         }
 
         @Override

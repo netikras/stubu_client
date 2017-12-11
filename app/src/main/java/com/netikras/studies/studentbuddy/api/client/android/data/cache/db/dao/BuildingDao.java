@@ -32,7 +32,7 @@ public class BuildingDao extends GenericDao<BuildingDto> {
     }
 
     @Override
-    protected String getId(BuildingDto entity) {
+    public String getId(BuildingDto entity) {
         return entity.getId();
     }
 

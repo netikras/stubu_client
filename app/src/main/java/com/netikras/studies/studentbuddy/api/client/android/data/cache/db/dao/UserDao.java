@@ -22,7 +22,7 @@ public class UserDao extends GenericDao<UserDto> {
     }
 
     @Override
-    protected String getId(UserDto entity) {
+    public String getId(UserDto entity) {
         return entity.getId();
     }
 

@@ -28,19 +28,31 @@ public class StudentDataStoreApiImpl extends ApiBasedDataStore<String, StudentDt
     @Inject
     AdminStudentApiConsumer adminStudentApiConsumer;
 
-    private StudentDao cache;
-
     @Inject
     public StudentDataStoreApiImpl(CacheManager cacheManager) {
-        cache = new StudentDao(cacheManager);
+        setCache(new StudentDao(cacheManager));
     }
-    
+
+    @Override
+    protected StudentDao getCache() {
+        return super.getCache();
+    }
+
     @Override
     public void getById(String id, Subscriber<StudentDto>... subscribers) {
+
+        if (isCacheEnabled()) {
+            StudentDto studentDto = getCached(id);
+            if (studentDto != null) {
+                fillFromCache(studentDto);
+                respondCacheHit(studentDto, subscribers);
+            }
+        }
+
         orderData(new ServiceRequest<StudentDto>() {
             @Override
             public StudentDto request() {
-                return studentApiConsumer.retrieveStudentDto(id);
+                return updateCache(studentApiConsumer.retrieveStudentDto(id));
             }
         }, subscribers);
     }
@@ -50,7 +62,7 @@ public class StudentDataStoreApiImpl extends ApiBasedDataStore<String, StudentDt
         orderData(new ServiceRequest<StudentDto>() {
             @Override
             public StudentDto request() {
-                return adminStudentApiConsumer.createStudentDto(item);
+                return updateCache(adminStudentApiConsumer.createStudentDto(item));
             }
         }, subscribers);
     }
@@ -60,7 +72,7 @@ public class StudentDataStoreApiImpl extends ApiBasedDataStore<String, StudentDt
         orderData(new ServiceRequest<StudentDto>() {
             @Override
             public StudentDto request() {
-                return studentApiConsumer.updateStudentDto(item);
+                return updateCache(studentApiConsumer.updateStudentDto(item));
             }
         }, subscribers);
     }
@@ -71,13 +83,14 @@ public class StudentDataStoreApiImpl extends ApiBasedDataStore<String, StudentDt
             @Override
             public Boolean request() {
                 adminStudentApiConsumer.purgeStudentDto(id);
+                evict(id);
                 return Boolean.TRUE;
             }
         }, subscribers);
     }
 
     @Override
-    public void getAll(Subscriber<Collection<StudentDto>>[] subscribers) {
+    public void getAll(Subscriber<Collection<StudentDto>>... subscribers) {
         notifyNotImplemented(subscribers);
     }
 
@@ -87,6 +100,7 @@ public class StudentDataStoreApiImpl extends ApiBasedDataStore<String, StudentDt
             @Override
             public Boolean request() {
                 adminStudentApiConsumer.deleteStudentDto(id);
+                evict(id);
                 return Boolean.TRUE;
             }
         }, subscribers);
@@ -94,10 +108,18 @@ public class StudentDataStoreApiImpl extends ApiBasedDataStore<String, StudentDt
 
     @Override
     public void getAllByGroup(String id, Subscriber<Collection<StudentDto>>... subscribers) {
+        if (isCacheEnabled()) {
+            List<StudentDto> studentDtos = getCache().getAllByGroupId(id);
+            if (!isNullOrEmpty(studentDtos)) {
+                fillFromCache(studentDtos);
+                respondCacheHit(studentDtos, subscribers);
+            }
+        }
+
         orderData(new ServiceRequest<Collection<StudentDto>>() {
             @Override
             public Collection<StudentDto> request() {
-                return studentApiConsumer.getStudentDtoAllByGroup(id);
+                return updateCache(studentApiConsumer.getStudentDtoAllByGroup(id));
             }
         }, subscribers);
     }
@@ -106,20 +128,16 @@ public class StudentDataStoreApiImpl extends ApiBasedDataStore<String, StudentDt
     @Override
     public void getAllByPerson(String id, Subscriber<Collection<StudentDto>>... subscribers) {
 
-        List<StudentDto> cached = cache.getAllByPersonId(id);
+        List<StudentDto> cached = getCache().getAllByPersonId(id);
         if (!isNullOrEmpty(cached)) {
-            respondSuccess(cached, subscribers);
-            return;
+            fillFromCache(cached);
+            respondCacheHit(cached, subscribers);
         }
 
         orderData(new ServiceRequest<Collection<StudentDto>>() {
             @Override
             public Collection<StudentDto> request() {
-                Collection<StudentDto> result = studentApiConsumer.getStudentDtoAllByPersonId(id);
-                if (!isNullOrEmpty(result)) {
-                    cache.createAll(result);
-                }
-                return result;
+                return updateCache(studentApiConsumer.getStudentDtoAllByPersonId(id));
             }
         }, subscribers);
     }

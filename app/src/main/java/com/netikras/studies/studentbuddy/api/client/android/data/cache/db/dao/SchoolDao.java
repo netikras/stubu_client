@@ -22,7 +22,7 @@ public class SchoolDao extends GenericDao<SchoolDto> {
     }
 
     @Override
-    protected String getId(SchoolDto entity) {
+    public String getId(SchoolDto entity) {
         return entity.getId();
     }
 

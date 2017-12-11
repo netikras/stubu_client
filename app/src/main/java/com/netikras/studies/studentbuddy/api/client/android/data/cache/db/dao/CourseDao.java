@@ -36,7 +36,7 @@ public class CourseDao extends GenericDao<CourseDto> {
     }
 
     @Override
-    protected String getId(CourseDto entity) {
+    public String getId(CourseDto entity) {
         return entity.getId();
     }
 

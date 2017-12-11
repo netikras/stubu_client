@@ -3,6 +3,7 @@ package com.netikras.studies.studentbuddy.api.client.android.pieces.main.ui.impl
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 
 import com.netikras.studies.studentbuddy.api.client.android.R;
 import com.netikras.studies.studentbuddy.api.client.android.conf.di.DepInjector;
@@ -18,11 +19,15 @@ import com.netikras.studies.studentbuddy.api.client.android.pieces.main.ui.prese
 import com.netikras.studies.studentbuddy.api.client.android.pieces.main.ui.view.MainMvpView;
 import com.netikras.studies.studentbuddy.api.client.android.service.ServiceRequest.Subscriber;
 import com.netikras.studies.studentbuddy.core.data.api.dto.school.LectureDto;
+import com.netikras.studies.studentbuddy.core.data.api.dto.school.StudentDto;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import javax.inject.Inject;
 
@@ -76,7 +81,17 @@ public class MainActivity extends BaseActivity implements MainMvpView {
         presenter.fetchLecturesForLecturer(new Subscriber<Collection<LectureDto>>() {
             @Override
             public void onSuccess(Collection<LectureDto> response) {
-                runOnUiThread(() -> lecturerHandler.updateData((List<LectureDto>) response));
+                for (LectureDto dto : response) {
+                    Log.d("Updating data @"+Thread.currentThread() + " ["+response.size()+"]", "" + dto);
+                }
+//                lecturerHandler.updateData((List<LectureDto>) response);
+
+                runOnUiThread(() -> {
+                    for (LectureDto dto : response) {
+                        Log.d("Updating data @"+lecturerHandler + " ["+response.size()+"]", "" + dto);
+                    }
+                    lecturerHandler.updateData((List<LectureDto>) response);
+                });
             }
         }, getCurrentUser().getPerson());
     }
@@ -119,6 +134,11 @@ public class MainActivity extends BaseActivity implements MainMvpView {
 
     private void setupPager(ViewPager pager) {
 
+        LecturerLectures lecturerLectures = new LecturerLectures();
+        lecturerLectures.setContext(this);
+        lecturerLectures.setListHandler(lecturerHandler);
+        adapter.addTabFragment(lecturerLectures);
+
         StudentLectures studentLectures = new StudentLectures();
         studentLectures.setContext(this);
         studentLectures.setListHandler(studentHandler);
@@ -129,10 +149,6 @@ public class MainActivity extends BaseActivity implements MainMvpView {
         guestLectures.setListHandler(guestHandler);
         adapter.addTabFragment(guestLectures);
 
-        LecturerLectures lecturerLectures = new LecturerLectures();
-        lecturerLectures.setContext(this);
-        lecturerLectures.setListHandler(lecturerHandler);
-        adapter.addTabFragment(lecturerLectures);
 
         pager.setAdapter(adapter);
     }
@@ -152,10 +168,14 @@ public class MainActivity extends BaseActivity implements MainMvpView {
             return data;
         }
 
-        public void updateData(List<LectureDto> newData) {
+        public synchronized void updateData(List<LectureDto> newData) {
             data.clear();
             if (!isNullOrEmpty(newData)) {
                 data.addAll(newData);
+                for (LectureDto datum : data) {
+                    Log.d("DATA", ""+datum);
+                }
+                Log.d("ListHandler", "Dataset size after addition: " + data.size() + ", newData size: " + newData.size(), new Exception());
             }
             onDataSetChanged();
         }

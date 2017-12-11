@@ -8,10 +8,8 @@ import com.netikras.tools.common.io.IoUtils;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 
 /**
  * Created by netikras on 17.10.30.
@@ -37,6 +35,21 @@ public abstract class ServiceRequest<T> {
     }
 
     public static class Subscriber<T> {
+
+        private boolean fetchRequired = true;
+
+        public boolean isDataFetchRequired() {
+            return fetchRequired;
+        }
+
+        public void setFetchRequired(boolean required) {
+            fetchRequired = required;
+        }
+
+        public void onCacheHit(T response) {
+            onSuccess(response);
+        }
+
         public void onSuccess(T response) {
 
         }

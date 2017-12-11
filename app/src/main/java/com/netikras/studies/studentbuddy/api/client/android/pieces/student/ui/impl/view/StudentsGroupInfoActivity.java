@@ -15,7 +15,6 @@ import com.netikras.studies.studentbuddy.api.client.android.pieces.base.list.Lis
 import com.netikras.studies.studentbuddy.api.client.android.pieces.school.ui.impl.view.SchoolActivity;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.student.ui.presenter.StudentsGroupMvpPresenter;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.student.ui.view.StudentsGroupMvpView;
-import com.netikras.studies.studentbuddy.api.client.android.service.ServiceRequest.Result;
 import com.netikras.studies.studentbuddy.core.data.api.dto.school.SchoolDto;
 import com.netikras.studies.studentbuddy.core.data.api.dto.school.StudentDto;
 import com.netikras.studies.studentbuddy.core.data.api.dto.school.StudentsGroupDto;
@@ -25,7 +24,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
@@ -106,95 +104,110 @@ public class StudentsGroupInfoActivity extends BaseActivity implements StudentsG
         return item == null;
     }
 
-    private Result<StudentsGroupDto> fetch(StudentsGroupDto dto) {
-        Result<StudentsGroupDto> result = new Result<>();
-        showLoading();
-        presenter.getById(new ErrorsAwareSubscriber<StudentsGroupDto>() {
-            @Override
-            public void onSuccess(StudentsGroupDto response) {
-                result.setValue(response);
-            }
-        }, dto.getId());
-
-        return result;
-    }
-
     private void prepare(StudentsGroupDto entity) {
         if (entity == null || isNullOrEmpty(entity.getId())) {
             return;
         }
         if (isPartial()) {
-            Result<StudentsGroupDto> result = fetch(entity);
-            StudentsGroupDto dto = result.get(5, TimeUnit.SECONDS);
-            if (!result.isTimedOut()) {
-                show(dto);
-            }
+            showLoading();
+            presenter.getById(new ErrorsAwareSubscriber<StudentsGroupDto>() {
+                @Override
+                public void onSuccess(StudentsGroupDto response) {
+                    runOnUiThread(() -> show(response));
+//                    show(response);
+                }
+            }, entity.getId());
         }
     }
 
     @OnClick(R.id.btn_students_group_school)
     public void showSchool() {
+
+        SchoolDto schoolDto = getFields().getSchool();
+        if (schoolDto == null) {
+            onError(R.string.err_no_schools);
+            return;
+        }
+
         startView(SchoolActivity.class, new ViewTask<SchoolActivity>() {
             @Override
             public void execute() {
-                getActivity().show(getFields().getSchool());
+                getActivity().show(schoolDto);
             }
         });
     }
 
     @OnClick(R.id.btn_students_group_members)
     public void showGroupMembers() {
-        showList(this, new ListHandler<StudentDto>() {
 
-            @Override
-            public ListRow getNewRow(View convertView) {
-                return new StudentRow(convertView);
-            }
+        ListHandler<StudentDto> handler = new GroupMembersListHandler();
 
+        showLoading();
+        presenter.getStudentsByGroupId(new ErrorsAwareSubscriber<Collection<StudentDto>>() {
             @Override
-            public List<StudentDto> getListData() {
-                List<StudentDto> members = getFields().getMembers();
-                return members != null ? members : new ArrayList<>();
-            }
-
-            @Override
-            public void onRowClick(StudentDto item) {
-                startView(StudentInfoActivity.class, new ViewTask<StudentInfoActivity>() {
-                    @Override
-                    public void execute() {
-                        getActivity().show(item);
-                    }
+            public void onSuccess(Collection<StudentDto> response) {
+                runOnUiThread(() -> {
+                    getFields().setMembers((List<StudentDto>) response);
+                    handler.onDataSetChanged();
                 });
             }
+        }, getFields().getId());
+
+        showList(this, handler);
+    }
+
+
+    class GroupMembersListHandler extends ListHandler<StudentDto> {
+
+        @Override
+        public ListRow getNewRow(View convertView) {
+            return new StudentRow(convertView);
+        }
+
+        @Override
+        public List<StudentDto> getListData() {
+            List<StudentDto> members = getFields().getMembers();
+            return members != null ? members : new ArrayList<>();
+        }
+
+        @Override
+        public void onRowClick(StudentDto item) {
+            startView(StudentInfoActivity.class, new ViewTask<StudentInfoActivity>() {
+                @Override
+                public void execute() {
+                    getActivity().show(item);
+                }
+            });
+        }
+
+        @Override
+        public String getToolbarText() {
+            return getString(R.string.title_students);
+        }
+
+        class StudentRow extends ListRow<StudentDto> {
+
+            TextView text;
+
+            public StudentRow(View rowView) {
+                super(null);
+                text = getDefaultListTextView(rowView);
+                rowView.setTag(this);
+            }
 
             @Override
-            public String getToolbarText() {
-                return getString(R.string.title_students);
-            }
-
-            class StudentRow extends ListRow<StudentDto> {
-
-                TextView text;
-
-                public StudentRow(View rowView) {
-                    super(null);
-                    text = getDefaultListTextView(rowView);
-                    rowView.setTag(this);
+            public void assign(StudentDto item) {
+                StringBuilder title = new StringBuilder();
+                if (item != null && item.getPerson() != null) {
+                    title.append("(").append(item.getPerson().getIdentification()).append(") ");
+                    title.append(item.getPerson().getFirstName()).append(" ");
+                    title.append(item.getPerson().getLastName()).append(" ");
                 }
-
-                @Override
-                public void assign(StudentDto item) {
-                    StringBuilder title = new StringBuilder();
-                    if (item != null && item.getPerson() != null) {
-                        title.append("(").append(item.getPerson().getIdentification()).append(") ");
-                        title.append(item.getPerson().getFirstName()).append(" ");
-                        title.append(item.getPerson().getLastName()).append(" ");
-                    }
-                    text.setText(title.toString());
-                }
+                text.setText(title.toString());
             }
-        });
+        }
     }
+
 
     class ViewFields extends BaseViewFields {
         @BindView(R.id.txt_edit_students_group_id)

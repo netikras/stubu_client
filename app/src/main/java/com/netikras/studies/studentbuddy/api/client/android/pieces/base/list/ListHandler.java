@@ -1,9 +1,11 @@
 package com.netikras.studies.studentbuddy.api.client.android.pieces.base.list;
 
 import android.content.Context;
+import android.graphics.Rect;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
+import android.widget.TextView;
 
 import com.netikras.studies.studentbuddy.api.client.android.R;
 import com.netikras.studies.studentbuddy.core.data.api.dto.school.LectureDto;

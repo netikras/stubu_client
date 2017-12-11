@@ -7,6 +7,8 @@ import com.netikras.studies.studentbuddy.core.data.api.dto.PersonDto;
 import com.netikras.studies.studentbuddy.core.data.api.dto.school.LecturerDto;
 import com.netikras.studies.studentbuddy.core.data.api.dto.school.SchoolDto;
 
+import java.util.List;
+
 import static com.netikras.tools.common.security.IntegrityUtils.isNullOrEmpty;
 
 /**
@@ -26,7 +28,7 @@ public class LecturerDao extends GenericDao<LecturerDto> {
     }
 
     @Override
-    protected String getId(LecturerDto entity) {
+    public String getId(LecturerDto entity) {
         return entity.getId();
     }
 
@@ -96,5 +98,9 @@ public class LecturerDao extends GenericDao<LecturerDto> {
         schoolCache.put(entity.getSchool());
 
         return entity;
+    }
+
+    public List<LecturerDto> getAllByPerson(String id) {
+        return getAllWhere("person_id = ?", id);
     }
 }

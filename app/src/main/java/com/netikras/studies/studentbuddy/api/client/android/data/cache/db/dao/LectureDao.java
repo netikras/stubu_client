@@ -47,7 +47,7 @@ public class LectureDao extends GenericDao<LectureDto> {
     }
 
     @Override
-    protected String getId(LectureDto entity) {
+    public String getId(LectureDto entity) {
         return entity.getId();
     }
 
@@ -169,5 +169,17 @@ public class LectureDao extends GenericDao<LectureDto> {
 
     public List<LectureDto> getAllByCourseId(String id) {
         return getAllWhere("course_id = ?", id);
+    }
+
+    public List<LectureDto> getAllByGroupStartingBetween(String id, String after, String before) {
+        return getAllWhere("group_id = ? and starts_on > ? and starts_on < ?", id, "" + after, "" + before);
+    }
+
+    public List<LectureDto> getAllByLecturerStartingBetween(String id, String after, String before) {
+        return getAllWhere("lecturer_id = ? and starts_on > ? and starts_on < ?", id, "" + after, "" + before);
+    }
+
+    public List<LectureDto> getAllByRoomStartingBetween(String id, String after, String before) {
+        return getAllWhere("room_id = ? and starts_on > ? and starts_on < ?", id, "" + after, "" + before);
     }
 }

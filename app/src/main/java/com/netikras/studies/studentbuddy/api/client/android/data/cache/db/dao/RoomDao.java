@@ -28,7 +28,7 @@ public class RoomDao extends GenericDao<LectureRoomDto> {
     }
 
     @Override
-    protected String getId(LectureRoomDto entity) {
+    public String getId(LectureRoomDto entity) {
         return entity.getId();
     }
 

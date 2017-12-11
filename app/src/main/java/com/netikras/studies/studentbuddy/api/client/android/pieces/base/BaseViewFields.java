@@ -1,6 +1,5 @@
 package com.netikras.studies.studentbuddy.api.client.android.pieces.base;
 
-import android.content.Intent;
 import android.text.InputType;
 import android.view.View;
 import android.widget.TextView;
@@ -19,6 +18,8 @@ import static com.netikras.studies.studentbuddy.api.client.android.util.CommonUt
  */
 
 public abstract class BaseViewFields {
+
+    protected static final String ZERO = "Ø";
 
     protected String getString(TextView view) {
         if (view == null) {
@@ -81,16 +82,14 @@ public abstract class BaseViewFields {
     }
 
     public void setEditable(TextView view, boolean editable) {
-        if (editable) {
-            view.setCursorVisible(true);
-            view.setFocusableInTouchMode(true);
 
+        view.setCursorVisible(editable);
+        view.setFocusableInTouchMode(editable);
+
+        if (editable) {
             Integer oldType = (Integer) view.getTag(R.id.TAG_ONLINE_ID);
             view.setInputType(oldType == null ? InputType.TYPE_CLASS_TEXT : oldType);
         } else {
-            view.setCursorVisible(false);
-            view.setFocusableInTouchMode(false);
-
             view.setTag(R.id.TAG_ONLINE_ID, view.getInputType());
             view.setInputType(InputType.TYPE_NULL);
         }

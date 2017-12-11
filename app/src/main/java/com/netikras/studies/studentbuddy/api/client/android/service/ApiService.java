@@ -4,6 +4,7 @@ import android.app.IntentService;
 import android.content.Intent;
 import android.content.Context;
 import android.support.annotation.Nullable;
+import android.util.Log;
 
 import com.netikras.studies.studentbuddy.api.client.android.conf.di.DepInjector;
 import com.netikras.tools.common.exception.ErrorsCollection;
@@ -55,7 +56,6 @@ public class ApiService extends IntentService {
                 @Override
                 public void run() {
                     while (true) {
-
                         if (BlockingQueue.class.isAssignableFrom(requestsQueue.getClass())) {
 
                             try {

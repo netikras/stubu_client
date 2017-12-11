@@ -223,6 +223,11 @@
     <string name="yesno_choice_no">Ne</string>
     <string name="yesno_question_delete">Ar tikrai norite pašalinti įrašą?</string>
     <string name="main_menu_refresh">Atnaujinti</string>
+    <string name="zero">0</string>
+    <string name="err_no_location">Vieta nenurodyta</string>
+    <string name="err_no_group">Grupė nenurodyta</string>
+    <string name="err_no_schools">Mokyklos nenurodytos</string>
+    <string name="err_no_person">Asmuo nenurodytas</string>
 
 
 </resources>

@@ -17,7 +17,7 @@ public class AddressDao extends GenericDao<AddressDto> {
     }
 
     @Override
-    protected String getId(AddressDto entity) {
+    public String getId(AddressDto entity) {
         return entity.getId();
     }
 

@@ -43,6 +43,8 @@ public class SchoolActivity extends BaseActivity implements SchoolMvpView {
     @Inject
     SchoolMvpPresenter<SchoolMvpView> presenter;
 
+    Result<Boolean> fetched = new Result<>(Boolean.FALSE);
+
     @Override
     protected List<Integer> excludeMenuItems() {
         return Arrays.asList(R.id.main_menu_create, R.id.main_menu_delete);
@@ -53,6 +55,12 @@ public class SchoolActivity extends BaseActivity implements SchoolMvpView {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_school);
         setUp();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        fetched.setValue(Boolean.FALSE);
     }
 
     @Override
@@ -98,20 +106,7 @@ public class SchoolActivity extends BaseActivity implements SchoolMvpView {
             return true;
         }
         Object item = coalesce(dto.getDepartments());
-        return item == null;
-    }
-
-    private Result<SchoolDto> fetch(SchoolDto dto) {
-        Result<SchoolDto> result = new Result<>();
-        showLoading();
-        presenter.getById(new ErrorsAwareSubscriber<SchoolDto>() {
-            @Override
-            public void onSuccess(SchoolDto response) {
-                result.setValue(response);
-            }
-        }, dto.getId());
-
-        return result;
+        return item == null && !fetched.getValue();
     }
 
     private void prepare(SchoolDto entity) {
@@ -119,11 +114,15 @@ public class SchoolActivity extends BaseActivity implements SchoolMvpView {
             return;
         }
         if (isPartial()) {
-            Result<SchoolDto> result = fetch(entity);
-            SchoolDto dto = result.get(5, TimeUnit.SECONDS);
-            if (!result.isTimedOut()) {
-                show(dto);
-            }
+            showLoading();
+            presenter.getById(new ErrorsAwareSubscriber<SchoolDto>() {
+                @Override
+                public void onSuccess(SchoolDto response) {
+//                    show(response);
+                    runOnUiThread(() -> show(response));
+                    fetched.setValue(Boolean.TRUE);
+                }
+            }, entity.getId());
         }
     }
 
@@ -189,6 +188,9 @@ public class SchoolActivity extends BaseActivity implements SchoolMvpView {
         @BindView(R.id.btn_school_departments)
         Button departments;
 
+        @BindView(R.id.txt_lbl_school_id)
+        TextView lblId;
+
 
         public String getId() {
             return getString(id);
@@ -229,6 +231,25 @@ public class SchoolActivity extends BaseActivity implements SchoolMvpView {
         @Override
         protected Collection<TextView> getAllFields() {
             return Arrays.asList(id, title, departments);
+        }
+
+        @Override
+        protected Collection<TextView> getEditableFields() {
+            return Arrays.asList(title);
+        }
+
+        @Override
+        public void enableEdit(boolean enable) {
+            super.enableEdit(enable);
+
+            if (enable) {
+                setVisible(id, true);
+                setVisible(lblId, true);
+            } else {
+                setVisible(id, null);
+                setVisible(lblId, false);
+            }
+
         }
     }
 

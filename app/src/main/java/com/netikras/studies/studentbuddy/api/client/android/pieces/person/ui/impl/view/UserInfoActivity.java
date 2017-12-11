@@ -147,29 +147,19 @@ public class UserInfoActivity extends BaseActivity implements UserMvpView {
         return item == null;
     }
 
-    private Result<UserDto> fetch(UserDto dto) {
-        Result<UserDto> result = new Result<>();
-        showLoading();
-        presenter.getById(new ErrorsAwareSubscriber<UserDto>() {
-            @Override
-            public void onSuccess(UserDto response) {
-                result.setValue(response);
-            }
-        }, dto.getId());
-
-        return result;
-    }
-
     private void prepare(UserDto entity) {
         if (entity == null || isNullOrEmpty(entity.getId())) {
             return;
         }
         if (isPartial()) {
-            Result<UserDto> result = fetch(entity);
-            UserDto dto = result.get(5, TimeUnit.SECONDS);
-            if (!result.isTimedOut()) {
-                showUser(dto);
-            }
+            showLoading();
+            presenter.getById(new ErrorsAwareSubscriber<UserDto>() {
+                @Override
+                public void onSuccess(UserDto response) {
+                    runOnUiThread(() -> showUser(response));
+//                    showUser(response);
+                }
+            }, entity.getId());
         }
     }
 
@@ -177,7 +167,12 @@ public class UserInfoActivity extends BaseActivity implements UserMvpView {
     @OnClick(R.id.btn_user_person)
     void showPerson() {
         UserDto userDto = collect();
-
+//
+//        if (userDto == null || userDto.getPerson() == null) {
+//            onError(R.string.err_no_person);
+//            return;
+//        }
+        showLoading();
         presenter.fetchPerson(new ErrorsAwareSubscriber<UserDto>() {
             @Override
             public void onSuccess(UserDto response) {

@@ -22,7 +22,7 @@ public class CommentDao extends GenericDao<CommentDto> {
     }
 
     @Override
-    protected String getId(CommentDto entity) {
+    public String getId(CommentDto entity) {
         return entity.getId();
     }
 

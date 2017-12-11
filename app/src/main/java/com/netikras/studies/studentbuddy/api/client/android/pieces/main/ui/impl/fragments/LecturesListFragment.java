@@ -99,6 +99,6 @@ public abstract class LecturesListFragment extends Fragment {
                 text.setText(title.toString());
             }
         }
-    };
+    }
 
 }

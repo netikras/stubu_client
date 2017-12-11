@@ -456,13 +456,13 @@ public abstract class BaseActivity extends AppCompatActivity
 
         @Override
         public void executeOnError(ErrorsCollection errors) {
-            hideLoading();
+            runOnUiThread(() -> hideLoading());
             super.executeOnError(errors);
         }
 
         @Override
         public void executeOnSuccess(T response) {
-            hideLoading();
+            runOnUiThread(() -> hideLoading());
             super.executeOnSuccess(response);
         }
 

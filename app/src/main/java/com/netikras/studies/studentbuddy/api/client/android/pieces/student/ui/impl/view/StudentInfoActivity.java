@@ -102,34 +102,31 @@ public class StudentInfoActivity extends BaseActivity implements StudentMvpView 
         return item == null;
     }
 
-    private Result<StudentDto> fetch(StudentDto studentDto) {
-        Result<StudentDto> result = new Result<>();
-        showLoading();
-        presenter.getById(new ErrorsAwareSubscriber<StudentDto>() {
-            @Override
-            public void onSuccess(StudentDto response) {
-                result.setValue(response);
-            }
-        }, studentDto.getId());
-
-        return result;
-    }
-
     private void prepare(StudentDto studentDto) {
         if (studentDto == null || isNullOrEmpty(studentDto.getId())) {
             return;
         }
         if (isPartial()) {
-            Result<StudentDto> result = fetch(studentDto);
-            StudentDto dto = result.get(5, TimeUnit.SECONDS);
-            if (!result.isTimedOut()) {
-                show(dto);
-            }
+            showLoading();
+            presenter.getById(new ErrorsAwareSubscriber<StudentDto>() {
+                @Override
+                public void onSuccess(StudentDto response) {
+                    runOnUiThread(() -> show(response));
+//                    show(response);
+                }
+            }, studentDto.getId());
         }
     }
 
     @OnClick(value = {R.id.btn_student_name})
     public void showPerson() {
+
+        PersonDto personDto = getFields().getPerson();
+        if (personDto == null) {
+            onError(R.string.err_no_person);
+            return;
+        }
+
         startView(PersonInfoActivity.class, new ViewTask<PersonInfoActivity>() {
             @Override
             public void execute() {
@@ -155,6 +152,9 @@ public class StudentInfoActivity extends BaseActivity implements StudentMvpView 
         Button department;
         @BindView(R.id.btn_student_group)
         Button group;
+
+        @BindView(R.id.txt_lbl_student_id)
+        TextView lblId;
 
         public String getId() {
             return getString(id);
@@ -262,6 +262,18 @@ public class StudentInfoActivity extends BaseActivity implements StudentMvpView 
             return Arrays.asList(id, identificator, created, name, school, department, group);
         }
 
+        @Override
+        public void enableEdit(boolean enable) {
+            super.enableEdit(enable);
+
+            if (enable) {
+                setVisible(lblId, true);
+                setVisible(id, true);
+            } else {
+                setVisible(lblId, false);
+                setVisible(id, null);
+            }
+        }
     }
 
 }

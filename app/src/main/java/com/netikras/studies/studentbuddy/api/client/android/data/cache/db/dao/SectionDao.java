@@ -33,7 +33,7 @@ public class SectionDao extends GenericDao<BuildingSectionDto> {
     }
 
     @Override
-    protected String getId(BuildingSectionDto entity) {
+    public String getId(BuildingSectionDto entity) {
         return entity.getId();
     }
 

@@ -27,47 +27,29 @@ public class PersonDataStoreApiImpl extends ApiBasedDataStore<String, PersonDto>
     @Inject
     AdminPersonApiConsumer adminApiConsumer;
 
-    private final PersonDao cache;
-
     @Inject
     public PersonDataStoreApiImpl(CacheManager cacheManager) {
-        cache = cacheManager.getDao(PersonDao.class);
+        setCache(cacheManager.getDao(PersonDao.class));
     }
 
-    private PersonDto updateCache(PersonDto item) {
-        if (cache != null) {
-            cache.put(item);
-        }
-        return item;
+    @Override
+    protected PersonDao getCache() {
+        return super.getCache();
     }
-
-    private void evict(PersonDto personDto) {
-        if (personDto != null) {
-            evict(personDto.getId());
-        }
-    }
-
-    private void evict(String id) {
-        if (cache != null) {
-            cache.deleteById(id);
-        }
-    }
-
 
     @Override
     public void getById(String id, Subscriber<PersonDto>... subscribers) {
-        if (cache != null) {
-            PersonDto cached = cache.get(id);
+        if (isCacheEnabled()) {
+            PersonDto cached = getCached(id);
             if (cached != null) {
-                respondSuccess(cached, subscribers);
+                respondCacheHit(cached, subscribers);
                 return;
             }
         }
         orderData(new ServiceRequest<PersonDto>() {
             @Override
             public PersonDto request() {
-                PersonDto dto = apiConsumer.retrievePersonDto(id);
-                return updateCache(dto);
+                return updateCache(apiConsumer.retrievePersonDto(id));
             }
         }, subscribers);
     }
@@ -77,8 +59,7 @@ public class PersonDataStoreApiImpl extends ApiBasedDataStore<String, PersonDto>
         orderData(new ServiceRequest<PersonDto>() {
             @Override
             public PersonDto request() {
-                PersonDto dto = adminApiConsumer.createPersonDto(item);
-                return updateCache(dto);
+                return updateCache(adminApiConsumer.createPersonDto(item));
             }
         }, subscribers);
     }
@@ -122,13 +103,22 @@ public class PersonDataStoreApiImpl extends ApiBasedDataStore<String, PersonDto>
         orderData(new ServiceRequest<Collection<PersonDto>>() {
             @Override
             public Collection<PersonDto> request() {
-                return apiConsumer.getPersonDtoAll();
+                return updateCache(apiConsumer.getPersonDtoAll());
             }
         }, subscribers);
     }
 
     @Override
     public void getByIdentifier(String identifier, Subscriber<PersonDto>... subscribers) {
+
+        if (isCacheEnabled()) {
+            PersonDto dto = getCache().getByIdentifier(identifier);
+            if (dto != null) {
+                fillFromCache(dto);
+                respondCacheHit(dto, subscribers);
+            }
+        }
+
         orderData(new ServiceRequest<PersonDto>() {
             @Override
             public PersonDto request() {
@@ -139,6 +129,15 @@ public class PersonDataStoreApiImpl extends ApiBasedDataStore<String, PersonDto>
 
     @Override
     public void getByCode(String value, Subscriber<PersonDto>... subscribers) {
+
+        if (isCacheEnabled()) {
+            PersonDto dto = getCache().getByCode(value);
+            if (dto != null) {
+                fillFromCache(dto);
+                respondCacheHit(dto, subscribers);
+            }
+        }
+
         orderData(new ServiceRequest<PersonDto>() {
             @Override
             public PersonDto request() {
@@ -149,30 +148,55 @@ public class PersonDataStoreApiImpl extends ApiBasedDataStore<String, PersonDto>
 
     @Override
     public void getByFirstName(String fname, Subscriber<Collection<PersonDto>>... subscribers) {
+        if (isCacheEnabled()) {
+            Collection<PersonDto> dtos = getCache().getAllByFirstName(fname);
+            if (!isNullOrEmpty(dtos)) {
+                fillFromCache(dtos);
+                respondCacheHit(dtos, subscribers);
+            }
+        }
+
         orderData(new ServiceRequest<Collection<PersonDto>>() {
             @Override
             public Collection<PersonDto> request() {
-                return apiConsumer.getPersonDtoAllByFirstName(fname);
+                return updateCache(apiConsumer.getPersonDtoAllByFirstName(fname));
             }
         }, subscribers);
     }
 
     @Override
     public void getByLastName(String lname, Subscriber<Collection<PersonDto>>... subscribers) {
+        if (isCacheEnabled()) {
+            Collection<PersonDto> dtos = getCache().getAllByLastName(lname);
+            if (!isNullOrEmpty(dtos)) {
+                fillFromCache(dtos);
+                respondCacheHit(dtos, subscribers);
+            }
+        }
+
         orderData(new ServiceRequest<Collection<PersonDto>>() {
             @Override
             public Collection<PersonDto> request() {
-                return apiConsumer.getPersonDtoAllByLastName(lname);
+                return updateCache(apiConsumer.getPersonDtoAllByLastName(lname));
             }
         }, subscribers);
     }
 
     @Override
     public void getByFirstAndLastName(String fname, String lname, Subscriber<Collection<PersonDto>>... subscribers) {
+
+        if (isCacheEnabled()) {
+            Collection<PersonDto> dtos = getCache().getAllByFirsAndLasttName(fname, lname);
+            if (!isNullOrEmpty(dtos)) {
+                fillFromCache(dtos);
+                respondCacheHit(dtos, subscribers);
+            }
+        }
+
         orderData(new ServiceRequest<Collection<PersonDto>>() {
             @Override
             public Collection<PersonDto> request() {
-                return apiConsumer.getPersonDtoAllByFirstAndLastName(fname, lname);
+                return updateCache(apiConsumer.getPersonDtoAllByFirstAndLastName(fname, lname));
             }
         }, subscribers);
     }
