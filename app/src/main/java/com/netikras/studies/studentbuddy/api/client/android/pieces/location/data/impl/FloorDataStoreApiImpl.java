@@ -1,5 +1,7 @@
 package com.netikras.studies.studentbuddy.api.client.android.pieces.location.data.impl;
 
+import com.netikras.studies.studentbuddy.api.client.android.data.cache.CacheManager;
+import com.netikras.studies.studentbuddy.api.client.android.data.cache.db.dao.FloorDao;
 import com.netikras.studies.studentbuddy.api.client.android.data.stores.ApiBasedDataStore;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.location.data.FloorDataStore;
 import com.netikras.studies.studentbuddy.api.client.android.service.ServiceRequest;
@@ -24,15 +26,24 @@ public class FloorDataStoreApiImpl extends ApiBasedDataStore<String, BuildingFlo
     LocationApiConsumer locationApiConsumer;
 
     @Inject
-    public FloorDataStoreApiImpl() {
+    public FloorDataStoreApiImpl(CacheManager cacheManager) {
+        setCache(cacheManager.getDao(FloorDao.class));
     }
 
     @Override
     public void getById(String id, Subscriber<BuildingFloorDto>... subscribers) {
+        if (isCacheEnabled()) {
+            BuildingFloorDto dto = getCached(id);
+            if (dto != null) {
+                fillFromCache(dto);
+                respondCacheHit(dto, subscribers);
+            }
+        }
+
         orderData(new ServiceRequest<BuildingFloorDto>() {
             @Override
             public BuildingFloorDto request() {
-                return floorApiConsumer.retrieveBuildingFloorDto(id);
+                return updateCache(floorApiConsumer.retrieveBuildingFloorDto(id));
             }
         }, subscribers);
     }
@@ -42,7 +53,7 @@ public class FloorDataStoreApiImpl extends ApiBasedDataStore<String, BuildingFlo
         orderData(new ServiceRequest<BuildingFloorDto>() {
             @Override
             public BuildingFloorDto request() {
-                return floorApiConsumer.createBuildingFloorDto(item);
+                return updateCache(floorApiConsumer.createBuildingFloorDto(item));
             }
         }, subscribers);
     }
@@ -52,7 +63,7 @@ public class FloorDataStoreApiImpl extends ApiBasedDataStore<String, BuildingFlo
         orderData(new ServiceRequest<BuildingFloorDto>() {
             @Override
             public BuildingFloorDto request() {
-                return floorApiConsumer.updateBuildingFloorDto(item);
+                return updateCache(floorApiConsumer.updateBuildingFloorDto(item));
             }
         }, subscribers);
     }
@@ -63,6 +74,7 @@ public class FloorDataStoreApiImpl extends ApiBasedDataStore<String, BuildingFlo
             @Override
             public Boolean request() {
                 floorApiConsumer.purgeBuildingFloorDto(id);
+                evict(id);
                 return Boolean.TRUE;
             }
         }, subscribers);
@@ -74,6 +86,7 @@ public class FloorDataStoreApiImpl extends ApiBasedDataStore<String, BuildingFlo
             @Override
             public Boolean request() {
                 floorApiConsumer.deleteBuildingFloorDto(id);
+                evict(id);
                 return Boolean.TRUE;
             }
         }, subscribers);

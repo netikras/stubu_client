@@ -1,8 +1,13 @@
 package com.netikras.studies.studentbuddy.api.client.android.pieces.location.data.impl;
 
 import com.netikras.studies.studentbuddy.api.client.android.data.cache.CacheManager;
-import com.netikras.studies.studentbuddy.api.client.android.data.cache.db.dao.GenericDao;
+import com.netikras.studies.studentbuddy.api.client.android.data.cache.db.dao.AddressDao;
+import com.netikras.studies.studentbuddy.api.client.android.data.cache.db.dao.BuildingDao;
+import com.netikras.studies.studentbuddy.api.client.android.data.cache.db.dao.FloorDao;
+import com.netikras.studies.studentbuddy.api.client.android.data.cache.db.dao.LayoutDao;
 import com.netikras.studies.studentbuddy.api.client.android.data.cache.db.dao.RoomDao;
+import com.netikras.studies.studentbuddy.api.client.android.data.cache.db.dao.SchoolDao;
+import com.netikras.studies.studentbuddy.api.client.android.data.cache.db.dao.SectionDao;
 import com.netikras.studies.studentbuddy.api.client.android.data.stores.ApiBasedDataStore;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.location.data.RoomDataStore;
 import com.netikras.studies.studentbuddy.api.client.android.service.ServiceRequest;
@@ -26,16 +31,23 @@ public class RoomDataStoreApiImpl extends ApiBasedDataStore<String, LectureRoomD
     @Inject
     FloorApiConsumer floorApiConsumer;
 
+
+    SchoolDao schoolCache;
+    FloorDao floorCache;
+    LayoutDao layoutCache;
+    BuildingDao buildingCache;
+    SectionDao sectionCache;
+    AddressDao addressCache;
+
     @Inject
     public RoomDataStoreApiImpl(CacheManager cacheManager) {
         setCache(cacheManager.getDao(RoomDao.class));
-
-
-    }
-
-    @Override
-    protected RoomDao getCache() {
-        return super.getCache();
+        schoolCache = cacheManager.getDao(SchoolDao.class);
+        floorCache = cacheManager.getDao(FloorDao.class);
+        layoutCache = cacheManager.getDao(LayoutDao.class);
+        buildingCache = cacheManager.getDao(BuildingDao.class);
+        sectionCache = cacheManager.getDao(SectionDao.class);
+        addressCache = cacheManager.getDao(AddressDao.class);
     }
 
 
@@ -46,42 +58,33 @@ public class RoomDataStoreApiImpl extends ApiBasedDataStore<String, LectureRoomD
             return item;
         }
 
+        BuildingFloorDto floor = item.getFloor();
+
         if (item.getSchool() != null) {
-
+            item.setSchool(schoolCache.fill(schoolCache.get(item.getSchool().getId())));
         }
 
-        if (item.getFloor() != null) {
-            BuildingFloorDto floor = item.getFloor();
-
-
-
-            if (floor.getLayouts() == null) {
-
-            }
-
-            if (floor.getBuilding() == null) {
-
-
-                BuildingDto building = floor.getBuilding();
-                if (building.getAddress() == null) {
-
-                }
-            }
-
-            if (floor.getBuildingSection() == null) {
-                BuildingSectionDto section = floor.getBuildingSection();
-
-                if (section.getAddress() == null) {
-
-                }
-                if (section.getBuilding() == null) {
-                    
-                }
-            }
+        if (floor != null) {
+            item.setFloor(floorCache.fill(floorCache.get(floor.getId())));
         }
 
+        floor = item.getFloor();
 
+        if (floor != null) {
+            BuildingDto building = floor.getBuilding();
+            BuildingSectionDto section = floor.getBuildingSection();
 
+            if (floor.getLayouts() != null) {
+                floor.setLayouts(layoutCache.fillAll(layoutCache.getAllByIds(floor.getLayouts())));
+            }
+
+            if (building != null) {
+                floor.setBuilding(buildingCache.fill(buildingCache.get(building.getId())));
+            }
+            if (section != null) {
+                floor.setBuildingSection(sectionCache.fill(sectionCache.get(section.getId())));
+            }
+        }
 
         return item;
     }

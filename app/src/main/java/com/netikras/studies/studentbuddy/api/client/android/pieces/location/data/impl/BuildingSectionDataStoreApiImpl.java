@@ -1,5 +1,8 @@
 package com.netikras.studies.studentbuddy.api.client.android.pieces.location.data.impl;
 
+import com.netikras.studies.studentbuddy.api.client.android.data.cache.CacheManager;
+import com.netikras.studies.studentbuddy.api.client.android.data.cache.db.dao.GenericDao;
+import com.netikras.studies.studentbuddy.api.client.android.data.cache.db.dao.SectionDao;
 import com.netikras.studies.studentbuddy.api.client.android.data.stores.ApiBasedDataStore;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.location.data.BuildingSectionDataStore;
 import com.netikras.studies.studentbuddy.api.client.android.service.ServiceRequest;
@@ -21,14 +24,23 @@ public class BuildingSectionDataStoreApiImpl extends ApiBasedDataStore<String, B
     LocationApiConsumer locationApiConsumer;
 
     @Inject
-    public BuildingSectionDataStoreApiImpl() {}
+    public BuildingSectionDataStoreApiImpl(CacheManager cacheManager) {
+        setCache(cacheManager.getDao(SectionDao.class));
+    }
 
     @Override
     public void getById(String id, Subscriber<BuildingSectionDto>... subscribers) {
+        if (isCacheEnabled()) {
+            BuildingSectionDto dto = getCached(id);
+            if (dto != null) {
+                fillFromCache(dto);
+                respondCacheHit(dto, subscribers);
+            }
+        }
         orderData(new ServiceRequest<BuildingSectionDto>(){
             @Override
             public BuildingSectionDto request() {
-                return locationApiConsumer.retrieveBuildingSectionDto(id);
+                return updateCache(locationApiConsumer.retrieveBuildingSectionDto(id));
             }
         }, subscribers);
     }
@@ -38,7 +50,7 @@ public class BuildingSectionDataStoreApiImpl extends ApiBasedDataStore<String, B
         orderData(new ServiceRequest<BuildingSectionDto>(){
             @Override
             public BuildingSectionDto request() {
-                return locationApiConsumer.createBuildingSectionDto(item);
+                return updateCache(locationApiConsumer.createBuildingSectionDto(item));
             }
         }, subscribers);
     }
@@ -48,7 +60,7 @@ public class BuildingSectionDataStoreApiImpl extends ApiBasedDataStore<String, B
         orderData(new ServiceRequest<BuildingSectionDto>(){
             @Override
             public BuildingSectionDto request() {
-                return locationApiConsumer.updateBuildingSectionDto(item);
+                return updateCache(locationApiConsumer.updateBuildingSectionDto(item));
             }
         }, subscribers);
     }
@@ -59,6 +71,7 @@ public class BuildingSectionDataStoreApiImpl extends ApiBasedDataStore<String, B
             @Override
             public Boolean request() {
                 locationApiConsumer.purgeBuildingSectionDto(id);
+                evict(id);
                 return Boolean.TRUE;
             }
         }, subscribers);
@@ -70,6 +83,7 @@ public class BuildingSectionDataStoreApiImpl extends ApiBasedDataStore<String, B
             @Override
             public Boolean request() {
                 locationApiConsumer.deleteBuildingSectionDto(id);
+                evict(id);
                 return Boolean.TRUE;
             }
         }, subscribers);

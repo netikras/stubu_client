@@ -1,5 +1,8 @@
 package com.netikras.studies.studentbuddy.api.client.android.pieces.location.data.impl;
 
+import com.netikras.studies.studentbuddy.api.client.android.data.cache.CacheManager;
+import com.netikras.studies.studentbuddy.api.client.android.data.cache.db.dao.GenericDao;
+import com.netikras.studies.studentbuddy.api.client.android.data.cache.db.dao.LayoutDao;
 import com.netikras.studies.studentbuddy.api.client.android.data.stores.ApiBasedDataStore;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.location.data.LayoutDataStore;
 import com.netikras.studies.studentbuddy.api.client.android.service.ServiceRequest;
@@ -21,14 +24,25 @@ public class LayoutDataStoreApiImpl extends ApiBasedDataStore<String, FloorLayou
     FloorApiConsumer floorApiConsumer;
 
     @Inject
-    public LayoutDataStoreApiImpl() {}
+    public LayoutDataStoreApiImpl(CacheManager cacheManager) {
+        setCache(cacheManager.getDao(LayoutDao.class));
+    }
 
     @Override
     public void getById(String id, Subscriber<FloorLayoutDto>... subscribers) {
+
+        if (isCacheEnabled()) {
+            FloorLayoutDto dto = getCached(id);
+            if (dto != null) {
+                fillFromCache(dto);
+                respondCacheHit(dto, subscribers);
+            }
+        }
+
         orderData(new ServiceRequest<FloorLayoutDto>() {
             @Override
             public FloorLayoutDto request() {
-                return floorApiConsumer.retrieveFloorLayoutDto(id);
+                return updateCache(floorApiConsumer.retrieveFloorLayoutDto(id));
             }
         }, subscribers);
     }
@@ -38,7 +52,7 @@ public class LayoutDataStoreApiImpl extends ApiBasedDataStore<String, FloorLayou
         orderData(new ServiceRequest<FloorLayoutDto>() {
             @Override
             public FloorLayoutDto request() {
-                return floorApiConsumer.createFloorLayoutDto(item);
+                return updateCache(floorApiConsumer.createFloorLayoutDto(item));
             }
         }, subscribers);
     }
@@ -48,7 +62,7 @@ public class LayoutDataStoreApiImpl extends ApiBasedDataStore<String, FloorLayou
         orderData(new ServiceRequest<FloorLayoutDto>() {
             @Override
             public FloorLayoutDto request() {
-                return floorApiConsumer.updateFloorLayoutDto(item);
+                return updateCache(floorApiConsumer.updateFloorLayoutDto(item));
             }
         }, subscribers);
     }
@@ -59,6 +73,7 @@ public class LayoutDataStoreApiImpl extends ApiBasedDataStore<String, FloorLayou
             @Override
             public Boolean request() {
                 floorApiConsumer.purgeFloorLayoutDto(id);
+                evict(id);
                 return Boolean.TRUE;
             }
         }, subscribers);
@@ -70,6 +85,7 @@ public class LayoutDataStoreApiImpl extends ApiBasedDataStore<String, FloorLayou
             @Override
             public Boolean request() {
                 floorApiConsumer.deleteFloorLayoutDto(id);
+                evict(id);
                 return Boolean.TRUE;
             }
         }, subscribers);

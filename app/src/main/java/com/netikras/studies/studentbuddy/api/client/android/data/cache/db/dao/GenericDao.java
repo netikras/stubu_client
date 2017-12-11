@@ -107,6 +107,34 @@ public abstract class GenericDao<E> extends SQLiteOpenHelper {
         return null;
     }
 
+    public List<E> getAllByIds(Collection<E> itemsWithId) {
+        if (!isNullOrEmpty(itemsWithId)) {
+            List<E> results = new  ArrayList<>(itemsWithId.size());
+            for (E e : itemsWithId) {
+                E result = get(getId(e));
+                if (result != null) {
+                    results.add(result);
+                }
+            }
+            return results;
+        }
+        return null;
+    }
+
+    public List<E> getAll(Collection<String> ids) {
+        if (!isNullOrEmpty(ids)) {
+            List<E> results = new  ArrayList<>(ids.size());
+            for (String id : ids) {
+                E result = get(id);
+                if (result != null) {
+                    results.add(result);
+                }
+            }
+            return results;
+        }
+        return null;
+    }
+
     public E getFirstWhere(String conditions, String... args) {
         if (!isNullOrEmpty(conditions)) {
             Cursor cursor = getReadableDatabase()

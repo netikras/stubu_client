@@ -3,7 +3,6 @@ package com.netikras.studies.studentbuddy.api.client.android.pieces.location.ui.
 import android.content.Context;
 
 import com.netikras.studies.studentbuddy.api.client.android.data.DataManager;
-import com.netikras.studies.studentbuddy.api.client.android.pieces.base.BaseActivity;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.base.BaseActivity.ViewTask;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.base.BasePresenter;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.location.data.RoomDataStore;
@@ -20,7 +19,6 @@ import com.netikras.studies.studentbuddy.api.client.android.pieces.location.ui.v
 import com.netikras.studies.studentbuddy.api.client.android.pieces.location.ui.view.FloorMvpView;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.location.ui.view.LocationMvpView;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.location.ui.view.RoomMvpView;
-import com.netikras.studies.studentbuddy.api.client.android.service.ServiceRequest;
 import com.netikras.studies.studentbuddy.api.client.android.service.ServiceRequest.Subscriber;
 import com.netikras.studies.studentbuddy.core.data.api.dto.location.AddressDto;
 import com.netikras.studies.studentbuddy.core.data.api.dto.location.BuildingDto;

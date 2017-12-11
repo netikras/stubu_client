@@ -1,5 +1,7 @@
 package com.netikras.studies.studentbuddy.api.client.android.pieces.location.data.impl;
 
+import com.netikras.studies.studentbuddy.api.client.android.data.cache.CacheManager;
+import com.netikras.studies.studentbuddy.api.client.android.data.cache.db.dao.AddressDao;
 import com.netikras.studies.studentbuddy.api.client.android.data.stores.ApiBasedDataStore;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.location.data.AddressDataStore;
 import com.netikras.studies.studentbuddy.api.client.android.service.ServiceRequest;
@@ -21,14 +23,23 @@ public class AddressDataStoreApiImpl extends ApiBasedDataStore<String, AddressDt
     LocationApiConsumer locationApiConsumer;
 
     @Inject
-    public AddressDataStoreApiImpl() {}
+    public AddressDataStoreApiImpl(CacheManager cacheManager) {
+        setCache(cacheManager.getDao(AddressDao.class));
+    }
 
     @Override
     public void getById(String id, Subscriber<AddressDto>... subscribers) {
+        if (isCacheEnabled()) {
+            AddressDto dto = getCached(id);
+            if (dto != null) {
+                fillFromCache(dto);
+                respondCacheHit(dto, subscribers);
+            }
+        }
         orderData(new ServiceRequest<AddressDto>(){
             @Override
             public AddressDto request() {
-                return locationApiConsumer.retrieveAddressDto(id);
+                return updateCache(locationApiConsumer.retrieveAddressDto(id));
             }
         }, subscribers);
     }
@@ -38,7 +49,7 @@ public class AddressDataStoreApiImpl extends ApiBasedDataStore<String, AddressDt
         orderData(new ServiceRequest<AddressDto>(){
             @Override
             public AddressDto request() {
-                return locationApiConsumer.createAddressDto(item);
+                return updateCache(locationApiConsumer.createAddressDto(item));
             }
         }, subscribers);
     }
@@ -48,7 +59,7 @@ public class AddressDataStoreApiImpl extends ApiBasedDataStore<String, AddressDt
         orderData(new ServiceRequest<AddressDto>(){
             @Override
             public AddressDto request() {
-                return locationApiConsumer.updateAddressDto(item);
+                return updateCache(locationApiConsumer.updateAddressDto(item));
             }
         }, subscribers);
     }
@@ -59,6 +70,7 @@ public class AddressDataStoreApiImpl extends ApiBasedDataStore<String, AddressDt
             @Override
             public Boolean request() {
                 locationApiConsumer.purgeAddressDto(id);
+                evict(id);
                 return Boolean.TRUE;
             }
         }, subscribers);
@@ -70,6 +82,7 @@ public class AddressDataStoreApiImpl extends ApiBasedDataStore<String, AddressDt
             @Override
             public Boolean request() {
                 locationApiConsumer.deleteAddressDto(id);
+                evict(id);
                 return Boolean.TRUE;
             }
         }, subscribers);

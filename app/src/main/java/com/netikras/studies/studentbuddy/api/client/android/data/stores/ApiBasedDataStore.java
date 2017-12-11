@@ -9,6 +9,8 @@ import com.netikras.tools.common.exception.ErrorBody;
 import com.netikras.tools.common.exception.ErrorsCollection;
 import com.netikras.tools.common.exception.FriendlyUncheckedException;
 
+import java.util.Collection;
+
 import static com.netikras.tools.common.security.IntegrityUtils.isNullOrEmpty;
 
 /**
@@ -29,13 +31,73 @@ public abstract class ApiBasedDataStore<I, E> extends CacheAwareStore<E> impleme
 
     protected void orderData(ServiceRequest request, Subscriber... subscribers) {
         if (subscribers != null) {
-            for (Subscriber subscriber : subscribers) {
-                if (subscriber.isDataFetchRequired()) {
-                    request.addSubscriber(subscriber);
-                }
+            if (isCacheEnabled()) {
+//                orderOriginDataAndUpdateCache(request, subscribers);
+                orderOriginData(request, subscribers);
+            } else {
+                orderOriginData(request, subscribers);
             }
         }
         orderData(request);
+    }
+
+    private void orderOriginDataAndUpdateCache(ServiceRequest request, Subscriber... subscribers) {
+        Subscriber cacheSubscriber = new Subscriber(){
+            @Override
+            public void executeOnSuccess(Object response) {
+                super.executeOnSuccess(response);
+
+                try {
+                    if (response != null) {
+                        if (Collection.class.isAssignableFrom(response.getClass())) {
+                            updateCache((Collection<E>) response);
+                        } else {
+                            updateCache((E) response);
+                        }
+                    }
+                } catch (Throwable ignore) {}
+                delegateResponseToAll(response, subscribers);
+            }
+
+            @Override
+            public void executeOnError(ErrorsCollection errors) {
+                super.executeOnError(errors);
+                delegateErrorToAll(errors, subscribers);
+            }
+        };
+        request.addSubscriber(cacheSubscriber);
+    }
+
+    private void orderOriginData(ServiceRequest request, Subscriber... subscribers) {
+        for (Subscriber subscriber : subscribers) {
+            if (subscriber.isDataFetchRequired()) {
+                request.addSubscriber(subscriber);
+            }
+        }
+    }
+
+    private void delegateResponseToAll(Object response, Subscriber... subscribers) {
+        if (!isNullOrEmpty(subscribers)) {
+            for (Subscriber subscriber : subscribers) {
+                if (subscriber != null) {
+                    try {
+                        subscriber.executeOnSuccess(response);
+                    } catch (Throwable ignore) {}
+                }
+            }
+        }
+    }
+
+    private void delegateErrorToAll(ErrorsCollection errors, Subscriber... subscribers) {
+        if (!isNullOrEmpty(subscribers)) {
+            for (Subscriber subscriber : subscribers) {
+                if (subscriber != null) {
+                    try {
+                        subscriber.executeOnError(errors);
+                    } catch (Throwable ignore) {}
+                }
+            }
+        }
     }
 
     protected <T> void respondSuccess(T response, Subscriber<T>... subscribers) {
