@@ -56,6 +56,8 @@ public class LectureInfoActivity extends BaseActivity implements LectureMvpView 
     @Inject
     LectureMvpPresenter<LectureMvpView> presenter;
 
+    private static LectureDto lastEntry = null;
+
     @Override
     protected List<Integer> excludeMenuItems() {
         return Arrays.asList(R.id.main_menu_create, R.id.main_menu_delete);
@@ -69,12 +71,22 @@ public class LectureInfoActivity extends BaseActivity implements LectureMvpView 
     }
 
     @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        lastEntry = collect();
+    }
+
+    @Override
     protected void setUp() {
         DepInjector.inject(this);
         onAttach(this);
         presenter.onAttach(this);
         fields = initFields(new ViewFields());
         addMenu();
+
+        if (lastEntry != null) {
+            show(lastEntry);
+        }
         executeTask();
     }
 
@@ -88,7 +100,6 @@ public class LectureInfoActivity extends BaseActivity implements LectureMvpView 
         getFields().reset();
 
         if (lectureDto == null) {
-            fields.clean();
             return;
         }
 
@@ -102,7 +113,11 @@ public class LectureInfoActivity extends BaseActivity implements LectureMvpView 
         getFields().setLocation(lectureDto.getRoom());
         getFields().setDiscipline(lectureDto.getDiscipline());
 
-        prepare(lectureDto);
+        if (lastEntry != null) {
+            lastEntry = null;
+        } else {
+            prepare(lectureDto);
+        }
 
     }
 

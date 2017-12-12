@@ -12,6 +12,8 @@ import com.netikras.studies.studentbuddy.api.client.android.pieces.base.BaseView
 import com.netikras.studies.studentbuddy.api.client.android.pieces.lecture.ui.presenter.AssignmentMvpPresenter;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.lecture.ui.view.AssignmentMvpView;
 import com.netikras.studies.studentbuddy.core.data.api.dto.school.AssignmentDto;
+import com.netikras.studies.studentbuddy.core.data.api.dto.school.DisciplineDto;
+import com.netikras.studies.studentbuddy.core.data.api.dto.school.LectureDto;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -36,6 +38,8 @@ public class AssignmentActivity extends BaseActivity implements AssignmentMvpVie
     @Inject
     AssignmentMvpPresenter<AssignmentMvpView> presenter;
 
+    private static AssignmentDto lastEntry = null;
+
     @Override
     protected List<Integer> excludeMenuItems() {
         return Arrays.asList();
@@ -49,27 +53,59 @@ public class AssignmentActivity extends BaseActivity implements AssignmentMvpVie
     }
 
     @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        lastEntry = collect();
+    }
+
+    @Override
     protected void setUp() {
         DepInjector.inject(this);
         onAttach(this);
         presenter.onAttach(this);
         fields = initFields(new ViewFields());
         addMenu();
+
+        if (lastEntry != null) {
+            show(lastEntry);
+        }
         executeTask();
+    }
+
+    public ViewFields getFields() {
+        return fields;
     }
 
     @Override
     public void show(AssignmentDto dto) {
+        getFields().reset();
         if (dto == null) {
-            fields.clean();
             return;
         }
 
-        fields.setDueDate(dto.getDue());
-        fields.setAnnouncedDatetime(dto.getCreatedOn());
-        fields.setId(dto.getId());
-        fields.setDescription(dto.getDescription());
+        getFields().setDueDate(dto.getDue());
+        getFields().setAnnouncedDatetime(dto.getCreatedOn());
+        getFields().setId(dto.getId());
+        getFields().setDescription(dto.getDescription());
+        getFields().setLecture(dto.getLectureDto());
+        getFields().setDiscipline(dto.getDiscipline());
 
+        if (lastEntry != null) {
+            lastEntry = null;
+        }
+    }
+
+    private AssignmentDto collect() {
+        AssignmentDto dto = new AssignmentDto();
+
+        dto.setId(getFields().getId());
+        dto.setLectureDto(getFields().getLecture());
+        dto.setCreatedOn(getFields().getAnnouncedDatetime());
+        dto.setDiscipline(getFields().getDiscipline());
+        dto.setDue(getFields().getDueDatetime());
+        dto.setDescription(getFields().getDescription());
+
+        return dto;
     }
 
     class ViewFields extends BaseViewFields {
@@ -88,6 +124,9 @@ public class AssignmentActivity extends BaseActivity implements AssignmentMvpVie
         EditText dueDate;
         @BindView(R.id.txt_edit_assignment_due_time)
         EditText dueTime;
+
+        LectureDto lecture;
+        DisciplineDto discipline;
 
         @BindView(R.id.txt_lbl_assignment_id)
         TextView lblId;
@@ -167,6 +206,14 @@ public class AssignmentActivity extends BaseActivity implements AssignmentMvpVie
             setDueTime(datetimeToTime(dueDate));
         }
 
+        public LectureDto getLecture() {
+            return lecture;
+        }
+
+        public void setLecture(LectureDto lecture) {
+            this.lecture = lecture;
+        }
+
         @Override
         protected Collection<TextView> getAllFields() {
             return Arrays.asList(id, title, description, announcedDate, announcedTime, dueDate, dueTime, announcedDate, announcedTime);
@@ -188,6 +235,14 @@ public class AssignmentActivity extends BaseActivity implements AssignmentMvpVie
                 setVisible(id, null);
                 setVisible(lblId, false);
             }
+        }
+
+        public DisciplineDto getDiscipline() {
+            return discipline;
+        }
+
+        public void setDiscipline(DisciplineDto discipline) {
+            this.discipline = discipline;
         }
     }
 }

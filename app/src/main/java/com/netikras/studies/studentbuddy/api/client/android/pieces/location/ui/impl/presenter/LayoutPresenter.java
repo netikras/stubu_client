@@ -8,6 +8,7 @@ import com.netikras.studies.studentbuddy.api.client.android.pieces.location.data
 import com.netikras.studies.studentbuddy.api.client.android.pieces.location.ui.impl.view.LayoutActivity;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.location.ui.presenter.LayoutMvpPresenter;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.location.ui.view.LayoutMvpView;
+import com.netikras.studies.studentbuddy.core.data.api.dto.location.FloorLayoutDto;
 
 import javax.inject.Inject;
 
@@ -29,4 +30,6 @@ public class LayoutPresenter<V extends LayoutMvpView> extends BasePresenter<V> i
     public void startView(Context fromContext) {
         super.startView(fromContext, LayoutActivity.class);
     }
+
+
 }

@@ -44,6 +44,7 @@ public class SchoolActivity extends BaseActivity implements SchoolMvpView {
     SchoolMvpPresenter<SchoolMvpView> presenter;
 
     Result<Boolean> fetched = new Result<>(Boolean.FALSE);
+    private static SchoolDto lastEntry = null;
 
     @Override
     protected List<Integer> excludeMenuItems() {
@@ -55,6 +56,12 @@ public class SchoolActivity extends BaseActivity implements SchoolMvpView {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_school);
         setUp();
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        lastEntry = collect();
     }
 
     @Override
@@ -75,6 +82,9 @@ public class SchoolActivity extends BaseActivity implements SchoolMvpView {
         presenter.onAttach(this);
         fields = initFields(new ViewFields());
         addMenu();
+        if (lastEntry != null) {
+            show(lastEntry);
+        }
         executeTask();
     }
 
@@ -96,7 +106,11 @@ public class SchoolActivity extends BaseActivity implements SchoolMvpView {
         getFields().setTitle(schoolDto.getTitle());
         getFields().setDepartments(schoolDto.getDepartments());
 
-        prepare(collect());
+        if (lastEntry != null) {
+            lastEntry = null;
+        } else {
+            prepare(collect());
+        }
     }
 
     @Override

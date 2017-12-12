@@ -43,6 +43,8 @@ public class LecturerInfoActivity extends BaseActivity implements LecturerMvpVie
     @Inject
     LecturerMvpPresenter<LecturerMvpView> presenter;
 
+    private static LecturerDto lastEntry = null;
+
     @Override
     protected List<Integer> excludeMenuItems() {
         return Arrays.asList(R.id.main_menu_create, R.id.main_menu_delete);
@@ -56,12 +58,21 @@ public class LecturerInfoActivity extends BaseActivity implements LecturerMvpVie
     }
 
     @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        lastEntry = collect();
+    }
+
+    @Override
     protected void setUp() {
         DepInjector.inject(this);
         onAttach(this);
         presenter.onAttach(this);
         fields = initFields(new ViewFields());
         addMenu();
+        if (lastEntry != null) {
+            show(lastEntry);
+        }
         executeTask();
     }
 
@@ -83,7 +94,11 @@ public class LecturerInfoActivity extends BaseActivity implements LecturerMvpVie
         getFields().setDisciplines(lecturer.getDisciplines());
         getFields().setSchool(lecturer.getSchool());
 
-        prepare(lecturer);
+        if (lastEntry != null) {
+            lastEntry = null;
+        } else {
+            prepare(lecturer);
+        }
     }
 
     public LecturerDto collect() {

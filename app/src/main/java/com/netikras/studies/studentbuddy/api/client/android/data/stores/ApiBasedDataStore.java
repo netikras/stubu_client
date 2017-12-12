@@ -33,7 +33,7 @@ public abstract class ApiBasedDataStore<I, E> extends CacheAwareStore<E> impleme
         if (subscribers != null) {
             if (isCacheEnabled()) {
 //                orderOriginDataAndUpdateCache(request, subscribers);
-                orderOriginData(request, subscribers);
+                orderOriginData(request, subscribers); // FIXME remove this line and uncomment the one above to give caching control to this class
             } else {
                 orderOriginData(request, subscribers);
             }
@@ -41,6 +41,7 @@ public abstract class ApiBasedDataStore<I, E> extends CacheAwareStore<E> impleme
         orderData(request);
     }
 
+    // FIXME what about evictions?
     private void orderOriginDataAndUpdateCache(ServiceRequest request, Subscriber... subscribers) {
         Subscriber cacheSubscriber = new Subscriber(){
             @Override

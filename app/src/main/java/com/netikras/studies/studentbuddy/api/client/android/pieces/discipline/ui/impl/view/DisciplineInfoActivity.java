@@ -42,6 +42,8 @@ public class DisciplineInfoActivity extends BaseActivity implements DisciplineMv
 
     private ViewFields fields;
 
+    private static DisciplineDto lastEntry = null;
+
     @Override
     protected List<Integer> excludeMenuItems() {
         return Arrays.asList(R.id.main_menu_create, R.id.main_menu_delete);
@@ -55,12 +57,21 @@ public class DisciplineInfoActivity extends BaseActivity implements DisciplineMv
     }
 
     @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        lastEntry = collect();
+    }
+
+    @Override
     protected void setUp() {
         DepInjector.inject(this);
         onAttach(this);
         presenter.onAttach(this);
         fields = initFields(new ViewFields());
         addMenu();
+        if (lastEntry != null) {
+            show(lastEntry);
+        }
         executeTask();
     }
 
@@ -84,7 +95,11 @@ public class DisciplineInfoActivity extends BaseActivity implements DisciplineMv
 //        getFields().setLecturers(disciplineDto.getCourses());
         // FIXME fix discipline dto to return all courses, not just one
 
-        prepare(disciplineDto);
+        if (lastEntry != null) {
+            lastEntry = null;
+        } else {
+            prepare(disciplineDto);
+        }
     }
 
     public DisciplineDto collect() {

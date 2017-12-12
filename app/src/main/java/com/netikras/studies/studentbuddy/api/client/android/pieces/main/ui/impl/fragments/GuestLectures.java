@@ -1,5 +1,6 @@
 package com.netikras.studies.studentbuddy.api.client.android.pieces.main.ui.impl.fragments;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
@@ -34,5 +35,27 @@ public class GuestLectures extends LecturesListFragment {
         return view;
 
 //        return super.onCreateView(inflater, container, savedInstanceState);
+    }
+
+
+    private static LecturesListHandler lastHandler;
+    private static Context lastContext;
+
+    @Override
+    public void onCreate(Bundle saved) {
+        super.onCreate(saved);
+        if (handler == null) {
+            handler = lastHandler;
+        }
+        if (context == null) {
+            context = lastContext;
+        }
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        lastContext = context;
+        lastHandler = handler;
     }
 }

@@ -23,8 +23,8 @@ import static com.netikras.tools.common.security.IntegrityUtils.isNullOrEmpty;
 
 public abstract class LecturesListFragment extends Fragment {
 
-    private LecturesListHandler handler = null;
-    private Context context;
+    protected LecturesListHandler handler = null;
+    protected Context context;
 
     public abstract ListView getListView();
 
@@ -57,6 +57,8 @@ public abstract class LecturesListFragment extends Fragment {
         CustomListAdapter listAdapter = new CustomListAdapter();
         listAdapter.bind(getContext(), getListView(), handler);
     }
+
+
 
     public abstract static class LecturesListHandler extends ListHandler<LectureDto> {
         @Override

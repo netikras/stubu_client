@@ -36,6 +36,8 @@ public class PersonInfoActivity extends BaseActivity implements PersonMvpView {
 
     private ViewFields fields;
 
+    private static PersonDto lastEntry = null;
+
     @Override
     protected List<Integer> excludeMenuItems() {
         return Arrays.asList(R.id.main_menu_create, R.id.main_menu_delete);
@@ -46,6 +48,12 @@ public class PersonInfoActivity extends BaseActivity implements PersonMvpView {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_person_info);
         setUp();
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        lastEntry = collect();
     }
 
     @Override
@@ -63,6 +71,9 @@ public class PersonInfoActivity extends BaseActivity implements PersonMvpView {
         presenter.onAttach(this);
         fields = initFields(new ViewFields());
         addMenu();
+        if (lastEntry != null) {
+            showPerson(lastEntry);
+        }
         executeTask();
     }
 
@@ -88,6 +99,10 @@ public class PersonInfoActivity extends BaseActivity implements PersonMvpView {
         fields.setEmail(personDto.getEmail());
         fields.setPhoneNo(personDto.getPhoneNo());
         fields.setDateCreated(personDto.getCreatedOn());
+
+        if (lastEntry != null) {
+            lastEntry = null;
+        }
     }
 
     @Override

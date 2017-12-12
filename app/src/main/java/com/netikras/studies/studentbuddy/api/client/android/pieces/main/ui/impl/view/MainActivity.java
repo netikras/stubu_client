@@ -19,20 +19,17 @@ import com.netikras.studies.studentbuddy.api.client.android.pieces.main.ui.prese
 import com.netikras.studies.studentbuddy.api.client.android.pieces.main.ui.view.MainMvpView;
 import com.netikras.studies.studentbuddy.api.client.android.service.ServiceRequest.Subscriber;
 import com.netikras.studies.studentbuddy.core.data.api.dto.school.LectureDto;
-import com.netikras.studies.studentbuddy.core.data.api.dto.school.StudentDto;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 
 import javax.inject.Inject;
 
 import butterknife.BindView;
 
+import static com.netikras.tools.common.security.IntegrityUtils.coalesce;
 import static com.netikras.tools.common.security.IntegrityUtils.isNullOrEmpty;
 
 public class MainActivity extends BaseActivity implements MainMvpView {
@@ -42,6 +39,10 @@ public class MainActivity extends BaseActivity implements MainMvpView {
     MainMvpPresenter<MainMvpView> presenter;
 
     SectionsPageAdapter adapter;
+
+    private static List<LectureDto> studentLectures = null;
+    private static List<LectureDto> lecturerLectures = null;
+    private static List<LectureDto> guestLectures = null;
 
     @BindView(R.id.pager_main_act)
     ViewPager pager;
@@ -64,6 +65,7 @@ public class MainActivity extends BaseActivity implements MainMvpView {
     }
 
     private void fetch() {
+
         presenter.fetchLecturesForGuest(new Subscriber<Collection<LectureDto>>() {
             @Override
             public void onSuccess(Collection<LectureDto> response) {
@@ -81,19 +83,10 @@ public class MainActivity extends BaseActivity implements MainMvpView {
         presenter.fetchLecturesForLecturer(new Subscriber<Collection<LectureDto>>() {
             @Override
             public void onSuccess(Collection<LectureDto> response) {
-                for (LectureDto dto : response) {
-                    Log.d("Updating data @"+Thread.currentThread() + " ["+response.size()+"]", "" + dto);
-                }
-//                lecturerHandler.updateData((List<LectureDto>) response);
-
-                runOnUiThread(() -> {
-                    for (LectureDto dto : response) {
-                        Log.d("Updating data @"+lecturerHandler + " ["+response.size()+"]", "" + dto);
-                    }
-                    lecturerHandler.updateData((List<LectureDto>) response);
-                });
+                runOnUiThread(() ->  lecturerHandler.updateData((List<LectureDto>) response));
             }
         }, getCurrentUser().getPerson());
+
     }
 
     @Override
@@ -101,6 +94,20 @@ public class MainActivity extends BaseActivity implements MainMvpView {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         setUp();
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        if (studentHandler != null) {
+            studentLectures = studentHandler.getListData();
+        }
+        if (lecturerHandler != null) {
+            lecturerLectures = lecturerHandler.getListData();
+        }
+        if (guestHandler != null) {
+            guestLectures = guestHandler.getListData();
+        }
     }
 
     @Override
@@ -127,8 +134,17 @@ public class MainActivity extends BaseActivity implements MainMvpView {
 
         tabLayout.setupWithViewPager(pager);
 
-        fetch();
+        if (coalesce(studentLectures, lecturerLectures, guestLectures) != null) {
+            studentHandler.updateData(studentLectures);
+            lecturerHandler.updateData(lecturerLectures);
+            guestHandler.updateData(guestLectures);
 
+            studentLectures = null;
+            lecturerLectures = null;
+            guestLectures = null;
+        } else {
+            fetch();
+        }
     }
 
 
@@ -173,7 +189,7 @@ public class MainActivity extends BaseActivity implements MainMvpView {
             if (!isNullOrEmpty(newData)) {
                 data.addAll(newData);
                 for (LectureDto datum : data) {
-                    Log.d("DATA", ""+datum);
+                    Log.d("DATA", "" + datum);
                 }
                 Log.d("ListHandler", "Dataset size after addition: " + data.size() + ", newData size: " + newData.size(), new Exception());
             }

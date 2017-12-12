@@ -15,6 +15,8 @@ import com.netikras.studies.studentbuddy.api.client.android.pieces.base.list.Lis
 import com.netikras.studies.studentbuddy.api.client.android.pieces.school.ui.impl.view.SchoolActivity;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.student.ui.presenter.StudentsGroupMvpPresenter;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.student.ui.view.StudentsGroupMvpView;
+import com.netikras.studies.studentbuddy.api.client.android.service.ServiceRequest;
+import com.netikras.studies.studentbuddy.api.client.android.service.ServiceRequest.Result;
 import com.netikras.studies.studentbuddy.core.data.api.dto.school.SchoolDto;
 import com.netikras.studies.studentbuddy.core.data.api.dto.school.StudentDto;
 import com.netikras.studies.studentbuddy.core.data.api.dto.school.StudentsGroupDto;
@@ -42,11 +44,20 @@ public class StudentsGroupInfoActivity extends BaseActivity implements StudentsG
     @Inject
     StudentsGroupMvpPresenter<StudentsGroupMvpView> presenter;
 
+    private Result<Boolean> triedToFetch = new Result<>(Boolean.FALSE);
+    private static StudentsGroupDto lastEntry = null;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_students_group_info);
         setUp();
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        lastEntry = collect();
     }
 
     @Override
@@ -56,6 +67,9 @@ public class StudentsGroupInfoActivity extends BaseActivity implements StudentsG
         presenter.onAttach(this);
         fields = initFields(new ViewFields());
         addMenu();
+        if (lastEntry != null) {
+            show(lastEntry);
+        }
         executeTask();
     }
 
@@ -78,7 +92,11 @@ public class StudentsGroupInfoActivity extends BaseActivity implements StudentsG
         getFields().setMembers(dto.getMembers());
         getFields().setCreatedDatetime(dto.getCreatedOn());
 
-        prepare(dto);
+        if (lastEntry != null) {
+            lastEntry = null;
+        } else {
+            prepare(dto);
+        }
     }
 
     public StudentsGroupDto collect() {
@@ -105,11 +123,16 @@ public class StudentsGroupInfoActivity extends BaseActivity implements StudentsG
     }
 
     private void prepare(StudentsGroupDto entity) {
+        if (triedToFetch.getValue()) {
+            triedToFetch.setValue(Boolean.FALSE);
+            return;
+        }
         if (entity == null || isNullOrEmpty(entity.getId())) {
             return;
         }
         if (isPartial()) {
             showLoading();
+            triedToFetch.setValue(Boolean.TRUE);
             presenter.getById(new ErrorsAwareSubscriber<StudentsGroupDto>() {
                 @Override
                 public void onSuccess(StudentsGroupDto response) {
@@ -117,6 +140,7 @@ public class StudentsGroupInfoActivity extends BaseActivity implements StudentsG
 //                    show(response);
                 }
             }, entity.getId());
+            triedToFetch.setValue(Boolean.TRUE);
         }
     }
 

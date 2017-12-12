@@ -12,6 +12,7 @@ import com.netikras.studies.studentbuddy.api.client.android.pieces.base.BaseActi
 import com.netikras.studies.studentbuddy.api.client.android.pieces.base.BaseViewFields;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.lecture.ui.presenter.TestMvpPresenter;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.lecture.ui.view.TestMvpView;
+import com.netikras.studies.studentbuddy.core.data.api.dto.school.DisciplineDto;
 import com.netikras.studies.studentbuddy.core.data.api.dto.school.DisciplineTestDto;
 import com.netikras.studies.studentbuddy.core.data.api.dto.school.LectureDto;
 
@@ -40,6 +41,8 @@ public class TestInfoActivity extends BaseActivity implements TestMvpView {
     @Inject
     TestMvpPresenter<TestMvpView> presenter;
 
+    private static DisciplineTestDto lastEntry = null;
+
 
     @Override
     protected List<Integer> excludeMenuItems() {
@@ -54,26 +57,61 @@ public class TestInfoActivity extends BaseActivity implements TestMvpView {
     }
 
     @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        lastEntry = collect();
+    }
+
+    @Override
     protected void setUp() {
         DepInjector.inject(this);
         onAttach(this);
         presenter.onAttach(this);
         fields = initFields(new ViewFields());
         addMenu();
+
+        if (lastEntry != null) {
+            show(lastEntry);
+        }
+
         executeTask();
     }
 
 
+    public ViewFields getFields() {
+        return fields;
+    }
+
     public void show(DisciplineTestDto dto) {
+        getFields().reset();
         if (dto == null) {
-            fields.clean();
             return;
         }
 
-        fields.setId(dto.getId());
-        fields.setStart(dto.getStartsOn());
-        fields.setDescription(dto.getDescription());
-        fields.setLecture(dto.getLecture());
+        getFields().setId(dto.getId());
+        getFields().setStart(dto.getStartsOn());
+        getFields().setDescription(dto.getDescription());
+        getFields().setLecture(dto.getLecture());
+        getFields().setExam(dto.isExam());
+        getFields().setDiscipline(dto.getDiscipline());
+
+        if (lastEntry != null) {
+            lastEntry = null;
+        }
+
+    }
+
+    private DisciplineTestDto collect() {
+        DisciplineTestDto dto = new DisciplineTestDto();
+
+        dto.setId(getFields().getId());
+        dto.setDiscipline(getFields().getDiscipline());
+        dto.setLecture(getFields().getLecture());
+        dto.setStartsOn(getFields().getStart());
+        dto.setExam(getFields().isExam());
+        dto.setDescription(getFields().getDescription());
+
+        return dto;
     }
 
     @OnClick(R.id.btn_test_lecture)
@@ -98,6 +136,9 @@ public class TestInfoActivity extends BaseActivity implements TestMvpView {
         EditText startTime;
         @BindView(R.id.btn_test_lecture)
         Button lecture;
+
+        DisciplineDto discipline;
+        boolean exam;
 
         @BindView(R.id.txt_lbl_test_id)
         TextView lblId;
@@ -160,6 +201,22 @@ public class TestInfoActivity extends BaseActivity implements TestMvpView {
             if (lectureDto != null && lectureDto.getDiscipline() != null) {
                 setLectureName(lectureDto.getDiscipline().getTitle());
             }
+        }
+
+        public DisciplineDto getDiscipline() {
+            return discipline;
+        }
+
+        public void setDiscipline(DisciplineDto discipline) {
+            this.discipline = discipline;
+        }
+
+        public boolean isExam() {
+            return exam;
+        }
+
+        public void setExam(boolean exam) {
+            this.exam = exam;
         }
 
         @Override

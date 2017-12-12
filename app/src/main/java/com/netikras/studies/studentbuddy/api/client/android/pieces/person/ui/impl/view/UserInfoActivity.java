@@ -39,6 +39,7 @@ public class UserInfoActivity extends BaseActivity implements UserMvpView {
     UserMvpPresenter<UserMvpView> presenter;
 
     private ViewFields fields;
+    private static UserDto lastEntry = null;
 
     public static void start(Context context) {
         Intent intent = new Intent(context, UserInfoActivity.class);
@@ -57,6 +58,12 @@ public class UserInfoActivity extends BaseActivity implements UserMvpView {
         setUp();
     }
 
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        lastEntry = collect();
+    }
+
 
     @Override
     protected void setUp() {
@@ -65,6 +72,9 @@ public class UserInfoActivity extends BaseActivity implements UserMvpView {
         onAttach(this);
         presenter.onAttach(this);
         addMenu();
+        if (lastEntry != null) {
+            showUser(lastEntry);
+        }
         executeTask();
     }
 
@@ -134,7 +144,11 @@ public class UserInfoActivity extends BaseActivity implements UserMvpView {
         getFields().setUsername(userDto.getName());
         getFields().setId(userDto.getId());
 
-        prepare(userDto);
+        if (lastEntry != null) {
+            lastEntry = null;
+        } else {
+            prepare(userDto);
+        }
     }
 
     @Override
@@ -174,6 +188,13 @@ public class UserInfoActivity extends BaseActivity implements UserMvpView {
 //        }
         showLoading();
         presenter.fetchPerson(new ErrorsAwareSubscriber<UserDto>() {
+
+            @Override
+            public void onCacheHit(UserDto response) {
+                setFetchRequired(false); // let's trust cached data, shall we
+                onSuccess(response);
+            }
+
             @Override
             public void onSuccess(UserDto response) {
                 startView(PersonInfoActivity.class, new ViewTask<PersonInfoActivity>() {

@@ -44,6 +44,7 @@ public class SchoolDepartmentActivity extends BaseActivity implements SchoolDepa
 
     @Inject
     SchoolDepartmentMvpPresenter<SchoolDepartmentMvpView> presenter;
+    private static SchoolDepartmentDto lastEntry = null;
 
     @Override
     protected List<Integer> excludeMenuItems() {
@@ -58,12 +59,21 @@ public class SchoolDepartmentActivity extends BaseActivity implements SchoolDepa
     }
 
     @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        lastEntry = collect();
+    }
+
+    @Override
     protected void setUp() {
         DepInjector.inject(this);
         onAttach(this);
         presenter.onAttach(this);
         fields = initFields(new ViewFields());
         addMenu();
+        if (lastEntry != null) {
+            show(lastEntry);
+        }
         executeTask();
     }
 
@@ -93,7 +103,11 @@ public class SchoolDepartmentActivity extends BaseActivity implements SchoolDepa
         getFields().setBuildings(dto.getBuildings());
         getFields().setSchool(dto.getSchool());
 
-        prepare(dto);
+        if (lastEntry != null) {
+            lastEntry = null;
+        } else {
+            prepare(dto);
+        }
     }
 
     @Override

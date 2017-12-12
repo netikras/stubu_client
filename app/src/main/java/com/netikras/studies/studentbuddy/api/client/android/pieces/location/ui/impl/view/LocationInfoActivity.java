@@ -12,12 +12,16 @@ import com.netikras.studies.studentbuddy.api.client.android.pieces.base.BaseActi
 import com.netikras.studies.studentbuddy.api.client.android.pieces.base.BaseViewFields;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.location.ui.presenter.LocationMvpPresenter;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.location.ui.view.LocationMvpView;
+import com.netikras.studies.studentbuddy.api.client.android.service.ServiceRequest;
+import com.netikras.studies.studentbuddy.api.client.android.service.ServiceRequest.Result;
 import com.netikras.studies.studentbuddy.core.data.api.dto.location.AddressDto;
 import com.netikras.studies.studentbuddy.core.data.api.dto.location.BuildingDto;
 import com.netikras.studies.studentbuddy.core.data.api.dto.location.BuildingFloorDto;
 import com.netikras.studies.studentbuddy.core.data.api.dto.location.BuildingSectionDto;
+import com.netikras.studies.studentbuddy.core.data.api.dto.location.FloorLayoutDto;
 import com.netikras.studies.studentbuddy.core.data.api.dto.location.LectureRoomDto;
 import com.netikras.studies.studentbuddy.core.data.api.dto.meta.UserDto;
+import com.netikras.tools.common.exception.ErrorBody;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -38,6 +42,10 @@ public class LocationInfoActivity extends BaseActivity implements LocationMvpVie
 
     private ViewFields fields;
 
+    private Result<Boolean> triedToFetch = new Result<>(Boolean.FALSE);
+
+    private static LectureRoomDto lastEntry = null;
+
     @Override
     protected List<Integer> excludeMenuItems() {
         return Arrays.asList(R.id.main_menu_create, R.id.main_menu_delete);
@@ -51,12 +59,21 @@ public class LocationInfoActivity extends BaseActivity implements LocationMvpVie
     }
 
     @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        lastEntry = collect();
+    }
+
+    @Override
     protected void setUp() {
         DepInjector.inject(this);
         onAttach(this);
         presenter.onAttach(this);
         fields = initFields(new ViewFields());
         addMenu();
+        if (lastEntry != null) {
+            showClean(null, null, null, null, lastEntry);
+        }
         executeTask();
     }
 
@@ -115,12 +132,59 @@ public class LocationInfoActivity extends BaseActivity implements LocationMvpVie
         if (addressDto != null) {
             getFields().setAddress(addressDto);
         }
+
+        if (lastEntry != null) {
+            lastEntry = null;
+        } else {
+            prepare(roomDto);
+        }
     }
 
     @Override
     public void showClean(AddressDto addressDto, BuildingDto buildingDto, BuildingSectionDto sectionDto, BuildingFloorDto floorDto, LectureRoomDto roomDto) {
         getFields().reset();
         show(addressDto, buildingDto, sectionDto, floorDto, roomDto);
+    }
+
+    private LectureRoomDto collect() {
+        LectureRoomDto dto = getFields().getRoom();
+        if (dto == null) {
+            dto = new LectureRoomDto();
+        }
+
+        if (dto.getFloor() == null) {
+            dto.setFloor(getFields().getFloor());
+        }
+
+        if (dto.getFloor() != null) {
+            BuildingFloorDto floor = dto.getFloor();
+            if (floor.getBuildingSection() == null) {
+                floor.setBuildingSection(getFields().getSection());
+            }
+            if (floor.getBuilding() == null) {
+                getFields().getBuilding();
+            }
+
+            if (floor.getBuilding() != null) {
+                BuildingDto building = floor.getBuilding();
+                if (building.getAddress() == null) {
+                    building.setAddress(getFields().getAddress());
+                }
+            }
+
+            if (floor.getBuildingSection() != null) {
+                BuildingSectionDto section = floor.getBuildingSection();
+                if (section.getAddress() == null) {
+                    section.setAddress(getFields().getAddress());
+                }
+            }
+        }
+
+        if (lastEntry != null) {
+            lastEntry = null;
+        }
+
+        return dto;
     }
 
     @Override
@@ -134,12 +198,17 @@ public class LocationInfoActivity extends BaseActivity implements LocationMvpVie
                 ;
     }
 
-    private void prepare(UserDto entity) {
+    private void prepare(LectureRoomDto entity) {
+        if (triedToFetch.getValue()) {
+            triedToFetch.setValue(Boolean.FALSE);
+            return;
+        }
         if (entity == null || isNullOrEmpty(entity.getId())) {
             return;
         }
         if (isPartial()) {
             showLoading();
+            triedToFetch.setValue(Boolean.TRUE);
             presenter.getRoom(new ErrorsAwareSubscriber<LectureRoomDto>() {
                 @Override
                 public void onSuccess(LectureRoomDto response) {
@@ -147,33 +216,68 @@ public class LocationInfoActivity extends BaseActivity implements LocationMvpVie
 //                    showUser(response);
                 }
             }, entity.getId());
+
         }
     }
 
 
     @OnClick(R.id.btn_location_address)
     public void showAddress() {
-        presenter.showAddress(this, getFields().getAddress());
+        onError("Not implemented yet");
     }
 
     @OnClick(R.id.btn_location_building)
     public void showBuilding() {
-        presenter.showBuilding(this, getFields().getBuilding());
+        onError("Not implemented yet");
     }
 
     @OnClick(R.id.btn_location_building_section)
     public void showSection() {
-        presenter.showSection(this, getFields().getSection());
+        onError("Not implemented yet");
     }
 
     @OnClick(R.id.btn_location_floor)
     public void showFloor() {
-        presenter.showFloor(this, getFields().getFloor());
+//        presenter.showFloor(this, getFields().getFloor());
+
+
+        if (getFields().getFloor() != null) {
+            showLoading();
+            presenter.getFloor(new ErrorsAwareSubscriber<BuildingFloorDto>() {
+
+                @Override
+                public void onCacheHit(BuildingFloorDto response) {
+                    if (response != null && !isNullOrEmpty(response.getLayouts())) {
+                        setFetchRequired(false);
+                        onSuccess(response);
+                    }
+                }
+
+                @Override
+                public void onSuccess(BuildingFloorDto response) {
+                    startView(LayoutActivity.class, new ViewTask<LayoutActivity>() {
+                        @Override
+                        public void execute() {
+                            if (response != null && !isNullOrEmpty(response.getLayouts())) {
+                                getActivity().show(response.getLayouts().get(0));
+                            } else {
+                                executeOnError(new ErrorBody().setMessage1("Floor layout not found"));
+                            }
+                        }
+                    });
+                }
+            }, getFields().getFloorId());
+        } else {
+            onError("Aukštas nenurodytas");
+        }
+
+//        presenter.getRoom(null, getFields().getRoomId());
     }
 
     @OnClick(R.id.btn_location_room)
     public void showRoom() {
-        presenter.showRoom(this, getFields().getRoom());
+
+        onError("Not implemented yet");
     }
 
     public class ViewFields extends BaseViewFields {
@@ -347,7 +451,14 @@ public class LocationInfoActivity extends BaseActivity implements LocationMvpVie
             setTag(this.floor, floor);
             if (floor != null) {
                 setFloorId(floor.getId());
-                setFloorName(floor.getNumber() + ", " + floor.getTitle());
+                StringBuilder floorTitle = new StringBuilder();
+                if (!isNullOrEmpty(floor.getNumber())) {
+                    floorTitle.append(floor.getNumber()).append(" ");
+                }
+                if (!isNullOrEmpty(floor.getTitle())) {
+                    floorTitle.append("(").append(floor.getTitle()).append(")");
+                }
+                setFloorName(floorTitle.toString());
             }
         }
 

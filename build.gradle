@@ -3,8 +3,14 @@
 /*
 * Alright. Since this is the top-level file of the project I leave my memo here.
 *
+* There are plenty of workarounds. Please forgive me - I had very little time to make this app work..
+*   Work, newborn baby, sleepless nights..
+*
 * SSL not enabled. If needed - feel free to enable it. Change HttpClient implementation in RestServiceProvider
-* API calls are enqueued in and executed from
+*   API calls are enqueued in and executed from
+*
+* App state is saved in private static fields of Activities. onSaveInstanceState methods are left out hence occasionally
+*   after returning to app activity data will be gone (assuming Android had to stop the app).
 *
 * */
 

@@ -38,6 +38,7 @@ public class StudentInfoActivity extends BaseActivity implements StudentMvpView 
 
     @Inject
     StudentMvpPresenter<StudentMvpView> presenter;
+    private static StudentDto lastEntry = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,12 +48,21 @@ public class StudentInfoActivity extends BaseActivity implements StudentMvpView 
     }
 
     @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        lastEntry = collect();
+    }
+
+    @Override
     protected void setUp() {
         DepInjector.inject(this);
         onAttach(this);
         presenter.onAttach(this);
         fields = initFields(new ViewFields());
         addMenu();
+        if (lastEntry != null) {
+            show(lastEntry);
+        }
         executeTask();
     }
 
@@ -77,7 +87,11 @@ public class StudentInfoActivity extends BaseActivity implements StudentMvpView 
         getFields().setCreated(datetimeToDate(studentDto.getCreatedOn()));
         getFields().setPerson(studentDto.getPerson());
 
-        prepare(studentDto);
+        if (lastEntry != null) {
+            lastEntry = null;
+        } else {
+            prepare(studentDto);
+        }
     }
 
     public StudentDto collect() {

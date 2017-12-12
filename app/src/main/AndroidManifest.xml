@@ -49,6 +49,8 @@
         <activity android:name=".pieces.lecture.ui.impl.view.AssignmentActivity" />
         <activity android:name=".pieces.lecture.ui.impl.view.TestInfoActivity" />
         <activity android:name=".pieces.school.ui.impl.view.SchoolActivity" />
+        <activity android:name=".pieces.location.ui.impl.view.RoomActivity" />
+        <activity android:name=".pieces.location.ui.impl.view.LayoutActivity" />
         <!--<activity android:name="" />-->
 
         <service
