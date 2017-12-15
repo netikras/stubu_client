@@ -1,6 +1,8 @@
 package com.netikras.studies.studentbuddy.api.client.android.pieces.person.data.impl;
 
+import com.netikras.studies.studentbuddy.api.client.android.App;
 import com.netikras.studies.studentbuddy.api.client.android.data.cache.CacheManager;
+import com.netikras.studies.studentbuddy.api.client.android.data.cache.db.dao.GenericDao;
 import com.netikras.studies.studentbuddy.api.client.android.data.cache.db.dao.UserDao;
 import com.netikras.studies.studentbuddy.api.client.android.data.stores.ApiBasedDataStore;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.person.data.UserDataStore;
@@ -29,41 +31,81 @@ public class UserDataStoreApiImpl extends ApiBasedDataStore<String, UserDto> imp
     @Inject
     AdminUserApiConsumer adminApiConsumer;
 
-    private UserDao cache;
+    @Inject
+    App app;
 
 
     @Inject
     public UserDataStoreApiImpl(CacheManager cacheManager) {
-        cache = cacheManager.getDao(UserDao.class);
+        setCache(cacheManager.getDao(UserDao.class));
     }
 
+    @Override
+    protected UserDao getCache() {
+        return super.getCache();
+    }
 
     @Override
-    public void getById(String id, Subscriber<UserDto>... subscribers) {
+    public void getCurrentUser(Subscriber<UserDto>... subscribers) {
         orderData(new ServiceRequest<UserDto>() {
             @Override
             public UserDto request() {
-                return apiConsumer.retrieveUserDto(id);
+                UserDto userDto = updateCache(apiConsumer.getUserDtoCurrent());
+                if (userDto != null) {
+                    app.setCurrentUser(userDto);
+                }
+                return userDto;
+            }
+        }, subscribers);
+    }
+
+    @Override
+    public void getById(String id, Subscriber<UserDto>... subscribers) {
+        if (isCacheEnabled()) {
+            UserDto dto = getCached(id);
+            if (dto != null) {
+                fillFromCache(dto);
+                respondCacheHit(dto, subscribers);
+            }
+        }
+        orderData(new ServiceRequest<UserDto>() {
+            @Override
+            public UserDto request() {
+                return updateCache(apiConsumer.retrieveUserDto(id));
             }
         }, subscribers);
     }
 
     @Override
     public void getByPerson(String id, Subscriber<UserDto>... subscribers) {
+        if (isCacheEnabled()) {
+            UserDto dto = getCache().getByPerson(id);
+            if (dto != null) {
+                fillFromCache(dto);
+                respondCacheHit(dto, subscribers);
+            }
+        }
         orderData(new ServiceRequest<UserDto>() {
             @Override
             public UserDto request() {
-                return apiConsumer.getUserDtoByPerson(id);
+                return updateCache(apiConsumer.getUserDtoByPerson(id));
             }
         }, subscribers);
     }
 
     @Override
     public void getByName(String name, Subscriber<UserDto>... subscribers) {
+        if (isCacheEnabled()) {
+            UserDto dto = getCache().getByName(name);
+            if (dto != null) {
+                fillFromCache(dto);
+                respondCacheHit(dto, subscribers);
+            }
+        }
         orderData(new ServiceRequest<UserDto>() {
             @Override
             public UserDto request() {
-                return apiConsumer.getUserDtoByName(name);
+                return updateCache(apiConsumer.getUserDtoByName(name));
             }
         }, subscribers);
     }
@@ -84,7 +126,7 @@ public class UserDataStoreApiImpl extends ApiBasedDataStore<String, UserDto> imp
         orderData(new ServiceRequest<UserDto>() {
             @Override
             public UserDto request() {
-                return adminApiConsumer.createUserDto(item);
+                return updateCache(adminApiConsumer.createUserDto(item));
             }
         }, subscribers);
     }
@@ -94,7 +136,7 @@ public class UserDataStoreApiImpl extends ApiBasedDataStore<String, UserDto> imp
         orderData(new ServiceRequest<UserDto>() {
             @Override
             public UserDto request() {
-                return apiConsumer.updateUserDto(item);
+                return updateCache(apiConsumer.updateUserDto(item));
             }
         }, subscribers);
     }
@@ -105,6 +147,7 @@ public class UserDataStoreApiImpl extends ApiBasedDataStore<String, UserDto> imp
             @Override
             public Boolean request() {
                 adminApiConsumer.purgeUserDto(id);
+                evict(id);
                 return Boolean.TRUE;
             }
         }, subscribers);
@@ -116,6 +159,7 @@ public class UserDataStoreApiImpl extends ApiBasedDataStore<String, UserDto> imp
             @Override
             public Boolean request() {
                 adminApiConsumer.deleteUserDto(id);
+                evict(id);
                 return Boolean.TRUE;
             }
         }, subscribers);
@@ -133,7 +177,7 @@ public class UserDataStoreApiImpl extends ApiBasedDataStore<String, UserDto> imp
         orderData(new ServiceRequest<UserDto>() {
             @Override
             public UserDto request() {
-                return adminApiConsumer.assignUserDtoRoleByName(id, role);
+                return updateCache(adminApiConsumer.assignUserDtoRoleByName(id, role));
             }
         }, subscribers);
     }
@@ -143,7 +187,7 @@ public class UserDataStoreApiImpl extends ApiBasedDataStore<String, UserDto> imp
         orderData(new ServiceRequest<UserDto>() {
             @Override
             public UserDto request() {
-                return adminApiConsumer.unassignUserDtoRoleByName(id, role);
+                return updateCache(adminApiConsumer.unassignUserDtoRoleByName(id, role));
             }
         }, subscribers);
     }
@@ -153,7 +197,7 @@ public class UserDataStoreApiImpl extends ApiBasedDataStore<String, UserDto> imp
         orderData(new ServiceRequest<UserDto>() {
             @Override
             public UserDto request() {
-                return apiConsumer.loginUserDto(username, password, null);
+                return updateCache(apiConsumer.loginUserDto(username, password, null));
             }
         }, subscribers);
     }
@@ -163,7 +207,7 @@ public class UserDataStoreApiImpl extends ApiBasedDataStore<String, UserDto> imp
         orderData(new ServiceRequest<UserDto>() {
             @Override
             public UserDto request() {
-                return apiConsumer.loginUserDtoAuth(auth);
+                return updateCache(apiConsumer.loginUserDtoAuth(auth));
             }
         }, subscribers);
     }

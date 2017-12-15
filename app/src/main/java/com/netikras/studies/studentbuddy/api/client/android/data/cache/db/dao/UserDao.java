@@ -91,4 +91,12 @@ public class UserDao extends GenericDao<UserDto> {
 
         return entity;
     }
+
+    public UserDto getByPerson(String id) {
+        return getFirstWhere("person_id = ?", id);
+    }
+
+    public UserDto getByName(String name) {
+        return getFirstWhere("name = ?", name);
+    }
 }

@@ -1,5 +1,6 @@
 package com.netikras.studies.studentbuddy.api.client.android.pieces.lecture.ui.impl.view;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.widget.EditText;
@@ -26,6 +27,7 @@ import butterknife.BindView;
 
 import static com.netikras.studies.studentbuddy.api.client.android.util.CommonUtils.datetimeToDate;
 import static com.netikras.studies.studentbuddy.api.client.android.util.CommonUtils.datetimeToTime;
+import static com.netikras.tools.common.security.IntegrityUtils.isNullOrEmpty;
 
 /**
  * Created by netikras on 17.11.10.
@@ -69,15 +71,40 @@ public class AssignmentActivity extends BaseActivity implements AssignmentMvpVie
         if (lastEntry != null) {
             show(lastEntry);
         }
+        handleIntent();
         executeTask();
     }
 
+    private void handleIntent() {
+        Intent intent = getIntent();
+        if (intent == null) {
+            return;
+        }
+
+        String cachedId = intent.getStringExtra("cached_id");
+        if (!isNullOrEmpty(cachedId)) {
+            presenter.getById(new ErrorsAwareSubscriber<AssignmentDto>() {
+                @Override
+                public void onSuccess(AssignmentDto response) {
+                    show(response);
+                }
+            }, cachedId);
+        }
+    }
+
+    @Override
     public ViewFields getFields() {
         return fields;
     }
 
+
     @Override
     public void show(AssignmentDto dto) {
+        show(dto, false);
+    }
+
+    @Override
+    public void show(AssignmentDto dto, boolean createNew) {
         getFields().reset();
         if (dto == null) {
             return;
@@ -89,6 +116,11 @@ public class AssignmentActivity extends BaseActivity implements AssignmentMvpVie
         getFields().setDescription(dto.getDescription());
         getFields().setLecture(dto.getLectureDto());
         getFields().setDiscipline(dto.getDiscipline());
+
+        if (createNew) {
+            getFields().setId(null);
+            getFields().enableEdit(true);
+        }
 
         if (lastEntry != null) {
             lastEntry = null;
@@ -108,7 +140,29 @@ public class AssignmentActivity extends BaseActivity implements AssignmentMvpVie
         return dto;
     }
 
-    class ViewFields extends BaseViewFields {
+    @Override
+    protected void menuOnClickCreate() {
+        AssignmentDto assignmentDto = collect();
+        presenter.create(new ErrorsAwareSubscriber<AssignmentDto>() {
+            @Override
+            public void onSuccess(AssignmentDto response) {
+                show(response);
+            }
+        }, assignmentDto);
+    }
+
+    @Override
+    protected void menuOnClickSave() {
+        AssignmentDto dto = collect();
+        presenter.update(new ErrorsAwareSubscriber<AssignmentDto>() {
+            @Override
+            public void onSuccess(AssignmentDto response) {
+                show(response);
+            }
+        }, dto);
+    }
+
+    public class ViewFields extends BaseViewFields {
 
         @BindView(R.id.txt_edit_assignment_id)
         EditText id;

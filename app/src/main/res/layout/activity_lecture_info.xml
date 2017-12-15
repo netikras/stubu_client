@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -87,7 +88,7 @@
             android:textSize="18sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/txt_lbl_lecture_id"
-            app:layout_constraintTop_toBottomOf="@+id/btn_lecture_tests" />
+            app:layout_constraintTop_toBottomOf="@+id/btn_lecture_assignments" />
 
         <Button
             android:id="@+id/btn_lecture_lecturer"
@@ -141,10 +142,9 @@
 
         <Button
             android:id="@+id/btn_lecture_tests"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
             android:layout_marginStart="16dp"
-            android:layout_marginTop="16dp"
             android:background="@android:color/transparent"
             android:fontFamily="sans-serif"
             android:text="@string/dummy_txt_lecture_tests"
@@ -156,29 +156,26 @@
 
         <Button
             android:id="@+id/btn_lecture_assignments"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="16dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="16dp"
+            android:layout_marginStart="16dp"
             android:background="@android:color/transparent"
             android:fontFamily="sans-serif"
             android:text="@string/dummy_txt_lecture_assignments"
             android:textAlignment="textStart"
             android:textAllCaps="false"
             android:textSize="18sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/txt_lbl_lecture_assignments"
-            app:layout_constraintTop_toBottomOf="@+id/txt_edit_lecture_time_remaining" />
+            app:layout_constraintStart_toEndOf="@+id/txt_lbl_lecture_id"
+            app:layout_constraintTop_toBottomOf="@+id/btn_lecture_tests" />
 
         <TextView
             android:id="@+id/txt_lbl_lecture_assignments"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
+            android:layout_height="0dp"
+            android:layout_marginStart="16dp"
             android:text="@string/lbl_lecture_assignments"
-            app:layout_constraintBaseline_toBaselineOf="@+id/btn_lecture_tests"
-            app:layout_constraintStart_toEndOf="@+id/btn_lecture_tests" />
+            app:layout_constraintBaseline_toBaselineOf="@+id/btn_lecture_assignments"
+            app:layout_constraintStart_toStartOf="parent" />
 
         <TextView
             android:id="@+id/txt_lbl_lecture_comments"
@@ -283,13 +280,14 @@
 
         <EditText
             android:id="@+id/txt_edit_lecture_start_time"
-            android:layout_width="70dp"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:ems="10"
             android:focusable="false"
             android:inputType="time"
             android:text="@string/dummy_txt_lecture_start_time"
+            app:layout_constraintEnd_toEndOf="@+id/btn_lecture_name"
             app:layout_constraintStart_toEndOf="@+id/txt_edit_lecture_start_date"
             app:layout_constraintTop_toBottomOf="@+id/btn_lecture_name" />
 
@@ -320,5 +318,33 @@
         <include layout="@layout/include_main_menu_button"/>
         <!-- Progress bar overlay; shown while login is in progress -->
         <include layout="@layout/include_progress_overlay"/>
+
+        <ImageButton
+            android:id="@+id/btn_lecture_tests_add"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginBottom="8dp"
+            android:layout_marginStart="8dp"
+            android:adjustViewBounds="true"
+            android:background="@android:color/transparent"
+            android:elevation="0dp"
+            android:scaleType="fitCenter"
+            app:layout_constraintBottom_toBottomOf="@+id/btn_lecture_tests"
+            app:layout_constraintStart_toEndOf="@+id/btn_lecture_tests"
+            app:srcCompat="@drawable/icon_plus" />
+
+        <ImageButton
+            android:id="@+id/btn_lecture_assignments_add"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginBottom="8dp"
+            android:layout_marginStart="8dp"
+            android:adjustViewBounds="true"
+            android:background="@android:color/transparent"
+            android:elevation="0dp"
+            android:scaleType="fitCenter"
+            app:layout_constraintBottom_toBottomOf="@+id/btn_lecture_assignments"
+            app:layout_constraintStart_toEndOf="@+id/btn_lecture_assignments"
+            app:srcCompat="@drawable/icon_plus" />
     </android.support.constraint.ConstraintLayout>
 </ScrollView>

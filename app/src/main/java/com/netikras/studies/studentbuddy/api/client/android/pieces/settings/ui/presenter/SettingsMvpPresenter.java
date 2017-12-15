@@ -15,4 +15,24 @@ public interface SettingsMvpPresenter<V extends SettingsMvpView> extends MvpPres
     String getApiUrl();
 
     boolean isNotificationsEnabled();
+
+    long getUpdatePeriod();
+
+    long getNotifyEventBeforePeriod();
+
+    long getLecturesAheadPeriod();
+
+    boolean isCommentNotificationsEnabled();
+
+    void saveUpdatePeriod(long updatePeriod);
+
+    void saveNotifyEventBeforePeriod(long notifyEventsBeforePeriod);
+
+    void saveLecturesAheadPeriod(long lecturesAheadPeriod);
+
+    void saveCommentNotificationsSettings(boolean commentNotificationsEnabled);
+
+    void saveAutostartEnabled(boolean autostartEnabled);
+
+    boolean getAutostartEnabled();
 }

@@ -3,6 +3,7 @@ package com.netikras.studies.studentbuddy.api.client.android.pieces.login.ui.imp
 import android.content.Context;
 
 import com.netikras.studies.studentbuddy.api.client.android.App;
+import com.netikras.studies.studentbuddy.api.client.android.conf.di.module.carrier.RestConfig;
 import com.netikras.studies.studentbuddy.api.client.android.data.DataManager;
 import com.netikras.studies.studentbuddy.api.client.android.data.prefs.PreferencesHelper;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.person.data.UserDataStore;

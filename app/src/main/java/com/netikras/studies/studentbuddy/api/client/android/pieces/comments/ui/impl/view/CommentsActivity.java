@@ -1,6 +1,7 @@
 package com.netikras.studies.studentbuddy.api.client.android.pieces.comments.ui.impl.view;
 
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -10,6 +11,7 @@ import com.netikras.studies.studentbuddy.api.client.android.conf.di.DepInjector;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.base.BaseActivity;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.base.BaseViewFields;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.base.list.ListHandler;
+import com.netikras.studies.studentbuddy.api.client.android.pieces.base.list.ListRow;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.comments.ui.presenter.CommentsMvpPresenter;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.comments.ui.view.CommentsMvpView;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.person.ui.impl.view.PersonInfoActivity;
@@ -72,6 +74,10 @@ public class CommentsActivity extends BaseActivity implements CommentsMvpView {
 
     @Override
     public void showComment(CommentDto commentDto) {
+        showComment(commentDto, false);
+    }
+
+    public void showComment(CommentDto commentDto, boolean editable) {
         if (commentDto == null) {
             return;
         }
@@ -83,7 +89,68 @@ public class CommentsActivity extends BaseActivity implements CommentsMvpView {
         getFields().setText(commentDto.getText());
         getFields().setTags(commentDto.getTags());
 
-        prepare(commentDto);
+        if (editable) {
+            getFields().enableEdit(true);
+        } else {
+            prepare(commentDto);
+        }
+    }
+
+    @Override
+    public void showComments(String entityType, String entityId) {
+
+        if (isNullOrEmpty(entityType) || isNullOrEmpty(entityId)) {
+            onError("Unable to fetch comments");
+            return;
+        }
+
+        showLoading();
+        presenter.getComments(new ErrorsAwareSubscriber<List<CommentDto>>() {
+            @Override
+            public void onSuccess(List<CommentDto> response) {
+                showList(CommentsActivity.this, new ListHandler<CommentDto>() {
+                    @Override
+                    public ListRow getNewRow(View convertView) {
+                        return new CommentsListRow(convertView);
+                    }
+
+                    @Override
+                    public List<CommentDto> getListData() {
+                        return response;
+                    }
+
+                    @Override
+                    public void onRowClick(CommentDto item) {
+                        showComment(item);
+                    }
+
+                    @Override
+                    public String getToolbarText() {
+                        return getString(R.string.title_comments);
+                    }
+
+                    class CommentsListRow extends ListRow<CommentDto> {
+                        TextView text;
+                        public CommentsListRow(View rowView) {
+                            super(null);
+                            text = getDefaultListTextView(rowView);
+                            rowView.setTag(this);
+                        }
+
+                        @Override
+                        public void assign(CommentDto item) {
+                            if (item == null) {
+                                text.setText("<???>");
+                                return;
+                            }
+
+                            text.setText(item.getTitle());
+                        }
+                    }
+                });
+            }
+        }, entityType, entityId);
+
     }
 
     public CommentDto collect() {
@@ -163,6 +230,17 @@ public class CommentsActivity extends BaseActivity implements CommentsMvpView {
                 return getString(R.string.lbl_comment_tags);
             }
         });
+    }
+
+
+    @Override
+    protected void menuOnClickCreate() {
+        presenter.createComment(new ErrorsAwareSubscriber<CommentDto>() {
+            @Override
+            public void executeOnSuccess(CommentDto response) {
+                showComment(response);
+            }
+        }, collect());
     }
 
     class ViewFields extends BaseViewFields {

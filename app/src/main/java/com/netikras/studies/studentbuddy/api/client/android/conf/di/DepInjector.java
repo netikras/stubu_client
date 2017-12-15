@@ -2,13 +2,16 @@ package com.netikras.studies.studentbuddy.api.client.android.conf.di;
 
 import android.app.Activity;
 import android.app.Application;
+import android.app.Service;
 
 import com.netikras.studies.studentbuddy.api.client.android.conf.di.component.ActivityComponent;
 import com.netikras.studies.studentbuddy.api.client.android.conf.di.component.ApplicationComponent;
 import com.netikras.studies.studentbuddy.api.client.android.conf.di.component.DaggerActivityComponent;
 import com.netikras.studies.studentbuddy.api.client.android.conf.di.component.DaggerApplicationComponent;
 import com.netikras.studies.studentbuddy.api.client.android.conf.di.component.DaggerPresenterComponent;
+import com.netikras.studies.studentbuddy.api.client.android.conf.di.component.DaggerServiceComponent;
 import com.netikras.studies.studentbuddy.api.client.android.conf.di.component.PresenterComponent;
+import com.netikras.studies.studentbuddy.api.client.android.conf.di.component.ServiceComponent;
 import com.netikras.studies.studentbuddy.api.client.android.conf.di.module.ActivityModule;
 import com.netikras.studies.studentbuddy.api.client.android.conf.di.module.ApplicationModule;
 import com.netikras.studies.studentbuddy.api.client.android.conf.di.module.DataModule;
@@ -73,6 +76,8 @@ import com.netikras.studies.studentbuddy.api.client.android.pieces.sys.ui.impl.v
 import com.netikras.studies.studentbuddy.api.client.android.pieces.sys.ui.impl.view.RoleActivity;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.sys.ui.impl.view.StatusActivity;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.sys.ui.impl.view.SystemSettingsActivity;
+import com.netikras.studies.studentbuddy.api.client.android.service.AutoStart;
+import com.netikras.studies.studentbuddy.api.client.android.service.ScheduledUpdateService;
 
 /**
  * Created by netikras on 17.10.30.
@@ -83,6 +88,7 @@ public class DepInjector {
     private static ApplicationComponent applicationComponent;
     private static ActivityComponent activityComponent;
     private static PresenterComponent presenterComponent;
+    private static ServiceComponent serviceComponent;
 
 
     public static ApplicationComponent getApplicationComponent() {
@@ -104,6 +110,13 @@ public class DepInjector {
             throw new IllegalStateException("Presenter is not injected");
         }
         return presenterComponent;
+    }
+
+    public static ServiceComponent getServiceComponent() {
+        if (serviceComponent == null) {
+            throw new IllegalStateException("Service is not injected");
+        }
+        return serviceComponent;
     }
 
 
@@ -139,6 +152,14 @@ public class DepInjector {
                     .build();
         }
         return presenterComponent;
+    }
+
+    private static ServiceComponent getServiceComponent(Service service) {
+        if (serviceComponent == null) {
+            serviceComponent = DaggerServiceComponent.builder()
+                    .build();
+        }
+        return serviceComponent;
     }
 
 
@@ -411,5 +432,13 @@ public class DepInjector {
     }
 
 
+
+
+
+
+    public static PresenterComponent inject(ScheduledUpdateService service) {
+        getServiceComponent(service).inject(service);
+        return getPresenterComponent();
+    }
 
 }

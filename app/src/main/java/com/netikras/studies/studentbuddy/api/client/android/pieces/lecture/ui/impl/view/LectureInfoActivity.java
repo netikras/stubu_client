@@ -1,9 +1,11 @@
 package com.netikras.studies.studentbuddy.api.client.android.pieces.lecture.ui.impl.view;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.netikras.studies.studentbuddy.api.client.android.R;
@@ -30,10 +32,12 @@ import com.netikras.studies.studentbuddy.core.data.api.dto.school.LectureGuestDt
 import com.netikras.studies.studentbuddy.core.data.api.dto.school.LecturerDto;
 import com.netikras.studies.studentbuddy.core.data.api.dto.school.StudentsGroupDto;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 import javax.inject.Inject;
 
@@ -87,7 +91,25 @@ public class LectureInfoActivity extends BaseActivity implements LectureMvpView 
         if (lastEntry != null) {
             show(lastEntry);
         }
+        handleIntent();
         executeTask();
+    }
+
+    private void handleIntent() {
+        Intent intent = getIntent();
+        if (intent == null) {
+            return;
+        }
+
+        String cachedId = intent.getStringExtra("cached_id");
+        if (!isNullOrEmpty(cachedId)) {
+            presenter.getById(new ErrorsAwareSubscriber<LectureDto>() {
+                @Override
+                public void onSuccess(LectureDto response) {
+                    show(response);
+                }
+            }, cachedId);
+        }
     }
 
     @Override
@@ -132,6 +154,7 @@ public class LectureInfoActivity extends BaseActivity implements LectureMvpView 
         dto.setLecturer(getFields().getLecturer());
         dto.setRoom(getFields().getLocation());
         dto.setStudentsGroup(getFields().getStudentsGroup());
+        dto.setStartsOn(getFields().getStartDatetime());
 //        dto.setVisitors(getFields().getVisitors()); // FIXME
 
         return dto;
@@ -402,43 +425,80 @@ public class LectureInfoActivity extends BaseActivity implements LectureMvpView 
         });
     }
 
+    @OnClick(R.id.btn_lecture_tests_add)
+    public void addTest() {
+        if (isNullOrEmpty(getFields().getId())) {
+            onError(R.string.err_no_lecture_id);
+            return;
+        }
+
+        startView(TestInfoActivity.class, new ViewTask<TestInfoActivity>() {
+
+            @Override
+            public void execute() {
+                DisciplineTestDto testDto = new DisciplineTestDto();
+                testDto.setLecture(collect());
+                testDto.setStartsOn(testDto.getLecture().getStartsOn());
+                testDto.setDiscipline(testDto.getLecture().getDiscipline());
+                getActivity().show(testDto, true);
+            }
+        });
+
+    }
+
+    @OnClick(R.id.btn_lecture_assignments_add)
+    public void addAssignment() {
+        if (isNullOrEmpty(getFields().getId())) {
+            onError(R.string.err_no_lecture_id);
+            return;
+        }
+
+        startView(AssignmentActivity.class, new ViewTask<AssignmentActivity>() {
+
+            @Override
+            public void execute() {
+                AssignmentDto dto = new AssignmentDto();
+                dto.setLectureDto(collect());
+                dto.setCreatedOn(new Date());
+                dto.setDiscipline(dto.getLectureDto().getDiscipline());
+                dto.setDue(dto.getLectureDto().getStartsOn());
+                getActivity().show(dto, true);
+            }
+        });
+
+    }
+
+
     public class ViewFields extends BaseViewFields {
 
         @BindView(R.id.txt_edit_lecture_id)
         EditText id;
-
         @BindView(R.id.txt_edit_lecture_start_date)
         EditText startDate;
-
         @BindView(R.id.txt_edit_lecture_start_time)
         EditText startTime;
-
         @BindView(R.id.txt_edit_lecture_time_remaining)
         EditText timeRemaining;
-
         @BindView(R.id.btn_lecture_assignments)
         Button assignments;
-
         @BindView(R.id.btn_lecture_comments)
         Button comments;
-
         @BindView(R.id.btn_lecture_guests)
         Button guests;
-
         @BindView(R.id.btn_lecture_lecturer)
         Button lecturer;
-
         @BindView(R.id.btn_lecture_location)
         Button location;
-
         @BindView(R.id.btn_lecture_name)
         Button name;
-
         @BindView(R.id.btn_lecture_students_group)
         Button studentsGroup;
-
         @BindView(R.id.btn_lecture_tests)
         Button tests;
+        @BindView(R.id.btn_lecture_tests_add)
+        ImageButton addTest;
+        @BindView(R.id.btn_lecture_assignments_add)
+        ImageButton addAssignment;
 
         @BindView(R.id.txt_lbl_lecture_id)
         TextView lblId;

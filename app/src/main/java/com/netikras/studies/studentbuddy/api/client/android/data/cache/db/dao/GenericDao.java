@@ -6,6 +6,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 import com.netikras.studies.studentbuddy.api.client.android.data.cache.CacheManager;
+import com.netikras.studies.studentbuddy.core.data.api.dto.meta.CommentDto;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -16,6 +17,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import static com.netikras.tools.common.io.IoUtils.closeQuietly;
 import static com.netikras.tools.common.security.IntegrityUtils.isNullOrEmpty;
 
 /**
@@ -98,10 +100,15 @@ public abstract class GenericDao<E> extends SQLiteOpenHelper {
 
     public E get(String id) {
         if (!isNullOrEmpty(id)) {
-            Cursor cursor = getReadableDatabase()
-                    .query(getTableName(), null, "id = ?", new String[]{id}, null, null, null);
-            if (cursor.moveToFirst()) {
-                return restore(new DBResults(cursor));
+            Cursor cursor = null;
+            try {
+                cursor = getReadableDatabase()
+                        .query(getTableName(), null, "id = ?", new String[]{id}, null, null, null);
+                if (cursor.moveToFirst()) {
+                    return restore(new DBResults(cursor));
+                }
+            } finally {
+                closeQuietly(cursor);
             }
         }
         return null;
@@ -109,7 +116,7 @@ public abstract class GenericDao<E> extends SQLiteOpenHelper {
 
     public List<E> getAllByIds(Collection<E> itemsWithId) {
         if (!isNullOrEmpty(itemsWithId)) {
-            List<E> results = new  ArrayList<>(itemsWithId.size());
+            List<E> results = new ArrayList<>(itemsWithId.size());
             for (E e : itemsWithId) {
                 E result = get(getId(e));
                 if (result != null) {
@@ -123,7 +130,7 @@ public abstract class GenericDao<E> extends SQLiteOpenHelper {
 
     public List<E> getAll(Collection<String> ids) {
         if (!isNullOrEmpty(ids)) {
-            List<E> results = new  ArrayList<>(ids.size());
+            List<E> results = new ArrayList<>(ids.size());
             for (String id : ids) {
                 E result = get(id);
                 if (result != null) {
@@ -135,12 +142,32 @@ public abstract class GenericDao<E> extends SQLiteOpenHelper {
         return null;
     }
 
+    public E queryFirst(String qry, String... args) {
+        if (!isNullOrEmpty(qry)) {
+            Cursor cursor = null;
+            try {
+                cursor = getReadableDatabase().rawQuery(qry, args);
+                if (cursor.moveToFirst()) {
+                    return restore(new DBResults(cursor));
+                }
+            } finally {
+                closeQuietly(cursor);
+            }
+        }
+        return null;
+    }
+
     public E getFirstWhere(String conditions, String... args) {
         if (!isNullOrEmpty(conditions)) {
-            Cursor cursor = getReadableDatabase()
-                    .query(getTableName(), null, conditions, args, null, null, null);
-            if (cursor.moveToFirst()) {
-                return restore(new DBResults(cursor));
+            Cursor cursor = null;
+            try {
+                cursor = getReadableDatabase()
+                        .query(getTableName(), null, conditions, args, null, null, null);
+                if (cursor.moveToFirst()) {
+                    return restore(new DBResults(cursor));
+                }
+            } finally {
+                closeQuietly(cursor);
             }
         }
         return null;
@@ -153,21 +180,52 @@ public abstract class GenericDao<E> extends SQLiteOpenHelper {
     public List<E> getAllWhere(String conditions, String... args) {
         List<E> results = new ArrayList<>();
 
-        Cursor cursor = getReadableDatabase()
-                .query(getTableName(), null, conditions, args, null, null, null);
-        if (cursor.moveToFirst()) {
-            DBResults dbResults = new DBResults(cursor);
-            results.addAll(restoreAll(dbResults));
+        Cursor cursor = null;
+        try {
+            cursor = getReadableDatabase()
+                    .query(getTableName(), null, conditions, args, null, null, null);
+
+            if (cursor.moveToFirst()) {
+                DBResults dbResults = new DBResults(cursor);
+                results.addAll(restoreAll(dbResults));
+            }
+        } finally {
+            closeQuietly(cursor);
         }
 
-        restore(new DBResults(cursor));
+        restoreAll(new DBResults(cursor));
+        return results;
+    }
+
+    public List<E> queryAll(String qry, String... args) {
+        List<E> results = new ArrayList<>();
+
+        Cursor cursor = null;
+        try {
+            cursor = getReadableDatabase().rawQuery(qry, args);
+
+            if (cursor.moveToFirst()) {
+                DBResults dbResults = new DBResults(cursor);
+                results.addAll(restoreAll(dbResults));
+            }
+
+            restoreAll(new DBResults(cursor));
+        } finally {
+            closeQuietly(cursor);
+        }
         return results;
     }
 
     public int getCountWhere(String whereClause) {
-        Cursor cursor = getReadableDatabase().rawQuery("select count(*) from " + getTableName() + " where " + whereClause, null);
-        if (cursor.moveToFirst()) {
-            return cursor.getInt(0);
+        Cursor cursor = null;
+        try {
+            cursor = getReadableDatabase().rawQuery("select count(*) from " + getTableName() + " where " + whereClause, null);
+
+            if (cursor.moveToFirst()) {
+                return cursor.getInt(0);
+            }
+        } finally {
+            closeQuietly(cursor);
         }
         return 0;
     }
@@ -229,7 +287,7 @@ public abstract class GenericDao<E> extends SQLiteOpenHelper {
         return entity;
     }
 
-    protected  <T> T prefill(T entity, GenericDao<T> cache) {
+    protected <T> T prefill(T entity, GenericDao<T> cache) {
         if (entity != null && cache != null) {
             if (!isNullOrEmpty(cache.getId(entity))) {
                 return cache.get(cache.getId(entity));
@@ -282,7 +340,7 @@ public abstract class GenericDao<E> extends SQLiteOpenHelper {
         return entities;
     }
 
-    public E[]  putAll(E... entities) {
+    public E[] putAll(E... entities) {
         if (!isNullOrEmpty(entities)) {
             for (E entity : entities) {
                 put(entity);

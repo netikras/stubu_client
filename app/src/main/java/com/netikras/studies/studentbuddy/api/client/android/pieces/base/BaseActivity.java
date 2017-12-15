@@ -32,19 +32,25 @@ import com.netikras.studies.studentbuddy.api.client.android.conf.di.component.Ac
 import com.netikras.studies.studentbuddy.api.client.android.pieces.SearchActivity;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.base.list.ListHandler;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.base.list.SimpleListActivity;
+import com.netikras.studies.studentbuddy.api.client.android.pieces.comments.ui.impl.view.CommentsActivity;
+import com.netikras.studies.studentbuddy.api.client.android.pieces.comments.ui.presenter.CommentsMvpPresenter;
+import com.netikras.studies.studentbuddy.api.client.android.pieces.comments.ui.view.CommentsMvpView;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.login.ui.impl.view.LoginActivity;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.person.ui.impl.view.UserInfoActivity;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.settings.ui.impl.view.SettingsActivity;
 import com.netikras.studies.studentbuddy.api.client.android.service.ServiceRequest;
+import com.netikras.studies.studentbuddy.api.client.android.service.ServiceRequest.Subscriber;
 import com.netikras.studies.studentbuddy.api.client.android.util.CommonUtils;
 import com.netikras.studies.studentbuddy.api.client.android.util.Exchange;
 import com.netikras.studies.studentbuddy.api.client.android.util.NetworkUtils;
 import com.netikras.studies.studentbuddy.api.client.android.util.misc.YesNoDialog;
+import com.netikras.studies.studentbuddy.core.data.api.dto.meta.CommentDto;
 import com.netikras.studies.studentbuddy.core.data.api.dto.meta.UserDto;
 import com.netikras.tools.common.exception.ErrorBody;
 import com.netikras.tools.common.exception.ErrorsCollection;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -236,6 +242,10 @@ public abstract class BaseActivity extends AppCompatActivity
     }
 
     protected List<Integer> excludeMenuItems() {
+        return Arrays.asList();
+    }
+
+    protected List<Integer> includeMenuItems() {
         return Arrays.asList();
     }
 
@@ -436,6 +446,36 @@ public abstract class BaseActivity extends AppCompatActivity
         fromContext.startActivity(intent);
     }
 
+    protected void showComment(CommentDto dto) {
+        startView(CommentsActivity.class, new ViewTask<CommentsActivity>() {
+            @Override
+            public void execute() {
+                getActivity().showComment(dto);
+            }
+        });
+    }
+
+    protected void createComment(String resourceType, String resourceId) {
+        startView(CommentsActivity.class, new ViewTask<CommentsActivity>() {
+            @Override
+            public void execute() {
+                CommentDto dto = new CommentDto();
+                dto.setEntityType(resourceType);
+                dto.setEntityId(resourceId);
+
+                getActivity().showComment(dto, true);
+            }
+        });
+    }
+
+    protected void showComments(String entityType, String entityId) {
+        startView(CommentsActivity.class, new ViewTask<CommentsActivity>() {
+            @Override
+            public void execute() {
+                getActivity().showComments(entityType, entityId);
+            }
+        });
+    }
 
     public abstract static class ViewTask<A extends MvpView> {
 
@@ -452,7 +492,7 @@ public abstract class BaseActivity extends AppCompatActivity
         }
     }
 
-    protected class ErrorsAwareSubscriber<T> extends ServiceRequest.Subscriber<T> {
+    protected class ErrorsAwareSubscriber<T> extends Subscriber<T> {
 
         @Override
         public void executeOnError(ErrorsCollection errors) {

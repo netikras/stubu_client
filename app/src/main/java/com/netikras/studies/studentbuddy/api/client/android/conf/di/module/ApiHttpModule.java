@@ -26,6 +26,8 @@ import javax.inject.Singleton;
 import dagger.Module;
 import dagger.Provides;
 
+import static com.netikras.tools.common.security.IntegrityUtils.isNullOrEmpty;
+
 /**
  * Created by netikras on 17.11.2.
  */
@@ -42,12 +44,37 @@ public class ApiHttpModule {
     }
 
     @Provides
-    public SessionContext context() {
-        return new SessionContext();
+    public SessionContext context(PreferencesHelper preferencesHelper) {
+        return new SessionContext() {
+            @Override
+            public void updateContext(HttpResponse response) {
+                long cookiesHashBeforeUpdate = hashCookies();
+                super.updateContext(response);
+                long cookiesHashAfterUpdate = hashCookies();
+
+                if (cookiesHashBeforeUpdate != cookiesHashAfterUpdate) {
+                    preferencesHelper.setCookies(cookies);
+                }
+            }
+
+            @Override
+            public synchronized void applyContext(HttpRequest request) {
+                if (hashCookies() == 0) {
+                    cookies = preferencesHelper.getCookies();
+//                    Log.d("COOKIES:", "" + cookies);
+                }
+                super.applyContext(request);
+            }
+
+            private long hashCookies() {
+                return isNullOrEmpty(cookies) ? 0 : cookies.hashCode();
+            }
+        };
     }
 
     @Provides
     public RequestListener listener() {
+
         return new RequestListener(){
 
             private void onError(Object response) {

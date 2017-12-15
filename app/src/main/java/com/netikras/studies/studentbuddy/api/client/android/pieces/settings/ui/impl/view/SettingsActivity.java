@@ -4,14 +4,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.EditText;
-import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
 
-import com.netikras.studies.studentbuddy.api.client.android.App;
 import com.netikras.studies.studentbuddy.api.client.android.R;
 import com.netikras.studies.studentbuddy.api.client.android.conf.di.DepInjector;
-import com.netikras.studies.studentbuddy.api.client.android.data.prefs.PreferencesHelper;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.base.BaseActivity;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.base.BaseViewFields;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.settings.ui.presenter.SettingsMvpPresenter;
@@ -26,13 +23,11 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 
+import static com.netikras.tools.common.security.IntegrityUtils.isNullOrEmpty;
+
 public class SettingsActivity extends BaseActivity implements SettingsMvpView {
 
-    @Inject
-    App app;
-    @Inject
-    PreferencesHelper preferencesHelper;
-    @Inject
+
     SettingsMvpPresenter<SettingsMvpView> presenter;
 
     private ViewFields fields;
@@ -46,17 +41,7 @@ public class SettingsActivity extends BaseActivity implements SettingsMvpView {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
-
         setUp();
-
-//        ConstraintLayout layout = findViewById(R.id.lay_settings);
-//        layout.addView(findViewById(R.id.btn_main_main_menu));
-//        ConstraintSet set = new ConstraintSet();
-//        set.clone(layout);
-//        set.connect(R.id.btn_main_main_menu, ConstraintSet.TOP, ConstraintSet.PARENT_ID, ConstraintSet.TOP, 16);
-//        set.connect(R.id.btn_main_main_menu, ConstraintSet.RIGHT, ConstraintSet.PARENT_ID, ConstraintSet.RIGHT, 16);
-//        set.applyTo(layout);
-
         showSettings();
     }
 
@@ -70,6 +55,10 @@ public class SettingsActivity extends BaseActivity implements SettingsMvpView {
         executeTask();
     }
 
+    public ViewFields getFields() {
+        return fields;
+    }
+
     public static void start(Context context) {
         Intent intent = new Intent(context, SettingsActivity.class);
         context.startActivity(intent);
@@ -77,14 +66,24 @@ public class SettingsActivity extends BaseActivity implements SettingsMvpView {
 
 
     private void showSettings() {
-        fields.setUrl(presenter.getApiUrl());
-        fields.setNotificationsEnabled(presenter.isNotificationsEnabled());
+        getFields().setUrl(presenter.getApiUrl());
+        getFields().setNotificationsEnabled(presenter.isNotificationsEnabled());
+        getFields().setCommentNotificationsEnabled(presenter.isCommentNotificationsEnabled());
+        getFields().setLecturesAheadPeriod(presenter.getLecturesAheadPeriod());
+        getFields().setNotifyEventBeforePeriod(presenter.getNotifyEventBeforePeriod());
+        getFields().setUpdatePeriod(presenter.getUpdatePeriod());
+        getFields().setAutostartEnabled(presenter.getAutostartEnabled());
     }
 
     @Override
     protected void menuOnClickSave() {
-        presenter.saveApiUrl(fields.getUrl());
-        presenter.saveNotificationsSettings(fields.getNotificationsEnabled());
+        presenter.saveApiUrl(getFields().getUrl());
+        presenter.saveNotificationsSettings(getFields().getNotificationsEnabled());
+        presenter.saveCommentNotificationsSettings(getFields().getCommentNotificationsEnabled());
+        presenter.saveLecturesAheadPeriod(getFields().getLecturesAheadPeriod());
+        presenter.saveNotifyEventBeforePeriod(getFields().getNotifyEventsBeforePeriod());
+        presenter.saveUpdatePeriod(getFields().getUpdatePeriod());
+        presenter.saveAutostartEnabled(getFields().getAutostartEnabled());
     }
 
     private String toString(RemoteEndpointServer server) {
@@ -106,19 +105,29 @@ public class SettingsActivity extends BaseActivity implements SettingsMvpView {
 
         @BindView(R.id.txt_edit_settings_url)
         EditText url;
-
         @BindView(R.id.switch_settings_notifications_enable)
         Switch notificationsEnabled;
-
-        @BindView(R.id.spinner_settings_notifications_time_before_event)
-        Spinner timeDelta;
+        @BindView(R.id.switch_settings_notify_comments_enable)
+        Switch commentNotificationsEnabled;
+        @BindView(R.id.switch_settings_autostart_enable)
+        Switch autostartEnabled;
+        @BindView(R.id.txt_edit_settings_lectures_ahead_period)
+        EditText lecturesAheadPeriod; // hours
+        @BindView(R.id.txt_edit_settings_update_period)
+        EditText updatePeriod;
+        @BindView(R.id.txt_edit_settings_notify_event_before)
+        EditText notifyEventBefore;
 
 
         @Override
         protected Collection<TextView> getAllFields() {
-            return Arrays.asList(url);
+            return Arrays.asList(url, lecturesAheadPeriod, updatePeriod, notifyEventBefore);
         }
 
+        @Override
+        protected Collection<TextView> getEditableFields() {
+            return Arrays.asList(url, lecturesAheadPeriod, updatePeriod, notifyEventBefore);
+        }
 
         public String getUrl() {
             return getString(url);
@@ -136,17 +145,55 @@ public class SettingsActivity extends BaseActivity implements SettingsMvpView {
             this.notificationsEnabled.setChecked(notificationsEnabled);
         }
 
-        public int getTimeDelta() {
-            return (Integer) timeDelta.getSelectedItem();
+        public boolean getCommentNotificationsEnabled() {
+            return commentNotificationsEnabled.isChecked();
         }
 
-        public void setTimeDelta(int timeDelta) {
-            for (int i = 0; i < this.timeDelta.getCount(); i++) {
-                if ((Integer) this.timeDelta.getItemAtPosition(i) == timeDelta) {
-                    this.timeDelta.setSelection(i, true);
-                    break;
+        public void setCommentNotificationsEnabled(boolean enabled) {
+            commentNotificationsEnabled.setChecked(enabled);
+        }
+
+        public boolean getAutostartEnabled() {
+            return autostartEnabled.isChecked();
+        }
+
+        public void setAutostartEnabled(boolean enabled) {
+            autostartEnabled.setChecked(enabled);
+        }
+
+        public long getLecturesAheadPeriod() {
+            return parseLong(getString(lecturesAheadPeriod));
+        }
+
+        public void setLecturesAheadPeriod(long hours) {
+            setString(lecturesAheadPeriod, "" + hours);
+        }
+
+        public long getUpdatePeriod() {
+            return parseLong(getString(updatePeriod));
+        }
+
+        public void setUpdatePeriod(long minutes) {
+            setString(updatePeriod, "" + minutes);
+        }
+
+        public long getNotifyEventsBeforePeriod() {
+            return parseLong(getString(notifyEventBefore));
+        }
+
+        public void setNotifyEventBeforePeriod(long minutes) {
+            setString(notifyEventBefore, "" + minutes);
+        }
+
+        private long parseLong(String text) {
+            if (!isNullOrEmpty(text)) {
+                try {
+                    return Long.parseLong(text);
+                } catch (Exception e) {
+
                 }
             }
+            return -1;
         }
     }
 

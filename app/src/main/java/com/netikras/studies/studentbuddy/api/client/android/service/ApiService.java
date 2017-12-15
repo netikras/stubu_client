@@ -43,6 +43,13 @@ public class ApiService extends IntentService {
         requestsQueue.add(request);
     }
 
+    /*
+    The problem with intents is that on Activity (or other component) method you must return from API's method before the intent gets processed.
+    E.g. if you call startService on your, say, UserActivity's onStart() method, the intent is not going to be processed until you return from the
+     onStart(). And if you ever attempt to bring up the service and wait for its future result in the same method be sure you will timeout, because
+     the service will not be started. It will be started after you handle the timeout and eventually return from the Android API's method, which is
+     obviously too late.
+     */
     public static void processQueue(Context fromContext) {
         Intent intent = new Intent(fromContext, ApiService.class);
 //        fromContext.startService(intent);
@@ -65,7 +72,8 @@ public class ApiService extends IntentService {
                             }
                         } else {
 
-                            // This is bad. It's very bad. But at least it won't crash the app immediately or drain device's battery in 10 minutes
+                            // This is bad. It's very bad. But at least it won't crash the app immediately or drain device's battery in 10 minutes.
+                            // To prevent getting in this loop make sure a blocking queue is used with custom (not intent-based) thread.
                             while (requestsQueue.isEmpty()) {
                                 IoUtils.sleep(500);
                             }

@@ -14,6 +14,8 @@ import com.netikras.studies.studentbuddy.api.client.android.service.ServiceReque
 import com.netikras.studies.studentbuddy.api.client.android.service.ServiceRequest.Subscriber;
 import com.netikras.studies.studentbuddy.api.misc.TimeUnit;
 import com.netikras.studies.studentbuddy.api.timetable.controller.generated.LecturesApiConsumer;
+import com.netikras.studies.studentbuddy.core.data.api.dto.school.AssignmentDto;
+import com.netikras.studies.studentbuddy.core.data.api.dto.school.DisciplineTestDto;
 import com.netikras.studies.studentbuddy.core.data.api.dto.school.LectureDto;
 import com.netikras.studies.studentbuddy.core.data.api.dto.school.StudentDto;
 
@@ -75,6 +77,28 @@ public class LectureDataStoreApiImpl extends ApiBasedDataStore<String, LectureDt
         }
 
         return item;
+    }
+
+    @Override
+    protected <C extends Collection<LectureDto>> C updateCache(C items) {
+        if (!isNullOrEmpty(items)) {
+            for (LectureDto lectureDto : items) {
+
+                if (!isNullOrEmpty(lectureDto.getAssignments())) {
+                    for (AssignmentDto dto : lectureDto.getAssignments()) {
+                        dto.setLectureDto(lectureDto);
+                        assignmentCache.putWithImmediates(dto);
+                    }
+                }
+                if (!isNullOrEmpty(lectureDto.getTests())) {
+                    for (DisciplineTestDto disciplineTestDto : lectureDto.getTests()) {
+                        disciplineTestDto.setLecture(lectureDto);
+                        testCache.putWithImmediates(disciplineTestDto);
+                    }
+                }
+            }
+        }
+        return super.updateCache(items);
     }
 
     @Override
@@ -266,12 +290,6 @@ public class LectureDataStoreApiImpl extends ApiBasedDataStore<String, LectureDt
             List<LectureDto> cached = getCache().getAllByLecturerStartingBetween(id, "" + now(), "" + now() + unit.convert(amount, MILLISECONDS));
             if (!isNullOrEmpty(cached)) {
                 fillFromCache(cached);
-
-                for (LectureDto dto : cached) {
-                    Log.d("Cached", "" + dto);
-                    dto.setId("_"+dto.getId());
-                }
-                Log.d("Subscribers count", "" + subscribers.length);
                 respondCacheHit(cached, subscribers);
             }
         }

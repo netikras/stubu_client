@@ -1,5 +1,8 @@
 package com.netikras.studies.studentbuddy.api.client.android.conf.di.module;
 
+import com.netikras.studies.studentbuddy.api.client.android.pieces.comments.ui.impl.presenter.CommentsPresenter;
+import com.netikras.studies.studentbuddy.api.client.android.pieces.comments.ui.presenter.CommentsMvpPresenter;
+import com.netikras.studies.studentbuddy.api.client.android.pieces.comments.ui.view.CommentsMvpView;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.discipline.ui.impl.presenter.CoursePresenter;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.discipline.ui.impl.presenter.DisciplinePresenter;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.discipline.ui.presenter.CourseMvpPresenter;
@@ -260,6 +263,11 @@ public class PresenterModule {
 
     @Provides
     SystemSettingMvpPresenter<SystemSettingMvpView> systemSettingPresenter(SystemSettingPresenter<SystemSettingMvpView> presenter) {
+        return presenter;
+    }
+
+    @Provides
+    CommentsMvpPresenter<CommentsMvpView> commentsMvpPresenter(CommentsPresenter<CommentsMvpView> presenter) {
         return presenter;
     }
 

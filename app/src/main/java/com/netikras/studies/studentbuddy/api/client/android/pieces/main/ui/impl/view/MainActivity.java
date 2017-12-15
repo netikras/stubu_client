@@ -17,8 +17,14 @@ import com.netikras.studies.studentbuddy.api.client.android.pieces.main.ui.impl.
 import com.netikras.studies.studentbuddy.api.client.android.pieces.main.ui.impl.fragments.adapter.SectionsPageAdapter;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.main.ui.presenter.MainMvpPresenter;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.main.ui.view.MainMvpView;
+import com.netikras.studies.studentbuddy.api.client.android.service.ServiceRequest;
 import com.netikras.studies.studentbuddy.api.client.android.service.ServiceRequest.Subscriber;
+import com.netikras.studies.studentbuddy.api.client.android.service.ServiceRequest.SubscribersMonitor;
+import com.netikras.studies.studentbuddy.api.misc.TimeUnit;
+import com.netikras.studies.studentbuddy.core.data.api.dto.meta.UserDto;
 import com.netikras.studies.studentbuddy.core.data.api.dto.school.LectureDto;
+import com.netikras.tools.common.exception.ErrorBody;
+import com.netikras.tools.common.exception.ErrorsCollection;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -68,6 +74,11 @@ public class MainActivity extends BaseActivity implements MainMvpView {
 
         presenter.fetchLecturesForGuest(new Subscriber<Collection<LectureDto>>() {
             @Override
+            public void onCacheHit(Collection<LectureDto> response) {
+                onSuccess(response);
+            }
+
+            @Override
             public void onSuccess(Collection<LectureDto> response) {
                 runOnUiThread(() -> guestHandler.updateData((List<LectureDto>) response));
             }
@@ -75,12 +86,20 @@ public class MainActivity extends BaseActivity implements MainMvpView {
 
         presenter.fetchLecturesForStudent(new Subscriber<Collection<LectureDto>>() {
             @Override
+            public void onCacheHit(Collection<LectureDto> response) {
+                onSuccess(response);
+            }
+            @Override
             public void onSuccess(Collection<LectureDto> response) {
                 runOnUiThread(() -> studentHandler.updateData((List<LectureDto>) response));
             }
         }, getCurrentUser().getPerson());
 
         presenter.fetchLecturesForLecturer(new Subscriber<Collection<LectureDto>>() {
+            @Override
+            public void onCacheHit(Collection<LectureDto> response) {
+                onSuccess(response);
+            }
             @Override
             public void onSuccess(Collection<LectureDto> response) {
                 runOnUiThread(() ->  lecturerHandler.updateData((List<LectureDto>) response));
@@ -117,10 +136,29 @@ public class MainActivity extends BaseActivity implements MainMvpView {
         presenter.onAttach(this);
         addMenu();
 
-        if (getCurrentUser() == null) {
-            startView(LoginActivity.class, null);
-            return;
-        }
+        final SubscribersMonitor monitor = new SubscribersMonitor();
+        presenter.getCurrentUser(new ErrorsAwareSubscriber<UserDto>() {
+            @Override
+            protected SubscribersMonitor getMonitor() {
+                return monitor;
+            }
+
+            @Override
+            public void onSuccess(UserDto response) {
+                if (response == null || "guest".equalsIgnoreCase(response.getName())) {
+                    executeOnError(new ErrorBody().setMessage1("Not logged in"));
+                } else {
+                    Log.i("User: ", "" + response);
+                }
+            }
+
+            @Override
+            public void onError(ErrorsCollection errors) {
+                super.onError(errors);
+                startView(LoginActivity.class, null);
+                finish();
+            }
+        });
 
         executeTask();
 
@@ -143,6 +181,16 @@ public class MainActivity extends BaseActivity implements MainMvpView {
             lecturerLectures = null;
             guestLectures = null;
         } else {
+            monitor.waitForAllToFinish(TimeUnit.SECONDS, 30L);
+            if (monitor.getCount() > 0) {
+                onError("Cannot reach server");
+                return;
+            }
+
+            if (getCurrentUser() == null || "guest".equalsIgnoreCase(getCurrentUser().getName())) {
+                return;
+            }
+
             fetch();
         }
     }
@@ -188,10 +236,6 @@ public class MainActivity extends BaseActivity implements MainMvpView {
             data.clear();
             if (!isNullOrEmpty(newData)) {
                 data.addAll(newData);
-                for (LectureDto datum : data) {
-                    Log.d("DATA", "" + datum);
-                }
-                Log.d("ListHandler", "Dataset size after addition: " + data.size() + ", newData size: " + newData.size(), new Exception());
             }
             onDataSetChanged();
         }

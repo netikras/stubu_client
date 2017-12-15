@@ -7,9 +7,19 @@ import com.netikras.tools.common.exception.ErrorsCollection;
 import com.netikras.tools.common.io.IoUtils;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
+
+import static com.netikras.tools.common.security.IntegrityUtils.isNullOrEmpty;
 
 /**
  * Created by netikras on 17.10.30.
@@ -36,7 +46,24 @@ public abstract class ServiceRequest<T> {
 
     public static class Subscriber<T> {
 
-        private boolean fetchRequired = true;
+        private boolean fetchRequired = true;;
+        private String id;
+
+        public Subscriber() {
+            id = UUID.randomUUID().toString();
+            if (getMonitor() != null) {
+                getMonitor().register(this);
+            }
+        }
+
+        private String getId() {
+            return id;
+        }
+
+
+        protected SubscribersMonitor getMonitor() {
+            return null;
+        }
 
         public boolean isDataFetchRequired() {
             return fetchRequired;
@@ -47,7 +74,7 @@ public abstract class ServiceRequest<T> {
         }
 
         public void onCacheHit(T response) {
-            onSuccess(response);
+
         }
 
         public void onSuccess(T response) {
@@ -58,12 +85,26 @@ public abstract class ServiceRequest<T> {
 
         }
 
+        public void onBeforeExec(T response, ErrorsCollection errors) {
+
+        }
+
+        public void onAfterExec(T response, ErrorsCollection errors) {
+            if (getMonitor() != null) {
+                getMonitor().release(this);
+            }
+        }
+
         public void executeOnSuccess(T response) {
+            onBeforeExec(response, null);
             onSuccess(response);
+            onAfterExec(response, null);
         }
 
         public void executeOnError(ErrorsCollection errors) {
+            onBeforeExec(null, errors);
             onError(errors);
+            onAfterExec(null, errors);
         }
 
         public void executeOnError(ErrorBody errorBody) {
@@ -71,6 +112,66 @@ public abstract class ServiceRequest<T> {
             errorBodies.add(errorBody);
             executeOnError(errorBodies);
         }
+    }
+
+    public static class SubscribersMonitor {
+        private Map<String, Subscriber> subscribers = Collections.synchronizedMap(new HashMap<>());
+
+        public synchronized Subscriber[] register(Subscriber... subscribers) {
+            if (!isNullOrEmpty(subscribers)) {
+                for (Subscriber subscriber : subscribers) {
+                    if (subscriber != null) {
+                        this.subscribers.put(subscriber.getId(), subscriber);
+                    }
+                }
+            }
+            return subscribers;
+        }
+
+        public synchronized Subscriber[] release(Subscriber... subscribers) {
+            if (!isNullOrEmpty(subscribers)) {
+                for (Subscriber subscriber : subscribers) {
+                    if (subscriber != null) {
+                        this.subscribers.remove(subscriber.getId());
+                    }
+                }
+            }
+            if (getCount() == 0) {
+                onAllFinished();
+            }
+            return subscribers;
+        }
+
+        public int getCount() {
+            return subscribers.size();
+        }
+
+        public Map<String, Subscriber> getPending() {
+            return subscribers;
+        }
+
+        public void onAllFinished() {
+
+        }
+
+        /**
+         *
+         * @param timeUnit
+         * @param value
+         * @return true if all subscribers were released before timeout; false - if timeout occurred.
+         */
+        public boolean waitForAllToFinish(com.netikras.studies.studentbuddy.api.misc.TimeUnit timeUnit, long value) {
+            long ms = timeUnit.toMillis(value);
+            long tick = ms / 100 + 1;
+
+            while (ms > 0 && getCount() > 0) {
+                IoUtils.sleep(tick);
+                ms -= tick;
+            }
+
+            return ms <= 0;
+        }
+
     }
 
     public static class Result<T> implements Future<T> {

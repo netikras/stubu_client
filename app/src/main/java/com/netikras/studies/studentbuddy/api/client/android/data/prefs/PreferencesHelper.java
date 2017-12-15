@@ -3,6 +3,8 @@ package com.netikras.studies.studentbuddy.api.client.android.data.prefs;
 
 import com.netikras.studies.studentbuddy.core.data.api.dto.meta.UserDto;
 
+import java.util.List;
+
 public interface PreferencesHelper {
 
     String getCurrentUserId();
@@ -35,8 +37,27 @@ public interface PreferencesHelper {
 
     String getLoginUsername();
 
+    void setCookies(List<String> cookies);
 
-    long getLecturesListDuration();
+    List<String> getCookies();
 
-    void setLecturesListDuration(long hours);
+    long getFetchLecturesAheadHours();
+
+    void setFetchLecturesAheadHours(Long hours);
+
+    long getUpdatePeriod();
+
+    long getNotifyBeforePeriod();
+
+    boolean isCommentNotificationsEnabled();
+
+    void setUpdatePeriod(long period);
+
+    void setNotifyBeforePeriod(long notifyEventsBeforePeriod);
+
+    void setCommentNotificationsEnabled(boolean enabled);
+
+    boolean isAutostartEnabled();
+
+    void setAutostartEnabled(boolean enabled);
 }

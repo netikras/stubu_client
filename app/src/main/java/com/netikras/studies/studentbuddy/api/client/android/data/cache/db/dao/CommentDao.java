@@ -6,9 +6,13 @@ import com.netikras.studies.studentbuddy.api.client.android.data.cache.CacheMana
 import com.netikras.studies.studentbuddy.core.data.api.dto.PersonDto;
 import com.netikras.studies.studentbuddy.core.data.api.dto.meta.CommentDto;
 
+import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
+import static com.netikras.tools.common.security.IntegrityUtils.coalesce;
 import static com.netikras.tools.common.security.IntegrityUtils.isNullOrEmpty;
+import static java.util.Arrays.asList;
 
 /**
  * Created by netikras on 17.12.8.
@@ -74,5 +78,75 @@ public class CommentDao extends GenericDao<CommentDto> {
         }
 
         return comment;
+    }
+
+    public Date getLastUpdateDate(String entityType, String entityId) {
+        CommentDto dto = getLastUpdated(entityType, entityId);
+        if (dto != null) {
+            return (Date) coalesce(dto.getUpdatedOn(), dto.getCreatedOn());
+        }
+        return null;
+    }
+
+
+    public CommentDto getLastUpdated(String entityType, String entityId) {
+        StringBuilder qryBuilder = new StringBuilder();
+
+        qryBuilder
+                .append("select * " +
+                        "from " +
+                        "     ").append(getTableName()).append(" " +
+                "where " +
+                "    id in ( " +
+                "        select id " +
+                "        from ( " +
+                "            select " +
+                "                id, " +
+                "                coalesce (updated_on, created_on) last_touch " +
+                "            from " +
+                "                 ").append(getTableName()).append(" ");
+        if (entityType != null) {
+            qryBuilder.append(" where entity_type = ").append(entityType);
+        }
+        if (entityId != null) {
+            if (entityType == null) {
+                qryBuilder.append(" where entity_id = ").append(entityId).append(" ");
+            } else {
+                qryBuilder.append(" and entity_id = ").append(entityId).append(" ");
+            }
+        }
+        qryBuilder.append("  ) " +
+                "        order by last_touch desc " +
+                "        limit 1 " +
+                "        ) ")
+        ;
+
+        return queryFirst(qryBuilder.toString());
+
+    }
+
+
+    public List<CommentDto> getAllByAuthor(String personId) {
+        return getAllWhere("author_id = ?", personId);
+    }
+
+    public List<CommentDto> getAllByTag(String tag, long pagesize, long pageno) {
+        long fromResult = (pagesize * pageno);
+        long upToResult = fromResult + pagesize;
+        return queryAll("select * from " + getTableName() + " where tags like '%?%' order by created_on asc limit ?, ?", tag, "" + fromResult, "" + upToResult);
+    }
+
+    public List<CommentDto> getAllByEntity(String type, String typeId) {
+        if (type == null) {
+            if (typeId == null) {
+                return asList();
+            }
+            return getAllWhere("entity_id = ?", typeId);
+        }
+        if (typeId == null) {
+            return getAllWhere("entity_type = ?", type);
+        }
+        return getAllWhere("entity_type = ? and entity_id = ?", type, typeId);
+
     }
 }

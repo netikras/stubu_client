@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -74,22 +76,10 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="16dp"
             android:layout_marginStart="16dp"
-            android:layout_marginTop="16dp"
             android:checked="true"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/txt_lbl_settings_url"
             app:layout_constraintTop_toBottomOf="@+id/txt_edit_settings_url" />
-
-        <Spinner
-            android:id="@+id/spinner_settings_notifications_time_before_event"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="16dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="16dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/txt_lbl_settings_url"
-            app:layout_constraintTop_toBottomOf="@+id/switch_settings_notifications_enable" />
 
         <TextView
             android:id="@+id/txt_lbl_settings_notifications_time_before_event"
@@ -97,12 +87,141 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:text="@string/lbl_settings_notifications_time_before_event"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/spinner_settings_notifications_time_before_event" />
+            app:layout_constraintBaseline_toBaselineOf="@+id/txt_edit_settings_notify_event_before"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <TextView
+            android:id="@+id/txt_lbl_settings_lectures_ahead_period"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:text="@string/lbl_settings_lectures_ahead_period"
+            app:layout_constraintBaseline_toBaselineOf="@+id/txt_edit_settings_lectures_ahead_period"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <EditText
+            android:id="@+id/txt_edit_settings_lectures_ahead_period"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="90dp"
+            android:layout_marginStart="16dp"
+            android:ems="10"
+            android:inputType="number"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/txt_lbl_settings_url"
+            app:layout_constraintTop_toBottomOf="@+id/txt_edit_settings_notify_event_before" />
+
+        <TextView
+            android:id="@+id/txt_lbl_settings_hours_short_1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:text="@string/hours_short"
+            app:layout_constraintBaseline_toBaselineOf="@+id/txt_edit_settings_lectures_ahead_period"
+            app:layout_constraintStart_toEndOf="@+id/txt_edit_settings_lectures_ahead_period" />
+
+        <TextView
+            android:id="@+id/txt_lbl_settings_update_period"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:text="@string/lbl_settings_update_period"
+            app:layout_constraintBaseline_toBaselineOf="@+id/txt_edit_settings_update_period"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <EditText
+            android:id="@+id/txt_edit_settings_update_period"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="90dp"
+            android:layout_marginStart="16dp"
+            android:ems="10"
+            android:inputType="number"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/txt_lbl_settings_url"
+            app:layout_constraintTop_toBottomOf="@+id/txt_edit_settings_lectures_ahead_period" />
+
+        <TextView
+            android:id="@+id/txt_lbl_settings_minutes_short_1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:text="@string/minutes_short"
+            app:layout_constraintBaseline_toBaselineOf="@+id/txt_edit_settings_update_period"
+            app:layout_constraintStart_toEndOf="@+id/txt_edit_settings_update_period" />
+
+        <Switch
+            android:id="@+id/switch_settings_notify_comments_enable"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
+            android:checked="false"
+            android:splitTrack="false"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/txt_lbl_settings_url"
+            app:layout_constraintTop_toBottomOf="@+id/switch_settings_autostart_enable"
+            tools:checked="true" />
+
+        <TextView
+            android:id="@+id/txt_lbl_settings_notify_comments_enable"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:text="@string/lbl_settings_notify_comments_enable"
+            app:layout_constraintBaseline_toBaselineOf="@+id/switch_settings_notify_comments_enable"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <EditText
+            android:id="@+id/txt_edit_settings_notify_event_before"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="90dp"
+            android:layout_marginStart="16dp"
+            android:ems="10"
+            android:inputType="number"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/txt_lbl_settings_url"
+            app:layout_constraintTop_toBottomOf="@+id/switch_settings_notify_comments_enable" />
+
+        <TextView
+            android:id="@+id/txt_lbl_settings_minutes_short_2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:text="@string/minutes_short"
+            app:layout_constraintBaseline_toBaselineOf="@+id/txt_edit_settings_notify_event_before"
+            app:layout_constraintStart_toEndOf="@+id/txt_edit_settings_notify_event_before" />
 
 
-        <include layout="@layout/include_main_menu_button"/>
+
+        <TextView
+            android:id="@+id/txt_lbl_settings_autostart_enable"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:text="@string/lbl_settings_autostart"
+            app:layout_constraintBaseline_toBaselineOf="@+id/switch_settings_autostart_enable"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <Switch
+            android:id="@+id/switch_settings_autostart_enable"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
+            android:checked="false"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/txt_lbl_settings_url"
+            app:layout_constraintTop_toBottomOf="@+id/switch_settings_notifications_enable"
+            tools:checked="true" />
+
+
+        <include layout="@layout/include_main_menu_button" />
         <!-- Progress bar overlay; shown while login is in progress -->
-        <include layout="@layout/include_progress_overlay"/>
+        <include layout="@layout/include_progress_overlay" />
+
     </android.support.constraint.ConstraintLayout>
 </ScrollView>

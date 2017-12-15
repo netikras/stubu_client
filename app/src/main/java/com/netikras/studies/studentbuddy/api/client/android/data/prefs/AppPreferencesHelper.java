@@ -3,11 +3,17 @@ package com.netikras.studies.studentbuddy.api.client.android.data.prefs;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.netikras.studies.studentbuddy.api.client.android.conf.di.ApplicationCtx;
 import com.netikras.studies.studentbuddy.api.client.android.conf.di.PreferenceInfo;
 import com.netikras.studies.studentbuddy.api.client.android.util.AppConstants;
 import com.netikras.studies.studentbuddy.core.data.api.dto.PersonDto;
 import com.netikras.studies.studentbuddy.core.data.api.dto.meta.UserDto;
+
+import java.io.IOException;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -20,17 +26,28 @@ import static com.netikras.tools.common.security.IntegrityUtils.isNullOrEmpty;
 //@Singleton
 public class AppPreferencesHelper implements PreferencesHelper {
 
+    private ObjectMapper objectMapper = null;
+    private TypeReference<List<String>> cookiesType = new TypeReference<List<String>>() {};
+
     private static final String PREF_KEY_CURRENT_USER_ID = "PREF_KEY_CURRENT_USER_ID";
     private static final String PREF_KEY_CURRENT_USER_PERSON_ID = "PREF_KEY_CURRENT_USER_PERSON_ID";
     private static final String PREF_KEY_CURRENT_USER_NAME = "PREF_KEY_CURRENT_USER_NAME";
     private static final String PREF_KEY_API_SERVER_URL = "PREF_KEY_API_SERVER_URL";
     private static final String PREF_KEY_NOTIFICATIONS_ENABLED = "PREF_KEY_NOTIFICATIONS_ENABLED";
+    private static final String PREF_KEY_COMMENT_NOTIFICATIONS_ENABLED = "PREF_KEY_COMMENT_NOTIFICATIONS_ENABLED";
+    private static final String PREF_AUTOSTART_ENABLED = "PREF_AUTOSTART_ENABLED";
     private static final String PREF_KEY_LOGIN_USERNAME = "PREF_KEY_LOGIN_USERNAME";
-    private static final String PREF_KEY_LECT_LIST_HOURS = "PREF_KEY_LECT_LIST_HOURS";
+    private static final String PREF_API_COOKIES = "PREF_API_COOKIES";
+    private static final String PREF_LECTURES_AHEAD_PERIOD_HOURS = "PREF_LECTURES_AHEAD_PERIOD_HOURS";
+    private static final String PREF_NOTIFY_BEFORE_PERIOD = "PREF_NOTIFY_BEFORE_PERIOD";
+    private static final String PREF_UPDATE_PERIOD = "PREF_UPDATE_PERIOD";
+
 
     private final SharedPreferences mPrefs;
 
-    private UserDto cached = null;
+    private UserDto cachedUser = null;
+
+    private List<String> cachedCookies = null;
 
     @Inject
     public AppPreferencesHelper(@ApplicationCtx Context context,
@@ -83,23 +100,23 @@ public class AppPreferencesHelper implements PreferencesHelper {
             setCurrentUserPersonId(user.getPerson().getId());
         }
 
-        cached = user;
+        cachedUser = user;
     }
 
     @Override
     public UserDto getCurrentUser() {
-        if (cached == null) {
+        if (cachedUser == null) {
             UserDto userDto = new UserDto();
             userDto.setId(getCurrentUserId());
             if (!isNullOrEmpty(userDto.getId())) {
                 userDto.setName(getCurrentUserName());
                 userDto.setPerson(new PersonDto());
                 userDto.getPerson().setId(getCurrentUserPersonId());
-                cached = userDto;
+                cachedUser = userDto;
             }
         }
 
-        return cached;
+        return cachedUser;
     }
 
     @Override
@@ -133,13 +150,69 @@ public class AppPreferencesHelper implements PreferencesHelper {
     }
 
     @Override
-    public long getLecturesListDuration() {
-        return getPreference(PREF_KEY_LECT_LIST_HOURS, 24L);
+    public void setCookies(List<String> cookies) {
+        cachedCookies = cookies;
+
+        setPreference(PREF_API_COOKIES, toJson(cookies));
     }
 
     @Override
-    public void setLecturesListDuration(long hours) {
-        setPreference(PREF_KEY_LECT_LIST_HOURS, hours);
+    public List<String> getCookies() {
+        if (!isNullOrEmpty(cachedCookies)) {
+            return cachedCookies;
+        }
+
+        return fromJson(getPreference(PREF_API_COOKIES, ""), cookiesType);
+    }
+
+    @Override
+    public long getFetchLecturesAheadHours() {
+        return getPreference(PREF_LECTURES_AHEAD_PERIOD_HOURS, 24L);
+    }
+
+    @Override
+    public void setFetchLecturesAheadHours(Long hours) {
+        setPreference(PREF_LECTURES_AHEAD_PERIOD_HOURS, hours);
+    }
+
+    @Override
+    public long getUpdatePeriod() {
+        return getPreference(PREF_UPDATE_PERIOD, 15L);
+    }
+
+    @Override
+    public long getNotifyBeforePeriod() {
+        return getPreference(PREF_NOTIFY_BEFORE_PERIOD, 30L);
+    }
+
+    @Override
+    public boolean isCommentNotificationsEnabled() {
+        return getPreference(PREF_KEY_COMMENT_NOTIFICATIONS_ENABLED, true);
+    }
+
+    @Override
+    public void setUpdatePeriod(long period) {
+        setPreference(PREF_UPDATE_PERIOD, period);
+    }
+
+    @Override
+    public void setNotifyBeforePeriod(long notifyEventsBeforePeriod) {
+        setPreference(PREF_NOTIFY_BEFORE_PERIOD, notifyEventsBeforePeriod);
+    }
+
+    @Override
+    public void setCommentNotificationsEnabled(boolean enabled) {
+        setPreference(PREF_KEY_COMMENT_NOTIFICATIONS_ENABLED, enabled);
+    }
+
+    @Override
+    public boolean isAutostartEnabled() {
+        return getPreference(PREF_AUTOSTART_ENABLED, true);
+    }
+
+    @Override
+    public void setAutostartEnabled(boolean enabled) {
+        setPreference(PREF_AUTOSTART_ENABLED, enabled);
     }
 
     private void setPreference(String key, String value) {
@@ -167,5 +240,40 @@ public class AppPreferencesHelper implements PreferencesHelper {
     private Long getPreference(String key, Long defaultValue) {
         Long value = mPrefs.getLong(key, defaultValue);
         return value;
+    }
+
+
+    private synchronized ObjectMapper getObjectMapper() {
+        if (objectMapper == null) {
+            objectMapper = new ObjectMapper();
+        }
+        return objectMapper;
+    }
+
+    private String toJson(Object object) {
+        try {
+            return getObjectMapper().writeValueAsString(object);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    private <T> T fromJson(String json, Class<T> type) {
+        try {
+            return getObjectMapper().readValue(json, type);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    private <T> T fromJson(String json, TypeReference<T> type) {
+        try {
+            return getObjectMapper().readValue(json, type);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }

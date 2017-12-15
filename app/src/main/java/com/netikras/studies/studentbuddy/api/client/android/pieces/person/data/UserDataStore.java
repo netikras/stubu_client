@@ -12,6 +12,8 @@ import com.netikras.tools.common.remote.AuthenticationDetail;
 
 public interface UserDataStore extends CrudDataStore<String, UserDto> {
 
+    void getCurrentUser(Subscriber<UserDto>... subscribers);
+
     void getByPerson(String id, Subscriber<UserDto>... subscribers);
 
     void getByName(String name, Subscriber<UserDto>... subscribers);

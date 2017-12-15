@@ -36,7 +36,7 @@ public class AssignmentDao extends GenericDao<AssignmentDto> {
 
     @Override
     public String getId(AssignmentDto entity) {
-        return null;
+        return entity.getId();
     }
 
     @Override

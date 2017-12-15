@@ -1,5 +1,6 @@
 package com.netikras.studies.studentbuddy.api.client.android.pieces.lecture.ui.impl.view;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.widget.Button;
@@ -12,6 +13,7 @@ import com.netikras.studies.studentbuddy.api.client.android.pieces.base.BaseActi
 import com.netikras.studies.studentbuddy.api.client.android.pieces.base.BaseViewFields;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.lecture.ui.presenter.TestMvpPresenter;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.lecture.ui.view.TestMvpView;
+import com.netikras.studies.studentbuddy.core.data.api.dto.school.AssignmentDto;
 import com.netikras.studies.studentbuddy.core.data.api.dto.school.DisciplineDto;
 import com.netikras.studies.studentbuddy.core.data.api.dto.school.DisciplineTestDto;
 import com.netikras.studies.studentbuddy.core.data.api.dto.school.LectureDto;
@@ -28,6 +30,7 @@ import butterknife.OnClick;
 
 import static com.netikras.studies.studentbuddy.api.client.android.util.CommonUtils.datetimeToDate;
 import static com.netikras.studies.studentbuddy.api.client.android.util.CommonUtils.datetimeToTime;
+import static com.netikras.tools.common.security.IntegrityUtils.isNullOrEmpty;
 
 /**
  * Created by netikras on 17.11.10.
@@ -73,16 +76,40 @@ public class TestInfoActivity extends BaseActivity implements TestMvpView {
         if (lastEntry != null) {
             show(lastEntry);
         }
-
+        handleIntent();
         executeTask();
     }
 
+    private void handleIntent() {
+        Intent intent = getIntent();
+        if (intent == null) {
+            return;
+        }
 
+        String cachedId = intent.getStringExtra("cached_id");
+        if (!isNullOrEmpty(cachedId)) {
+            presenter.getById(new ErrorsAwareSubscriber<DisciplineTestDto>() {
+                @Override
+                public void onSuccess(DisciplineTestDto response) {
+                    show(response);
+                }
+            }, cachedId);
+        }
+    }
+
+    @Override
     public ViewFields getFields() {
         return fields;
     }
 
+
+    @Override
     public void show(DisciplineTestDto dto) {
+        show(dto, false);
+    }
+
+    @Override
+    public void show(DisciplineTestDto dto, boolean createNew) {
         getFields().reset();
         if (dto == null) {
             return;
@@ -94,6 +121,11 @@ public class TestInfoActivity extends BaseActivity implements TestMvpView {
         getFields().setLecture(dto.getLecture());
         getFields().setExam(dto.isExam());
         getFields().setDiscipline(dto.getDiscipline());
+
+        if (createNew) {
+            getFields().setId(null);
+            getFields().enableEdit(true);
+        }
 
         if (lastEntry != null) {
             lastEntry = null;
@@ -124,8 +156,29 @@ public class TestInfoActivity extends BaseActivity implements TestMvpView {
         });
     }
 
+    @Override
+    protected void menuOnClickCreate() {
+        DisciplineTestDto dto = collect();
+        presenter.create(new ErrorsAwareSubscriber<DisciplineTestDto>() {
+            @Override
+            public void onSuccess(DisciplineTestDto response) {
+                show(response);
+            }
+        }, dto);
+    }
 
-    class ViewFields extends BaseViewFields {
+    @Override
+    protected void menuOnClickSave() {
+        DisciplineTestDto dto = collect();
+        presenter.update(new ErrorsAwareSubscriber<DisciplineTestDto>() {
+            @Override
+            public void onSuccess(DisciplineTestDto response) {
+                show(response);
+            }
+        }, dto);
+    }
+
+    public class ViewFields extends BaseViewFields {
         @BindView(R.id.txt_edit_test_id)
         EditText id;
         @BindView(R.id.txt_edit_test_description)

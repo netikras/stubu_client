@@ -1,11 +1,8 @@
 package com.netikras.studies.studentbuddy.api.client.android.pieces.settings.ui.impl.presenter;
 
-import android.content.Context;
-
 import com.netikras.studies.studentbuddy.api.client.android.data.DataManager;
 import com.netikras.studies.studentbuddy.api.client.android.data.prefs.PreferencesHelper;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.base.BasePresenter;
-import com.netikras.studies.studentbuddy.api.client.android.pieces.settings.ui.impl.view.SettingsActivity;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.settings.ui.presenter.SettingsMvpPresenter;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.settings.ui.view.SettingsMvpView;
 
@@ -45,9 +42,54 @@ public class SettingsPresenter<V extends SettingsMvpView> extends BasePresenter<
         return appPreferences.isNotificationsEnabled();
     }
 
+    @Override
+    public long getUpdatePeriod() {
+        return appPreferences.getUpdatePeriod();
+    }
 
     @Override
-    public void startView(Context fromContext) {
-        startView(fromContext, SettingsActivity.class);
+    public long getNotifyEventBeforePeriod() {
+        return appPreferences.getNotifyBeforePeriod();
     }
+
+    @Override
+    public long getLecturesAheadPeriod() {
+        return appPreferences.getFetchLecturesAheadHours();
+    }
+
+    @Override
+    public boolean isCommentNotificationsEnabled() {
+        return appPreferences.isCommentNotificationsEnabled();
+    }
+
+    @Override
+    public void saveUpdatePeriod(long updatePeriod) {
+        appPreferences.setUpdatePeriod(updatePeriod);
+    }
+
+    @Override
+    public void saveNotifyEventBeforePeriod(long notifyEventsBeforePeriod) {
+        appPreferences.setNotifyBeforePeriod(notifyEventsBeforePeriod);
+    }
+
+    @Override
+    public void saveLecturesAheadPeriod(long lecturesAheadPeriod) {
+        appPreferences.setFetchLecturesAheadHours(lecturesAheadPeriod);
+    }
+
+    @Override
+    public void saveCommentNotificationsSettings(boolean commentNotificationsEnabled) {
+        appPreferences.setCommentNotificationsEnabled(commentNotificationsEnabled);
+    }
+
+    @Override
+    public void saveAutostartEnabled(boolean autostartEnabled) {
+        appPreferences.setAutostartEnabled(autostartEnabled);
+    }
+
+    @Override
+    public boolean getAutostartEnabled() {
+        return appPreferences.isAutostartEnabled();
+    }
+
 }

@@ -11,13 +11,18 @@ import com.netikras.studies.studentbuddy.api.client.android.pieces.lecturer.data
 import com.netikras.studies.studentbuddy.api.client.android.pieces.main.ui.presenter.MainMvpPresenter;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.main.ui.view.MainMvpView;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.person.data.PersonDataStore;
+import com.netikras.studies.studentbuddy.api.client.android.pieces.person.data.UserDataStore;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.student.data.GuestDataStore;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.student.data.StudentDataStore;
+import com.netikras.studies.studentbuddy.api.client.android.service.ServiceRequest;
 import com.netikras.studies.studentbuddy.api.client.android.service.ServiceRequest.Result;
 import com.netikras.studies.studentbuddy.api.client.android.service.ServiceRequest.Subscriber;
 import com.netikras.studies.studentbuddy.api.misc.TimeUnit;
 import com.netikras.studies.studentbuddy.core.data.api.dto.PersonDto;
+import com.netikras.studies.studentbuddy.core.data.api.dto.meta.UserDto;
+import com.netikras.studies.studentbuddy.core.data.api.dto.school.AssignmentDto;
 import com.netikras.studies.studentbuddy.core.data.api.dto.school.DisciplineDto;
+import com.netikras.studies.studentbuddy.core.data.api.dto.school.DisciplineTestDto;
 import com.netikras.studies.studentbuddy.core.data.api.dto.school.LectureDto;
 import com.netikras.studies.studentbuddy.core.data.api.dto.school.LectureGuestDto;
 import com.netikras.studies.studentbuddy.core.data.api.dto.school.LecturerDto;
@@ -77,7 +82,7 @@ public class MainPresenter<V extends MainMvpView> extends BasePresenter<V> imple
     }
 
     private long getHours() {
-        return preferencesHelper.getLecturesListDuration();
+        return preferencesHelper.getFetchLecturesAheadHours();
     }
 
 
@@ -289,6 +294,12 @@ public class MainPresenter<V extends MainMvpView> extends BasePresenter<V> imple
         } else {
             doGetLecturesForGuests(getGuests(), getHours(), subscriber);
         }
+    }
+
+    @Override
+    public void getCurrentUser(Subscriber<UserDto> subscriber) {
+        getDataManager().getStore(UserDataStore.class).getCurrentUser(subscriber);
+        getDataManager().getStore(UserDataStore.class).processOrders(getContext());
     }
 
     private void doGetLecturesForGuests(Collection<LectureGuestDto> guests, long hours, Subscriber<Collection<LectureDto>> subscriber) {

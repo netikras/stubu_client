@@ -5,7 +5,9 @@ import com.netikras.studies.studentbuddy.api.client.android.data.cache.CacheMana
 import com.netikras.studies.studentbuddy.api.client.android.data.stores.BaseDataStore;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.discipline.data.CourseDataStore;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.discipline.data.DisciplineDataStore;
+import com.netikras.studies.studentbuddy.api.client.android.pieces.lecture.data.AssignmentDataStore;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.lecture.data.LectureDataStore;
+import com.netikras.studies.studentbuddy.api.client.android.pieces.lecture.data.TestDataStore;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.lecturer.data.LecturerDataStore;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.location.data.FloorDataStore;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.location.data.RoomDataStore;
@@ -91,6 +93,8 @@ public class DataManagerImpl implements DataManager {
         addStore(schoolDepartmentDataStore);
         addStore(roomDataStore);
         addStore(floorDataStore);
+        addStore(assignmentDataStore);
+        addStore(testDataStore);
 
     }
 
@@ -121,7 +125,10 @@ public class DataManagerImpl implements DataManager {
     RoomDataStore roomDataStore;
     @Inject
     FloorDataStore floorDataStore;
-
+    @Inject
+    AssignmentDataStore assignmentDataStore;
+    @Inject
+    TestDataStore testDataStore;
 
 
 }
