@@ -1,9 +1,11 @@
 package com.netikras.studies.studentbuddy.api.client.android;
 
 import android.app.Application;
+import android.content.Intent;
 
 import com.netikras.studies.studentbuddy.api.client.android.conf.di.DepInjector;
 import com.netikras.studies.studentbuddy.api.client.android.conf.di.component.ApplicationComponent;
+import com.netikras.studies.studentbuddy.api.client.android.service.ScheduledUpdateService;
 import com.netikras.studies.studentbuddy.core.data.api.dto.meta.UserDto;
 import com.netikras.studies.studentbuddy.core.data.api.dto.school.LectureGuestDto;
 import com.netikras.studies.studentbuddy.core.data.api.dto.school.LecturerDto;
@@ -39,6 +41,13 @@ public class App extends Application {
         current = this;
         mApplicationComponent = DepInjector.inject(this);
         roles = new PersonRoles();
+
+        startUpdateService();
+    }
+
+    private void startUpdateService() {
+        Intent intent = new Intent(this, ScheduledUpdateService.class);
+        startService(intent);
     }
 
     public static App getCurrent() {

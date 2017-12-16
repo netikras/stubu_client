@@ -106,7 +106,7 @@ public class CommentDao extends GenericDao<CommentDto> {
                 "            from " +
                 "                 ").append(getTableName()).append(" ");
         if (entityType != null) {
-            qryBuilder.append(" where entity_type = ").append(entityType);
+            qryBuilder.append(" where entity_type = '").append(entityType).append("'");
         }
         if (entityId != null) {
             if (entityType == null) {

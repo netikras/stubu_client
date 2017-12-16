@@ -157,6 +157,7 @@ public class DepInjector {
     private static ServiceComponent getServiceComponent(Service service) {
         if (serviceComponent == null) {
             serviceComponent = DaggerServiceComponent.builder()
+                    .applicationModule(new ApplicationModule(getApplicationComponent().application()))
                     .build();
         }
         return serviceComponent;
@@ -436,9 +437,9 @@ public class DepInjector {
 
 
 
-    public static PresenterComponent inject(ScheduledUpdateService service) {
+    public static ServiceComponent inject(ScheduledUpdateService service) {
         getServiceComponent(service).inject(service);
-        return getPresenterComponent();
+        return getServiceComponent();
     }
 
 }

@@ -16,4 +16,6 @@ public interface TestMvpPresenter<V extends TestMvpView> extends MvpPresenter<V>
     void create(Subscriber<DisciplineTestDto> subscriber, DisciplineTestDto dto);
 
     void update(Subscriber<DisciplineTestDto> subscriber, DisciplineTestDto dto);
+
+    void delete(Subscriber<Boolean> subscriber, String id);
 }

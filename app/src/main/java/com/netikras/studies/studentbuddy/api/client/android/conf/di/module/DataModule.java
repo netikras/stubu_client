@@ -9,6 +9,8 @@ import com.netikras.studies.studentbuddy.api.client.android.data.cache.CacheMana
 import com.netikras.studies.studentbuddy.api.client.android.data.prefs.AppPreferencesHelper;
 import com.netikras.studies.studentbuddy.api.client.android.data.prefs.PreferencesHelper;
 import com.netikras.studies.studentbuddy.api.client.android.data.stores.BaseDataStore;
+import com.netikras.studies.studentbuddy.api.client.android.pieces.comments.data.CommentsDataStore;
+import com.netikras.studies.studentbuddy.api.client.android.pieces.comments.data.impl.CommentsDataStoreApiImpl;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.discipline.data.CourseDataStore;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.discipline.data.DisciplineDataStore;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.discipline.data.impl.CourseDataStoreApiImpl;
@@ -230,4 +232,8 @@ public class DataModule {
         return store;
     }
 
+    @Provides
+    CommentsDataStore commentsDataStore(CommentsDataStoreApiImpl store) {
+        return store;
+    }
 }

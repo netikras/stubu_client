@@ -56,12 +56,12 @@ public class AssignmentDao extends GenericDao<AssignmentDto> {
             values.put("discipline_id", entity.getDiscipline().getId());
         }
 
-        if (entity.getLectureDto() != null) {
-            values.put("lecture_id", entity.getLectureDto().getId());
+        if (entity.getLecture() != null) {
+            values.put("lecture_id", entity.getLecture().getId());
         }
 
-        if (entity.getLectureDto() != null) {
-            values.put("lecture_id", entity.getLectureDto().getId());
+        if (entity.getLecture() != null) {
+            values.put("lecture_id", entity.getLecture().getId());
         }
     }
 
@@ -84,8 +84,8 @@ public class AssignmentDao extends GenericDao<AssignmentDto> {
 
         id = results.getString("lecture_id");
         if (!isNullOrEmpty(id)) {
-            assignment.setLectureDto(new LectureDto());
-            assignment.getLectureDto().setId(id);
+            assignment.setLecture(new LectureDto());
+            assignment.getLecture().setId(id);
         }
 
         return assignment;
@@ -97,7 +97,7 @@ public class AssignmentDao extends GenericDao<AssignmentDto> {
             return entity;
         }
 
-        entity.setLectureDto(prefill(entity.getLectureDto(), lectureCache));
+        entity.setLecture(prefill(entity.getLecture(), lectureCache));
 
         return entity;
     }
@@ -109,7 +109,7 @@ public class AssignmentDao extends GenericDao<AssignmentDto> {
         }
         super.putWithImmediates(entity);
 
-        lectureCache.put(entity.getLectureDto());
+        lectureCache.put(entity.getLecture());
 
         return entity;
     }

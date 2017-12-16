@@ -2,12 +2,15 @@ package com.netikras.studies.studentbuddy.api.client.android.service;
 
 import android.app.AlarmManager;
 import android.app.IntentService;
+import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
+import android.util.Log;
 
 import com.netikras.studies.studentbuddy.api.client.android.R;
 import com.netikras.studies.studentbuddy.api.client.android.conf.di.DepInjector;
@@ -15,7 +18,6 @@ import com.netikras.studies.studentbuddy.api.client.android.data.DataManager;
 import com.netikras.studies.studentbuddy.api.client.android.data.cache.CacheManager;
 import com.netikras.studies.studentbuddy.api.client.android.data.cache.db.dao.LectureDao;
 import com.netikras.studies.studentbuddy.api.client.android.data.prefs.PreferencesHelper;
-import com.netikras.studies.studentbuddy.api.client.android.pieces.base.BaseActivity;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.base.BaseActivity.ViewTask;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.base.MvpView;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.comments.data.CommentsDataStore;
@@ -24,7 +26,8 @@ import com.netikras.studies.studentbuddy.api.client.android.pieces.lecture.ui.im
 import com.netikras.studies.studentbuddy.api.client.android.pieces.lecture.ui.impl.view.LectureInfoActivity;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.lecture.ui.impl.view.TestInfoActivity;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.lecturer.data.LecturerDataStore;
-import com.netikras.studies.studentbuddy.api.client.android.pieces.lecturer.ui.impl.view.LecturerInfoActivity;
+import com.netikras.studies.studentbuddy.api.client.android.pieces.login.ui.impl.view.LoginActivity;
+import com.netikras.studies.studentbuddy.api.client.android.pieces.main.ui.impl.view.MainActivity;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.person.data.UserDataStore;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.student.data.GuestDataStore;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.student.data.StudentDataStore;
@@ -41,17 +44,18 @@ import com.netikras.studies.studentbuddy.core.data.api.dto.school.LectureDto;
 import com.netikras.studies.studentbuddy.core.data.api.dto.school.LectureGuestDto;
 import com.netikras.studies.studentbuddy.core.data.api.dto.school.LecturerDto;
 import com.netikras.studies.studentbuddy.core.data.api.dto.school.StudentDto;
+import com.netikras.tools.common.exception.ErrorBody;
+import com.netikras.tools.common.exception.ErrorsCollection;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 import javax.inject.Inject;
 
+import static com.netikras.tools.common.remote.http.HttpStatus.UNAUTHORIZED;
 import static com.netikras.tools.common.security.IntegrityUtils.isNullOrEmpty;
 
 /**
@@ -60,6 +64,7 @@ import static com.netikras.tools.common.security.IntegrityUtils.isNullOrEmpty;
 
 public class ScheduledUpdateService extends IntentService {
 
+    private static final String TAG = "UpdateService";
 
     LectureDao lectureCache;
 
@@ -69,13 +74,15 @@ public class ScheduledUpdateService extends IntentService {
     PreferencesHelper preferencesHelper;
     @Inject
     Exchange exchange;
+    @Inject
+    CacheManager cacheManager;
 
     private static final int SVC_ID = R.id.UPDATES_SERVICE_ID;
 
 
-    public ScheduledUpdateService(CacheManager cacheManager) {
+    public ScheduledUpdateService() {
         super("ScheduledUpdateService");
-        lectureCache = cacheManager.getDao(LectureDao.class);
+        Log.i(TAG, "Constructing updater");
     }
 
 
@@ -111,8 +118,14 @@ public class ScheduledUpdateService extends IntentService {
     }
 
     @Override
-    protected void onHandleIntent(@Nullable Intent intent) {
+    public void onCreate() {
+        super.onCreate();
         setUp();
+    }
+
+    @Override
+    protected void onHandleIntent(@Nullable Intent intent) {
+        Log.d(TAG, "handling intent...");
 
         boolean autostarted = intent.getBooleanExtra("autostart", false);
         if (autostarted) {
@@ -128,6 +141,7 @@ public class ScheduledUpdateService extends IntentService {
 
     protected void setUp() {
         DepInjector.inject(this);
+        lectureCache = cacheManager.getDao(LectureDao.class);
 //        onAttach(this);
 //        presenter.onAttach(this);
 //        fields = initFields(new StudentInfoActivity.ViewFields());
@@ -140,6 +154,7 @@ public class ScheduledUpdateService extends IntentService {
 
 
     private void update() {
+        Log.d(TAG, "going for update()");
 
         final Map<String, String> entitiesComments = new ConcurrentHashMap<>();
 
@@ -180,10 +195,34 @@ public class ScheduledUpdateService extends IntentService {
             }
 
             @Override
+            public void onError(ErrorsCollection errors) {
+                super.onError(errors);
+                Log.d(TAG, "" + errors);
+                if (isNullOrEmpty(errors)) {
+                    return;
+                }
+                for (ErrorBody error : errors) {
+                    if (error == null) {
+                        continue;
+                    }
+                    if (UNAUTHORIZED.getCode() == error.getStatus()) {
+                        showNotification(error.getMessage1(), error.getMessage2(), LoginActivity.class, "");
+                        continue;
+                    }
+                    showNotification(error.getMessage1(), error.getMessage2(), MainActivity.class, "");
+                }
+            }
+
+            @Override
             public void onSuccess(UserDto response) {
                 preferencesHelper.setCurrentUser(response);
 
                 if (response == null || isNullOrEmpty(response.getId())) {
+                    executeOnError(new ErrorBody().setMessage1("Unauthorized").setMessage2("Currently logged-in user is unknown"));
+                    return;
+                }
+                if ("guest".equalsIgnoreCase(response.getName())) {
+                    executeOnError(new ErrorBody().setMessage1("Unauthorized").setMessage2("Not logged in"));
                     return;
                 }
                 getUserDataStore().getById(response.getId(), new Subscriber<UserDto>() {
@@ -337,20 +376,19 @@ public class ScheduledUpdateService extends IntentService {
     }
 
 
-
     private void notifyCommentsForLecture(String id) {
-        showNotificationForComments("Lecture has new comments", "", LectureInfoActivity.class, id);
+        showNotification("Lecture has new comments", "Click to see more", LectureInfoActivity.class, id);
     }
 
     private void notifyCommentsForAssignment(String id) {
-        showNotificationForComments("Lecture has new comments", "", AssignmentActivity.class, id);
+        showNotification("Lecture has new comments", "Click to see more", AssignmentActivity.class, id);
     }
 
     private void notifyCommentsForTest(String id) {
-        showNotificationForComments("Lecture has new comments", "", TestInfoActivity.class, id);
+        showNotification("Lecture has new comments", "Click to see more", TestInfoActivity.class, id);
     }
 
-    private void showNotificationForComments(String title, String text, Class view, String entityId) {
+    private void showNotification(String title, String text, Class view, String entityId) {
         PendingIntent pendingIntent = null;
         if (view != null) {
             Intent intent = new Intent(ScheduledUpdateService.this, view);
@@ -360,7 +398,23 @@ public class ScheduledUpdateService extends IntentService {
     }
 
     public static void showNotification(Context context, String title, String text, PendingIntent intent) {
-        NotificationCompat.Builder notification = new NotificationCompat.Builder(context, "")
+//        NotificationCompat.Builder notification = new NotificationCompat.Builder(context, "")
+        NotificationCompat.Builder notification = null;
+
+        if (Build.VERSION.SDK_INT < 26) {
+            notification = new NotificationCompat.Builder(context);
+        } else {
+            NotificationManager notificationManager =
+                    (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+            NotificationChannel channel = new NotificationChannel("default",
+                    "Channel name",
+                    NotificationManager.IMPORTANCE_DEFAULT);
+            channel.setDescription("Channel description");
+            notificationManager.createNotificationChannel(channel);
+            notification = new NotificationCompat.Builder(context, "default");
+        }
+
+        notification
                 .setSmallIcon(R.drawable.icon)
                 .setContentTitle(title)
                 .setContentText(text)

@@ -8,10 +8,13 @@ import com.netikras.studies.studentbuddy.api.client.android.R;
 
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 import static com.netikras.studies.studentbuddy.api.client.android.util.AppConstants.DATE_FORMAT;
 import static com.netikras.studies.studentbuddy.api.client.android.util.AppConstants.TIME_FORMAT;
 import static com.netikras.studies.studentbuddy.api.client.android.util.CommonUtils.parseDatetime;
+import static com.netikras.tools.common.security.IntegrityUtils.isNullOrEmpty;
 
 /**
  * Created by netikras on 17.10.31.
@@ -69,13 +72,13 @@ public abstract class BaseViewFields {
         clean();
     }
 
-    protected Collection<TextView> getEditableFields() {
-        return getAllFields();
+    protected Map<TextView, Integer> getEditableFields() {
+        return new HashMap<>();
     }
 
     public void enableEdit(boolean enable) {
         if (getEditableFields() != null) {
-            for (TextView textView : getEditableFields()) {
+            for (TextView textView : getEditableFields().keySet()) {
                 setEditable(textView, enable);
             }
         }
@@ -87,8 +90,15 @@ public abstract class BaseViewFields {
         view.setFocusableInTouchMode(editable);
 
         if (editable) {
-            Integer oldType = (Integer) view.getTag(R.id.TAG_ONLINE_ID);
-            view.setInputType(oldType == null ? InputType.TYPE_CLASS_TEXT : oldType);
+            Integer originalType = InputType.TYPE_CLASS_TEXT;
+            Map<TextView, Integer> types = getEditableFields();
+            if (!isNullOrEmpty(types)) {
+                originalType = types.get(view);
+                if (originalType == null) {
+                    originalType = InputType.TYPE_CLASS_TEXT;
+                }
+            }
+            view.setInputType(originalType);
         } else {
             view.setTag(R.id.TAG_ONLINE_ID, view.getInputType());
             view.setInputType(InputType.TYPE_NULL);

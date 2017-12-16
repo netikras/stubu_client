@@ -304,10 +304,6 @@ public class LayoutActivity extends BaseActivity implements LayoutMvpView, View.
             return Arrays.asList(id);
         }
 
-        @Override
-        protected Collection<TextView> getEditableFields() {
-            return Arrays.asList();
-        }
 
         @Override
         public void enableEdit(boolean enable) {

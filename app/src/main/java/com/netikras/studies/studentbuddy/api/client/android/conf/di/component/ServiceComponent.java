@@ -1,7 +1,6 @@
 
 package com.netikras.studies.studentbuddy.api.client.android.conf.di.component;
 
-import com.netikras.studies.studentbuddy.api.client.android.conf.di.PerService;
 import com.netikras.studies.studentbuddy.api.client.android.conf.di.module.ApiConsumerModule;
 import com.netikras.studies.studentbuddy.api.client.android.conf.di.module.ApiHttpModule;
 import com.netikras.studies.studentbuddy.api.client.android.conf.di.module.ApplicationModule;

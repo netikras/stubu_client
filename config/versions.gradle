@@ -13,4 +13,4 @@ ext.butterKnifeVersion = '8.8.1'
 
 ext.okHttpVersion = '3.7.0'
 
-ext.netikrasCommonsVersion = '1.1.2.3-SNAPSHOT'
+ext.netikrasCommonsVersion = '1.1.2.4-SNAPSHOT'

@@ -3,6 +3,7 @@ package com.netikras.studies.studentbuddy.api.client.android.pieces.person.ui.im
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.InputType;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -13,7 +14,6 @@ import com.netikras.studies.studentbuddy.api.client.android.pieces.base.BaseActi
 import com.netikras.studies.studentbuddy.api.client.android.pieces.base.BaseViewFields;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.person.ui.presenter.UserMvpPresenter;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.person.ui.view.UserMvpView;
-import com.netikras.studies.studentbuddy.api.client.android.service.ServiceRequest.Result;
 import com.netikras.studies.studentbuddy.api.client.android.service.ServiceRequest.Subscriber;
 import com.netikras.studies.studentbuddy.core.data.api.dto.PersonDto;
 import com.netikras.studies.studentbuddy.core.data.api.dto.meta.UserDto;
@@ -21,7 +21,7 @@ import com.netikras.studies.studentbuddy.core.data.api.dto.meta.UserDto;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -238,8 +238,14 @@ public class UserInfoActivity extends BaseActivity implements UserMvpView {
         }
 
         @Override
-        protected Collection<TextView> getEditableFields() {
-            return Arrays.asList(identification, username, password);
+        protected Map<TextView, Integer> getEditableFields() {
+            Map<TextView, Integer> types = super.getEditableFields();
+
+            types.put(identification, InputType.TYPE_CLASS_TEXT);
+            types.put(username, InputType.TYPE_CLASS_TEXT);
+            types.put(password, InputType.TYPE_TEXT_VARIATION_PASSWORD);
+
+            return types;
         }
 
         public String getId() {

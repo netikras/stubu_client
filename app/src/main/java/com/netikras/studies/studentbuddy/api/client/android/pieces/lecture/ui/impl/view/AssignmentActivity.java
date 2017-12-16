@@ -3,6 +3,7 @@ package com.netikras.studies.studentbuddy.api.client.android.pieces.lecture.ui.i
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.text.InputType;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -20,6 +21,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -114,7 +116,7 @@ public class AssignmentActivity extends BaseActivity implements AssignmentMvpVie
         getFields().setAnnouncedDatetime(dto.getCreatedOn());
         getFields().setId(dto.getId());
         getFields().setDescription(dto.getDescription());
-        getFields().setLecture(dto.getLectureDto());
+        getFields().setLecture(dto.getLecture());
         getFields().setDiscipline(dto.getDiscipline());
 
         if (createNew) {
@@ -131,7 +133,7 @@ public class AssignmentActivity extends BaseActivity implements AssignmentMvpVie
         AssignmentDto dto = new AssignmentDto();
 
         dto.setId(getFields().getId());
-        dto.setLectureDto(getFields().getLecture());
+        dto.setLecture(getFields().getLecture());
         dto.setCreatedOn(getFields().getAnnouncedDatetime());
         dto.setDiscipline(getFields().getDiscipline());
         dto.setDue(getFields().getDueDatetime());
@@ -146,7 +148,7 @@ public class AssignmentActivity extends BaseActivity implements AssignmentMvpVie
         presenter.create(new ErrorsAwareSubscriber<AssignmentDto>() {
             @Override
             public void onSuccess(AssignmentDto response) {
-                show(response);
+                runOnUiThread(() -> show(response));
             }
         }, assignmentDto);
     }
@@ -157,9 +159,29 @@ public class AssignmentActivity extends BaseActivity implements AssignmentMvpVie
         presenter.update(new ErrorsAwareSubscriber<AssignmentDto>() {
             @Override
             public void onSuccess(AssignmentDto response) {
-                show(response);
+                runOnUiThread(() -> show(response));
             }
         }, dto);
+    }
+
+    @Override
+    protected void menuOnClickDelete() {
+        presenter.delete(new ErrorsAwareSubscriber<Boolean>() {
+            @Override
+            public void onSuccess(Boolean su) {
+                runOnUiThread(() -> finish());
+            }
+        }, getFields().getId());
+    }
+
+    @Override
+    protected void menuOnClickRefresh() {
+        presenter.getById(new ErrorsAwareSubscriber<AssignmentDto>() {
+            @Override
+            public void onSuccess(AssignmentDto response) {
+                runOnUiThread(() -> show(response));
+            }
+        }, getFields().getId());
     }
 
     public class ViewFields extends BaseViewFields {
@@ -274,8 +296,17 @@ public class AssignmentActivity extends BaseActivity implements AssignmentMvpVie
         }
 
         @Override
-        protected Collection<TextView> getEditableFields() {
-            return Arrays.asList(title, description, announcedDate, announcedTime, dueDate, dueTime);
+        protected Map<TextView, Integer> getEditableFields() {
+            Map<TextView, Integer> types = super.getEditableFields();
+
+            types.put(title, InputType.TYPE_TEXT_FLAG_MULTI_LINE);
+            types.put(description, InputType.TYPE_TEXT_FLAG_MULTI_LINE);
+            types.put(announcedDate, InputType.TYPE_DATETIME_VARIATION_DATE);
+            types.put(announcedTime, InputType.TYPE_DATETIME_VARIATION_TIME);
+            types.put(dueDate, InputType.TYPE_DATETIME_VARIATION_DATE);
+            types.put(dueTime, InputType.TYPE_DATETIME_VARIATION_TIME);
+
+            return types;
         }
 
         @Override

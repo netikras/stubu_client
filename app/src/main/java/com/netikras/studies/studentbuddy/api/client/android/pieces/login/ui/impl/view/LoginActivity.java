@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.text.InputType;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -20,6 +21,7 @@ import com.netikras.studies.studentbuddy.core.data.api.dto.meta.UserDto;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -114,6 +116,17 @@ public class LoginActivity extends BaseActivity implements LoginMvpView {
         @Override
         public void enableEdit(boolean enable) {
 
+        }
+
+
+        @Override
+        protected Map<TextView, Integer> getEditableFields() {
+            Map<TextView, Integer> types = super.getEditableFields();
+
+            types.put(username, InputType.TYPE_CLASS_TEXT);
+            types.put(password, InputType.TYPE_TEXT_VARIATION_PASSWORD);
+
+            return types;
         }
 
         public String getUsername() {

@@ -2,6 +2,7 @@ package com.netikras.studies.studentbuddy.api.client.android.pieces.lecture.ui.i
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.InputType;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -32,12 +33,11 @@ import com.netikras.studies.studentbuddy.core.data.api.dto.school.LectureGuestDt
 import com.netikras.studies.studentbuddy.core.data.api.dto.school.LecturerDto;
 import com.netikras.studies.studentbuddy.core.data.api.dto.school.StudentsGroupDto;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
-import java.util.Objects;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -436,10 +436,14 @@ public class LectureInfoActivity extends BaseActivity implements LectureMvpView 
 
             @Override
             public void execute() {
+                LectureDto lecture = new LectureDto();
+                lecture.setId(getFields().getId());
+                lecture.setDiscipline(getFields().getDiscipline());
+
                 DisciplineTestDto testDto = new DisciplineTestDto();
-                testDto.setLecture(collect());
-                testDto.setStartsOn(testDto.getLecture().getStartsOn());
-                testDto.setDiscipline(testDto.getLecture().getDiscipline());
+                testDto.setLecture(lecture);
+                testDto.setStartsOn(getFields().getStartDatetime());
+                testDto.setDiscipline(getFields().getDiscipline());
                 getActivity().show(testDto, true);
             }
         });
@@ -457,17 +461,30 @@ public class LectureInfoActivity extends BaseActivity implements LectureMvpView 
 
             @Override
             public void execute() {
+                LectureDto lecture = new LectureDto();
+                lecture.setId(getFields().getId());
+                lecture.setDiscipline(getFields().getDiscipline());
+
                 AssignmentDto dto = new AssignmentDto();
-                dto.setLectureDto(collect());
+                dto.setLecture(lecture);
                 dto.setCreatedOn(new Date());
-                dto.setDiscipline(dto.getLectureDto().getDiscipline());
-                dto.setDue(dto.getLectureDto().getStartsOn());
+                dto.setDiscipline(getFields().getDiscipline());
+                dto.setDue(getFields().getStartDatetime());
                 getActivity().show(dto, true);
             }
         });
 
     }
 
+    @Override
+    protected void menuOnClickRefresh() {
+        presenter.getById(new ErrorsAwareSubscriber<LectureDto>() {
+            @Override
+            public void onSuccess(LectureDto response) {
+                runOnUiThread(() -> show(response));
+            }
+        }, getFields().getId());
+    }
 
     public class ViewFields extends BaseViewFields {
 
@@ -758,12 +775,17 @@ public class LectureInfoActivity extends BaseActivity implements LectureMvpView 
 
         @Override
         protected Collection<TextView> getAllFields() {
-            return Arrays.asList(id, name, startDate, location, startTime, lecturer, studentsGroup, startTime, timeRemaining, startDate, assignments, tests, comments, guests);
+            return Arrays.asList(id, name, startDate, location, startTime, lecturer, studentsGroup, timeRemaining, assignments, tests, comments, guests);
         }
 
         @Override
-        protected Collection<TextView> getEditableFields() {
-            return Arrays.asList(name, startDate, startTime);
+        protected Map<TextView, Integer> getEditableFields() {
+            Map<TextView, Integer> types = super.getEditableFields();
+
+            types.put(startDate, InputType.TYPE_DATETIME_VARIATION_DATE);
+            types.put(startTime, InputType.TYPE_DATETIME_VARIATION_TIME);
+
+            return types;
         }
 
         @Override

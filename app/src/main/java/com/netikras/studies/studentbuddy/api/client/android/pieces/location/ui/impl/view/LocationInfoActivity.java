@@ -488,11 +488,6 @@ public class LocationInfoActivity extends BaseActivity implements LocationMvpVie
         }
 
         @Override
-        protected Collection<TextView> getEditableFields() {
-            return Arrays.asList(name);
-        }
-
-        @Override
         public void enableEdit(boolean enable) {
             super.enableEdit(enable);
 

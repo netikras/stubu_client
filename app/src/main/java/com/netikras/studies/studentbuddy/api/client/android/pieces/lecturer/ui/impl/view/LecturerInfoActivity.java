@@ -1,6 +1,7 @@
 package com.netikras.studies.studentbuddy.api.client.android.pieces.lecturer.ui.impl.view;
 
 import android.os.Bundle;
+import android.text.InputType;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -16,7 +17,6 @@ import com.netikras.studies.studentbuddy.api.client.android.pieces.discipline.ui
 import com.netikras.studies.studentbuddy.api.client.android.pieces.lecturer.ui.presenter.LecturerMvpPresenter;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.lecturer.ui.view.LecturerMvpView;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.person.ui.impl.view.PersonInfoActivity;
-import com.netikras.studies.studentbuddy.api.client.android.service.ServiceRequest;
 import com.netikras.studies.studentbuddy.core.data.api.dto.PersonDto;
 import com.netikras.studies.studentbuddy.core.data.api.dto.school.DisciplineDto;
 import com.netikras.studies.studentbuddy.core.data.api.dto.school.LecturerDto;
@@ -25,7 +25,7 @@ import com.netikras.studies.studentbuddy.core.data.api.dto.school.SchoolDto;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -285,8 +285,12 @@ public class LecturerInfoActivity extends BaseActivity implements LecturerMvpVie
         }
 
         @Override
-        protected Collection<TextView> getEditableFields() {
-            return Arrays.asList(degree);
+        protected Map<TextView, Integer> getEditableFields() {
+            Map<TextView, Integer> types = super.getEditableFields();
+
+            types.put(degree, InputType.TYPE_TEXT_FLAG_MULTI_LINE);
+
+            return types;
         }
 
         @Override

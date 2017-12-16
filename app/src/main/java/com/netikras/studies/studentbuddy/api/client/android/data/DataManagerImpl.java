@@ -3,6 +3,7 @@ package com.netikras.studies.studentbuddy.api.client.android.data;
 import com.netikras.studies.studentbuddy.api.client.android.conf.di.AllDatastores;
 import com.netikras.studies.studentbuddy.api.client.android.data.cache.CacheManager;
 import com.netikras.studies.studentbuddy.api.client.android.data.stores.BaseDataStore;
+import com.netikras.studies.studentbuddy.api.client.android.pieces.comments.data.CommentsDataStore;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.discipline.data.CourseDataStore;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.discipline.data.DisciplineDataStore;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.lecture.data.AssignmentDataStore;
@@ -95,7 +96,7 @@ public class DataManagerImpl implements DataManager {
         addStore(floorDataStore);
         addStore(assignmentDataStore);
         addStore(testDataStore);
-
+        addStore(commentsDataStore);
     }
 
 
@@ -129,6 +130,7 @@ public class DataManagerImpl implements DataManager {
     AssignmentDataStore assignmentDataStore;
     @Inject
     TestDataStore testDataStore;
-
+    @Inject
+    CommentsDataStore commentsDataStore;
 
 }

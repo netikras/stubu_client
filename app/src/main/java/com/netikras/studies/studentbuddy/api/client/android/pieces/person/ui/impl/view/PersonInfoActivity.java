@@ -2,6 +2,7 @@ package com.netikras.studies.studentbuddy.api.client.android.pieces.person.ui.im
 
 import android.content.Context;
 import android.os.Bundle;
+import android.text.InputType;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.EditText;
@@ -20,6 +21,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -174,8 +176,18 @@ public class PersonInfoActivity extends BaseActivity implements PersonMvpView {
         }
 
         @Override
-        protected Collection<TextView> getEditableFields() {
-            return Arrays.asList(identificator, name, surname, email, phoneNo, dateCreated);
+        protected Map<TextView, Integer> getEditableFields() {
+            Map<TextView, Integer> types = super.getEditableFields();
+
+            types.put(identificator, InputType.TYPE_CLASS_TEXT);
+            types.put(name, InputType.TYPE_TEXT_VARIATION_PERSON_NAME);
+            types.put(surname, InputType.TYPE_TEXT_VARIATION_PERSON_NAME);
+            types.put(email, InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
+            types.put(phoneNo, InputType.TYPE_CLASS_PHONE);
+            types.put(dateCreated, InputType.TYPE_DATETIME_VARIATION_DATE);
+
+
+            return types;
         }
 
         public String getId() {

@@ -3,6 +3,7 @@ package com.netikras.studies.studentbuddy.api.client.android.pieces.settings.ui.
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.InputType;
 import android.widget.EditText;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -18,6 +19,7 @@ import com.netikras.tools.common.remote.RemoteEndpointServer;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -28,6 +30,7 @@ import static com.netikras.tools.common.security.IntegrityUtils.isNullOrEmpty;
 public class SettingsActivity extends BaseActivity implements SettingsMvpView {
 
 
+    @Inject
     SettingsMvpPresenter<SettingsMvpView> presenter;
 
     private ViewFields fields;
@@ -125,8 +128,15 @@ public class SettingsActivity extends BaseActivity implements SettingsMvpView {
         }
 
         @Override
-        protected Collection<TextView> getEditableFields() {
-            return Arrays.asList(url, lecturesAheadPeriod, updatePeriod, notifyEventBefore);
+        protected Map<TextView, Integer> getEditableFields() {
+            Map<TextView, Integer> types = super.getEditableFields();
+
+            types.put(url, InputType.TYPE_TEXT_VARIATION_URI);
+            types.put(lecturesAheadPeriod, InputType.TYPE_NUMBER_VARIATION_NORMAL);
+            types.put(updatePeriod, InputType.TYPE_NUMBER_VARIATION_NORMAL);
+            types.put(notifyEventBefore, InputType.TYPE_NUMBER_VARIATION_NORMAL);
+
+            return types;
         }
 
         public String getUrl() {

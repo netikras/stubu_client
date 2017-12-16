@@ -2,6 +2,7 @@ package com.netikras.studies.studentbuddy.api.client.android.pieces.school.ui.im
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.text.InputType;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -22,7 +23,7 @@ import com.netikras.studies.studentbuddy.core.data.api.dto.school.SchoolDto;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -248,8 +249,12 @@ public class SchoolActivity extends BaseActivity implements SchoolMvpView {
         }
 
         @Override
-        protected Collection<TextView> getEditableFields() {
-            return Arrays.asList(title);
+        protected Map<TextView, Integer> getEditableFields() {
+            Map<TextView, Integer> types = super.getEditableFields();
+
+            types.put(title, InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
+
+            return types;
         }
 
         @Override

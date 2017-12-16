@@ -86,7 +86,7 @@ public class LectureDataStoreApiImpl extends ApiBasedDataStore<String, LectureDt
 
                 if (!isNullOrEmpty(lectureDto.getAssignments())) {
                     for (AssignmentDto dto : lectureDto.getAssignments()) {
-                        dto.setLectureDto(lectureDto);
+                        dto.setLecture(lectureDto);
                         assignmentCache.putWithImmediates(dto);
                     }
                 }

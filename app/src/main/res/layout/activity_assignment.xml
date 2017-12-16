@@ -70,6 +70,7 @@
             android:ems="10"
             android:inputType="textPersonName"
             android:text="Namų darbai"
+            android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/txt_lbl_assignment_id"
             app:layout_constraintTop_toBottomOf="@+id/txt_edit_assignment_id" />
@@ -80,6 +81,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:text="Pavadinimas"
+            android:visibility="gone"
             app:layout_constraintBaseline_toBaselineOf="@+id/txt_edit_assignment_title"
             app:layout_constraintStart_toStartOf="parent" />
 

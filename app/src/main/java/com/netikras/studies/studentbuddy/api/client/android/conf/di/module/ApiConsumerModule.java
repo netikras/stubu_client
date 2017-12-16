@@ -1,6 +1,7 @@
 package com.netikras.studies.studentbuddy.api.client.android.conf.di.module;
 
 import com.netikras.studies.studentbuddy.api.client.android.conf.di.module.carrier.RestConfig;
+import com.netikras.studies.studentbuddy.api.comments.generated.CommentsApiConsumer;
 import com.netikras.studies.studentbuddy.api.location.generated.FloorApiConsumer;
 import com.netikras.studies.studentbuddy.api.location.generated.LocationApiConsumer;
 import com.netikras.studies.studentbuddy.api.location.generated.SchoolApiConsumer;
@@ -139,6 +140,11 @@ public class ApiConsumerModule {
     @Provides
     public AdminStudentApiConsumer adminStudentApiConsumer(RestConfig config) {
         return prepare(new AdminStudentApiConsumer(), config);
+    }
+
+    @Provides
+    public CommentsApiConsumer commentsApiConsumer(RestConfig config) {
+        return prepare(new CommentsApiConsumer(), config);
     }
 
 }

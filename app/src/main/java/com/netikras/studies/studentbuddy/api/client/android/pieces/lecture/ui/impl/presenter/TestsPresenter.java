@@ -44,4 +44,10 @@ public class TestsPresenter<V extends TestMvpView> extends BasePresenter<V> impl
         getDataStore().processOrders(getContext());
     }
 
+    @Override
+    public void delete(Subscriber<Boolean> subscriber, String id) {
+        getDataStore().delete(id, subscriber);
+        getDataStore().processOrders(getContext());
+    }
+
 }

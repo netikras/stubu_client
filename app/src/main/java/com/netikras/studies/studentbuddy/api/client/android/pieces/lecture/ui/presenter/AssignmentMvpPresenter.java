@@ -16,4 +16,6 @@ public interface AssignmentMvpPresenter<V extends AssignmentMvpView> extends Mvp
     void create(Subscriber<AssignmentDto> subscriber, AssignmentDto assignmentDto);
 
     void update(Subscriber<AssignmentDto> subscriber, AssignmentDto assignmentDto);
+
+    void delete(Subscriber<Boolean> subscriber, String id);
 }

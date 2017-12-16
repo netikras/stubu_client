@@ -3,6 +3,7 @@ package com.netikras.studies.studentbuddy.api.client.android.pieces.lecture.ui.i
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.text.InputType;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -13,7 +14,6 @@ import com.netikras.studies.studentbuddy.api.client.android.pieces.base.BaseActi
 import com.netikras.studies.studentbuddy.api.client.android.pieces.base.BaseViewFields;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.lecture.ui.presenter.TestMvpPresenter;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.lecture.ui.view.TestMvpView;
-import com.netikras.studies.studentbuddy.core.data.api.dto.school.AssignmentDto;
 import com.netikras.studies.studentbuddy.core.data.api.dto.school.DisciplineDto;
 import com.netikras.studies.studentbuddy.core.data.api.dto.school.DisciplineTestDto;
 import com.netikras.studies.studentbuddy.core.data.api.dto.school.LectureDto;
@@ -22,6 +22,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -162,7 +163,7 @@ public class TestInfoActivity extends BaseActivity implements TestMvpView {
         presenter.create(new ErrorsAwareSubscriber<DisciplineTestDto>() {
             @Override
             public void onSuccess(DisciplineTestDto response) {
-                show(response);
+                runOnUiThread(() -> show(response));
             }
         }, dto);
     }
@@ -173,10 +174,32 @@ public class TestInfoActivity extends BaseActivity implements TestMvpView {
         presenter.update(new ErrorsAwareSubscriber<DisciplineTestDto>() {
             @Override
             public void onSuccess(DisciplineTestDto response) {
-                show(response);
+                runOnUiThread(() -> show(response));
             }
         }, dto);
     }
+
+    @Override
+    protected void menuOnClickDelete() {
+        presenter.delete(new ErrorsAwareSubscriber<Boolean>() {
+            @Override
+            public void onSuccess(Boolean su) {
+                runOnUiThread(() -> finish());
+            }
+        }, getFields().getId());
+    }
+
+    @Override
+    protected void menuOnClickRefresh() {
+        presenter.getById(new ErrorsAwareSubscriber<DisciplineTestDto>() {
+            @Override
+            public void onSuccess(DisciplineTestDto response) {
+                runOnUiThread(() -> show(response));
+            }
+        }, getFields().getId());
+    }
+
+
 
     public class ViewFields extends BaseViewFields {
         @BindView(R.id.txt_edit_test_id)
@@ -278,8 +301,14 @@ public class TestInfoActivity extends BaseActivity implements TestMvpView {
         }
 
         @Override
-        protected Collection<TextView> getEditableFields() {
-            return Arrays.asList(description, startDate, startTime);
+        protected Map<TextView, Integer> getEditableFields() {
+            Map<TextView, Integer> types = super.getEditableFields();
+
+            types.put(description, InputType.TYPE_TEXT_FLAG_MULTI_LINE);
+            types.put(startDate, InputType.TYPE_DATETIME_VARIATION_DATE);
+            types.put(startTime, InputType.TYPE_DATETIME_VARIATION_TIME);
+
+            return types;
         }
 
         @Override

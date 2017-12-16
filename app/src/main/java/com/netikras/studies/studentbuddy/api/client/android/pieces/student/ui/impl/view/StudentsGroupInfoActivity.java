@@ -1,6 +1,7 @@
 package com.netikras.studies.studentbuddy.api.client.android.pieces.student.ui.impl.view;
 
 import android.os.Bundle;
+import android.text.InputType;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -15,7 +16,6 @@ import com.netikras.studies.studentbuddy.api.client.android.pieces.base.list.Lis
 import com.netikras.studies.studentbuddy.api.client.android.pieces.school.ui.impl.view.SchoolActivity;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.student.ui.presenter.StudentsGroupMvpPresenter;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.student.ui.view.StudentsGroupMvpView;
-import com.netikras.studies.studentbuddy.api.client.android.service.ServiceRequest;
 import com.netikras.studies.studentbuddy.api.client.android.service.ServiceRequest.Result;
 import com.netikras.studies.studentbuddy.core.data.api.dto.school.SchoolDto;
 import com.netikras.studies.studentbuddy.core.data.api.dto.school.StudentDto;
@@ -26,6 +26,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -331,8 +332,13 @@ public class StudentsGroupInfoActivity extends BaseActivity implements StudentsG
         }
 
         @Override
-        protected Collection<TextView> getEditableFields() {
-            return Arrays.asList(name, email);
+        protected Map<TextView, Integer> getEditableFields() {
+            Map<TextView, Integer> types = super.getEditableFields();
+
+            types.put(name, InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
+            types.put(email, InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
+
+            return types;
         }
 
         @Override

@@ -45,6 +45,11 @@ public class AssignmentPresenter<V extends AssignmentMvpView> extends BasePresen
         getDataStore().processOrders(getContext());
     }
 
+    @Override
+    public void delete(Subscriber<Boolean> subscriber, String id) {
+        getDataStore().delete(id, subscriber);
+        getDataStore().processOrders(getContext());
+    }
 
 
 }

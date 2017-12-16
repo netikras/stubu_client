@@ -203,7 +203,9 @@ public class MainPresenter<V extends MainMvpView> extends BasePresenter<V> imple
                     @Override
                     public synchronized void onSuccess(Collection<LectureDto> response) {
                         pendingStudents.remove(studentDto);
-                        lectureDtos.addAll(response);
+                        if (response != null) {
+                            lectureDtos.addAll(response);
+                        }
                         if (pendingStudents.isEmpty()) {
                             appendPerson(lectureDtos);
                             subscriber.onSuccess(lectureDtos);
@@ -262,7 +264,9 @@ public class MainPresenter<V extends MainMvpView> extends BasePresenter<V> imple
                     @Override
                     public synchronized void onSuccess(Collection<LectureDto> response) {
                         pendingLecturers.remove(lecturerDto);
-                        lectureDtos.addAll(response);
+                        if (response != null) {
+                            lectureDtos.addAll(response);
+                        }
                         if (pendingLecturers.isEmpty()) {
                             appendPerson(lectureDtos);
                             subscriber.onSuccess(lectureDtos);
@@ -323,7 +327,9 @@ public class MainPresenter<V extends MainMvpView> extends BasePresenter<V> imple
                     @Override
                     public synchronized void onSuccess(Collection<LectureDto> response) {
                         pendingGuests.remove(guestDto);
-                        lectureDtos.addAll(response);
+                        if (response != null) {
+                            lectureDtos.addAll(response);
+                        }
                         if (pendingGuests.isEmpty()) {
                             appendPerson(lectureDtos);
                             subscriber.onSuccess(lectureDtos);

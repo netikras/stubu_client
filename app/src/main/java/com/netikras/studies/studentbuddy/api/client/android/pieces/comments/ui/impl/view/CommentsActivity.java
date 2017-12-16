@@ -1,6 +1,7 @@
 package com.netikras.studies.studentbuddy.api.client.android.pieces.comments.ui.impl.view;
 
 import android.os.Bundle;
+import android.text.InputType;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -23,6 +24,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
@@ -340,7 +342,7 @@ public class CommentsActivity extends BaseActivity implements CommentsMvpView {
 
         @Override
         protected Collection<TextView> getAllFields() {
-            return null;
+            return Arrays.asList(id, title, text, createDate, author, tags);
         }
 
         public String getEntityId() {
@@ -357,6 +359,15 @@ public class CommentsActivity extends BaseActivity implements CommentsMvpView {
 
         public void setEntityType(String entityType) {
             this.entityType = entityType;
+        }
+
+        @Override
+        protected Map<TextView, Integer> getEditableFields() {
+            Map<TextView, Integer> types = super.getEditableFields();
+
+            types.put(title, InputType.TYPE_TEXT_FLAG_MULTI_LINE);
+            types.put(text, InputType.TYPE_TEXT_FLAG_MULTI_LINE);
+            return types;
         }
     }
 }
