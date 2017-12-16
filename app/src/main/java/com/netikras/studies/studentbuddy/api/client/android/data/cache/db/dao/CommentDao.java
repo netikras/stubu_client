@@ -21,8 +21,11 @@ import static java.util.Arrays.asList;
 public class CommentDao extends GenericDao<CommentDto> {
 
 
+    PersonDao personCache;
+
     public CommentDao(CacheManager cacheManager) {
         super(cacheManager, "comment");
+        personCache = cacheManager.getDao(PersonDao.class);
     }
 
     @Override
@@ -78,6 +81,31 @@ public class CommentDao extends GenericDao<CommentDto> {
         }
 
         return comment;
+    }
+
+
+    @Override
+    public CommentDto fill(CommentDto entity) {
+        if (entity == null) {
+            return entity;
+        }
+        super.fill(entity);
+
+        entity.setAuthor(prefill(entity.getAuthor(), personCache));
+
+        return entity;
+    }
+
+    @Override
+    public CommentDto putWithImmediates(CommentDto entity) {
+        if (entity == null) {
+            return entity;
+        }
+        super.putWithImmediates(entity);
+
+        personCache.put(entity.getAuthor());
+
+        return entity;
     }
 
     public Date getLastUpdateDate(String entityType, String entityId) {

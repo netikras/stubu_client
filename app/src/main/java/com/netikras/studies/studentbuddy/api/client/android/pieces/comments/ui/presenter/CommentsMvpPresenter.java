@@ -5,7 +5,6 @@ import com.netikras.studies.studentbuddy.api.client.android.pieces.comments.ui.v
 import com.netikras.studies.studentbuddy.api.client.android.service.ServiceRequest.Subscriber;
 import com.netikras.studies.studentbuddy.core.data.api.dto.meta.CommentDto;
 
-import java.util.Collection;
 import java.util.List;
 
 /**
@@ -18,4 +17,6 @@ public interface CommentsMvpPresenter<V extends CommentsMvpView> extends MvpPres
     void createComment(Subscriber<CommentDto> subscriber, CommentDto dto);
 
     void getComments(Subscriber<List<CommentDto>> subscriber, String entityType, String entityId);
+
+    void deleteComment(Subscriber<Boolean> subscriber, String id);
 }

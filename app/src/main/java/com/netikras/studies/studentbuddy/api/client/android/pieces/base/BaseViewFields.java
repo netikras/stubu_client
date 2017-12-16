@@ -14,6 +14,7 @@ import java.util.Map;
 import static com.netikras.studies.studentbuddy.api.client.android.util.AppConstants.DATE_FORMAT;
 import static com.netikras.studies.studentbuddy.api.client.android.util.AppConstants.TIME_FORMAT;
 import static com.netikras.studies.studentbuddy.api.client.android.util.CommonUtils.parseDatetime;
+import static com.netikras.tools.common.security.IntegrityUtils.ensureValue;
 import static com.netikras.tools.common.security.IntegrityUtils.isNullOrEmpty;
 
 /**
@@ -64,7 +65,10 @@ public abstract class BaseViewFields {
     protected abstract Collection<TextView> getAllFields();
 
     public void clean() {
-        getAllFields().forEach(f -> setString(f, ""));
+        getAllFields().forEach(f -> {
+            setString(f, "");
+            setEditable(f, false);
+        });
     }
 
     public void reset() {
@@ -88,21 +92,18 @@ public abstract class BaseViewFields {
 
         view.setCursorVisible(editable);
         view.setFocusableInTouchMode(editable);
+        view.setFocusable(editable);
 
-        if (editable) {
-            Integer originalType = InputType.TYPE_CLASS_TEXT;
-            Map<TextView, Integer> types = getEditableFields();
-            if (!isNullOrEmpty(types)) {
-                originalType = types.get(view);
-                if (originalType == null) {
-                    originalType = InputType.TYPE_CLASS_TEXT;
-                }
-            }
-            view.setInputType(originalType);
-        } else {
-            view.setTag(R.id.TAG_ONLINE_ID, view.getInputType());
-            view.setInputType(InputType.TYPE_NULL);
-        }
+//        if (editable) {
+//            Integer originalType = InputType.TYPE_CLASS_TEXT;
+//            Map<TextView, Integer> types = getEditableFields();
+//            if (!isNullOrEmpty(types)) {
+//                originalType = ensureValue(types.get(view), InputType.TYPE_CLASS_TEXT);
+//            }
+//            view.setInputType(originalType);
+//        } else {
+//            view.setInputType(InputType.TYPE_NULL);
+//        }
     }
 
     public void setVisible(TextView view, Boolean visible) {

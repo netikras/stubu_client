@@ -49,6 +49,7 @@ import com.netikras.tools.common.exception.ErrorsCollection;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -154,13 +155,14 @@ public class ScheduledUpdateService extends IntentService {
 
 
     private void update() {
-        Log.d(TAG, "going for update()");
+        Log.d(TAG, "going for update() @ " + new Date());
 
         final Map<String, String> entitiesComments = new ConcurrentHashMap<>();
 
         final SubscribersMonitor monitor = new SubscribersMonitor() {
             @Override
             public void onAllFinished() {
+                Log.d(TAG, "FINISHED UPDATING. Comments: " + entitiesComments);
                 super.onAllFinished();
                 if (entitiesComments.isEmpty()) {
                     return;
@@ -367,6 +369,8 @@ public class ScheduledUpdateService extends IntentService {
 
         long nextRun = System.currentTimeMillis() + runAfterMs;
 
+        Log.d(TAG, "Rescheduling. Next run: " + new Date(nextRun));
+
         Intent intent = new Intent(getApplicationContext(), getClass());
 
         PendingIntent pendingIntent = PendingIntent.getService(getApplicationContext(), SVC_ID, intent, PendingIntent.FLAG_CANCEL_CURRENT);
@@ -381,19 +385,21 @@ public class ScheduledUpdateService extends IntentService {
     }
 
     private void notifyCommentsForAssignment(String id) {
-        showNotification("Lecture has new comments", "Click to see more", AssignmentActivity.class, id);
+        showNotification("Assignment has new comments", "Click to see more", AssignmentActivity.class, id);
     }
 
     private void notifyCommentsForTest(String id) {
-        showNotification("Lecture has new comments", "Click to see more", TestInfoActivity.class, id);
+        showNotification("Test has new comments", "Click to see more", TestInfoActivity.class, id);
     }
 
     private void showNotification(String title, String text, Class view, String entityId) {
         PendingIntent pendingIntent = null;
         if (view != null) {
             Intent intent = new Intent(ScheduledUpdateService.this, view);
+            intent.putExtra("cached_id", entityId);
             pendingIntent = PendingIntent.getActivity(ScheduledUpdateService.this, entityId.hashCode(), intent, PendingIntent.FLAG_CANCEL_CURRENT);
         }
+        Log.d(TAG, "Popping notification for entity " + view + " w/ ID: " + entityId);
         showNotification(ScheduledUpdateService.this, title, text, pendingIntent);
     }
 
@@ -404,14 +410,11 @@ public class ScheduledUpdateService extends IntentService {
         if (Build.VERSION.SDK_INT < 26) {
             notification = new NotificationCompat.Builder(context);
         } else {
-            NotificationManager notificationManager =
-                    (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-            NotificationChannel channel = new NotificationChannel("default",
-                    "Channel name",
-                    NotificationManager.IMPORTANCE_DEFAULT);
+            NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+            NotificationChannel channel = new NotificationChannel("default", "Channel name", NotificationManager.IMPORTANCE_DEFAULT);
             channel.setDescription("Channel description");
             notificationManager.createNotificationChannel(channel);
-            notification = new NotificationCompat.Builder(context, "default");
+            notification = new NotificationCompat.Builder(context, channel.getId());
         }
 
         notification

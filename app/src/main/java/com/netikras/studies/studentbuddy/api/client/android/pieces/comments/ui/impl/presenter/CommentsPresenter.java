@@ -52,4 +52,10 @@ public class CommentsPresenter<V extends CommentsMvpView> extends BasePresenter<
         getDataStore().getAllByType(entityType, entityId, subscriber);
         getDataStore().processOrders(getContext());
     }
+
+    @Override
+    public void deleteComment(Subscriber<Boolean> subscriber, String id) {
+        getDataStore().delete(id, subscriber);
+        getDataStore().processOrders(getContext());
+    }
 }

@@ -143,6 +143,43 @@
             app:layout_constraintStart_toEndOf="@+id/txt_lbl_test_id"
             app:layout_constraintTop_toBottomOf="@+id/txt_edit_test_id" />
 
+        <TextView
+            android:id="@+id/lbl_test_comments"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:text="@string/lbl_test_comments"
+            app:layout_constraintBaseline_toBaselineOf="@+id/btn_test_comments"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <Button
+            android:id="@+id/btn_test_comments"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_marginStart="16dp"
+            android:background="@android:color/transparent"
+            android:fontFamily="sans-serif"
+            android:text=""
+            android:textAlignment="textStart"
+            android:textAllCaps="false"
+            android:textSize="18sp"
+            app:layout_constraintStart_toEndOf="@+id/txt_lbl_test_id"
+            app:layout_constraintTop_toBottomOf="@+id/txt_edit_test_description" />
+
+        <ImageButton
+            android:id="@+id/btn_test_comments_add"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginBottom="8dp"
+            android:layout_marginStart="8dp"
+            android:adjustViewBounds="true"
+            android:background="@android:color/transparent"
+            android:elevation="0dp"
+            android:scaleType="fitCenter"
+            app:layout_constraintBottom_toBottomOf="@+id/btn_test_comments"
+            app:layout_constraintStart_toEndOf="@+id/btn_test_comments"
+            app:srcCompat="@drawable/icon_plus" />
+
         <include layout="@layout/include_main_menu_button"/>
         <!-- Progress bar overlay; shown while login is in progress -->
         <include layout="@layout/include_progress_overlay"/>

@@ -87,6 +87,7 @@ public class SettingsActivity extends BaseActivity implements SettingsMvpView {
         presenter.saveNotifyEventBeforePeriod(getFields().getNotifyEventsBeforePeriod());
         presenter.saveUpdatePeriod(getFields().getUpdatePeriod());
         presenter.saveAutostartEnabled(getFields().getAutostartEnabled());
+        getFields().enableEdit(false);
     }
 
     private String toString(RemoteEndpointServer server) {
@@ -132,9 +133,9 @@ public class SettingsActivity extends BaseActivity implements SettingsMvpView {
             Map<TextView, Integer> types = super.getEditableFields();
 
             types.put(url, InputType.TYPE_TEXT_VARIATION_URI);
-            types.put(lecturesAheadPeriod, InputType.TYPE_NUMBER_VARIATION_NORMAL);
-            types.put(updatePeriod, InputType.TYPE_NUMBER_VARIATION_NORMAL);
-            types.put(notifyEventBefore, InputType.TYPE_NUMBER_VARIATION_NORMAL);
+            types.put(lecturesAheadPeriod, InputType.TYPE_CLASS_NUMBER);
+            types.put(updatePeriod, InputType.TYPE_CLASS_NUMBER);
+            types.put(notifyEventBefore, InputType.TYPE_CLASS_NUMBER);
 
             return types;
         }

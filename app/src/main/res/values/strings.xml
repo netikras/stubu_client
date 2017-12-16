@@ -235,6 +235,8 @@
     <string name="lbl_settings_notify_comments_enable">Praneš. koment.</string>
     <string name="lbl_settings_lectures_ahead_period">Aktualus laikas</string>
     <string name="lbl_settings_autostart">Autom. paleid.</string>
+    <string name="lbl_assignment_comments">Komentarai</string>
+    <string name="lbl_test_comments">Komentarai</string>
 
 
 </resources>

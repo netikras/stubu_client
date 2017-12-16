@@ -473,7 +473,16 @@ public class LectureInfoActivity extends BaseActivity implements LectureMvpView 
                 getActivity().show(dto, true);
             }
         });
+    }
 
+    @OnClick(R.id.btn_lecture_comments_add)
+    public void addComment() {
+        createComment("LECTURE", getFields().getId());
+    }
+
+    @OnClick(R.id.btn_lecture_comments)
+    public void showComments() {
+        showComments("LECTURE", getFields().getId());
     }
 
     @Override
@@ -516,6 +525,8 @@ public class LectureInfoActivity extends BaseActivity implements LectureMvpView 
         ImageButton addTest;
         @BindView(R.id.btn_lecture_assignments_add)
         ImageButton addAssignment;
+        @BindView(R.id.btn_lecture_comments_add)
+        ImageButton addComment;
 
         @BindView(R.id.txt_lbl_lecture_id)
         TextView lblId;
@@ -579,7 +590,7 @@ public class LectureInfoActivity extends BaseActivity implements LectureMvpView 
 
         public void setAssignments(List<AssignmentDto> assignments) {
             setTag(this.assignments, assignments);
-            if (assignments != null) {
+            if (!isNullOrEmpty(assignments)) {
                 setAssignmentsCount(valueOf(assignments.size()));
             } else {
                 setAssignmentsCount(ZERO);
@@ -600,7 +611,7 @@ public class LectureInfoActivity extends BaseActivity implements LectureMvpView 
 
         public void setComments(List<CommentDto> data) {
             setTag(comments, data);
-            if (data != null) {
+            if (!isNullOrEmpty(data)) {
                 setCommentsCount(valueOf(data.size()));
             } else {
                 setCommentsCount(ZERO);
@@ -621,7 +632,7 @@ public class LectureInfoActivity extends BaseActivity implements LectureMvpView 
 
         public void setGuests(List<LectureGuestDto> data) {
             setTag(guests, data);
-            if (data != null) {
+            if (!isNullOrEmpty(data)) {
                 setGuestsCount(valueOf(data.size()));
             } else {
                 setGuestsCount(ZERO);

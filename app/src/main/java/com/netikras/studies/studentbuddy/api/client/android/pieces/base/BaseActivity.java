@@ -411,6 +411,7 @@ public abstract class BaseActivity extends AppCompatActivity
         ButterKnife.bind(fields, this);
         fields.enableEdit(false);
         this.fields = fields;
+        fields.reset();
         return fields;
     }
 
@@ -463,6 +464,11 @@ public abstract class BaseActivity extends AppCompatActivity
                 dto.setEntityType(resourceType);
                 dto.setEntityId(resourceId);
 
+                UserDto userDto = getCurrentUser();
+                if (userDto != null) {
+                    dto.setAuthor(userDto.getPerson());
+                }
+
                 getActivity().showComment(dto, true);
             }
         });
@@ -473,6 +479,7 @@ public abstract class BaseActivity extends AppCompatActivity
             @Override
             public void execute() {
                 getActivity().showComments(entityType, entityId);
+                getActivity().finish();
             }
         });
     }

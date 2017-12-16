@@ -80,6 +80,7 @@ public class CommentsActivity extends BaseActivity implements CommentsMvpView {
     }
 
     public void showComment(CommentDto commentDto, boolean editable) {
+        getFields().reset();
         if (commentDto == null) {
             return;
         }
@@ -90,6 +91,8 @@ public class CommentsActivity extends BaseActivity implements CommentsMvpView {
         getFields().setTitle(commentDto.getTitle());
         getFields().setText(commentDto.getText());
         getFields().setTags(commentDto.getTags());
+        getFields().setEntityId(commentDto.getEntityId());
+        getFields().setEntityType(commentDto.getEntityType());
 
         if (editable) {
             getFields().enableEdit(true);
@@ -109,6 +112,15 @@ public class CommentsActivity extends BaseActivity implements CommentsMvpView {
         showLoading();
         presenter.getComments(new ErrorsAwareSubscriber<List<CommentDto>>() {
             @Override
+            public void onCacheHit(List<CommentDto> response) {
+                super.onCacheHit(response);
+                if (!isNullOrEmpty(response)) {
+                    setFetchRequired(false);
+                    executeOnSuccess(response);
+                }
+            }
+
+            @Override
             public void onSuccess(List<CommentDto> response) {
                 showList(CommentsActivity.this, new ListHandler<CommentDto>() {
                     @Override
@@ -123,7 +135,12 @@ public class CommentsActivity extends BaseActivity implements CommentsMvpView {
 
                     @Override
                     public void onRowClick(CommentDto item) {
-                        showComment(item);
+                        startView(CommentsActivity.class, new ViewTask<CommentsActivity>() {
+                            @Override
+                            public void execute() {
+                                getActivity().showComment(item);
+                            }
+                        });
                     }
 
                     @Override
@@ -133,6 +150,7 @@ public class CommentsActivity extends BaseActivity implements CommentsMvpView {
 
                     class CommentsListRow extends ListRow<CommentDto> {
                         TextView text;
+
                         public CommentsListRow(View rowView) {
                             super(null);
                             text = getDefaultListTextView(rowView);
@@ -240,9 +258,21 @@ public class CommentsActivity extends BaseActivity implements CommentsMvpView {
         presenter.createComment(new ErrorsAwareSubscriber<CommentDto>() {
             @Override
             public void executeOnSuccess(CommentDto response) {
-                showComment(response);
+                runOnUiThread(() -> showComment(response));
             }
         }, collect());
+    }
+
+    @Override
+    protected void menuOnClickDelete() {
+        presenter.deleteComment(new ErrorsAwareSubscriber<Boolean>() {
+            @Override
+            public void onSuccess(Boolean response) {
+                if (Boolean.TRUE.equals(response)) {
+                    runOnUiThread(() -> finish());
+                }
+            }
+        }, getFields().getId());
     }
 
     class ViewFields extends BaseViewFields {
@@ -258,6 +288,9 @@ public class CommentsActivity extends BaseActivity implements CommentsMvpView {
         Button author;
         @BindView(R.id.btn_comment_tags)
         Button tags;
+
+        @BindView(R.id.txt_lbl_comment_id)
+        TextView lblId;
 
         String entityId = "";
         String entityType = "";
@@ -368,6 +401,19 @@ public class CommentsActivity extends BaseActivity implements CommentsMvpView {
             types.put(title, InputType.TYPE_TEXT_FLAG_MULTI_LINE);
             types.put(text, InputType.TYPE_TEXT_FLAG_MULTI_LINE);
             return types;
+        }
+
+        @Override
+        public void enableEdit(boolean enable) {
+            super.enableEdit(enable);
+
+            if (enable) {
+                setVisible(lblId, true);
+                setVisible(id, true);
+            } else {
+                setVisible(lblId, false);
+                setVisible(id, null);
+            }
         }
     }
 }

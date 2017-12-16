@@ -16,6 +16,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import static com.netikras.tools.common.security.IntegrityUtils.isNullOrEmpty;
+import static com.netikras.tools.common.security.IntegrityUtils.join;
 
 /**
  * Created by netikras on 17.11.26.
@@ -191,7 +192,7 @@ public class CommentsDataStoreApiImpl extends ApiBasedDataStore<String, CommentD
         orderData(new ServiceRequest<List<CommentDto>>() {
             @Override
             public List<CommentDto> request() {
-                return updateCache(commentsApiConsumer.getCommentDtoEntitiesUpdatedAfter(entitiesIds, after));
+                return updateCache(commentsApiConsumer.getCommentDtoEntitiesUpdatedAfter(join(",", true, null, entitiesIds), after));
             }
         }, subscribers);
 

@@ -4,7 +4,10 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.InputType;
+import android.util.Log;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.netikras.studies.studentbuddy.api.client.android.R;
@@ -15,6 +18,7 @@ import com.netikras.studies.studentbuddy.api.client.android.pieces.lecture.ui.pr
 import com.netikras.studies.studentbuddy.api.client.android.pieces.lecture.ui.view.AssignmentMvpView;
 import com.netikras.studies.studentbuddy.core.data.api.dto.school.AssignmentDto;
 import com.netikras.studies.studentbuddy.core.data.api.dto.school.DisciplineDto;
+import com.netikras.studies.studentbuddy.core.data.api.dto.school.DisciplineTestDto;
 import com.netikras.studies.studentbuddy.core.data.api.dto.school.LectureDto;
 
 import java.util.Arrays;
@@ -26,6 +30,7 @@ import java.util.Map;
 import javax.inject.Inject;
 
 import butterknife.BindView;
+import butterknife.OnClick;
 
 import static com.netikras.studies.studentbuddy.api.client.android.util.CommonUtils.datetimeToDate;
 import static com.netikras.studies.studentbuddy.api.client.android.util.CommonUtils.datetimeToTime;
@@ -79,16 +84,25 @@ public class AssignmentActivity extends BaseActivity implements AssignmentMvpVie
 
     private void handleIntent() {
         Intent intent = getIntent();
+        Log.d("AssignmentAct", "Intent: " + intent);
         if (intent == null) {
             return;
         }
 
         String cachedId = intent.getStringExtra("cached_id");
+        Log.d("AssignmentAct", "Fetching assignment by ID: " + cachedId);
         if (!isNullOrEmpty(cachedId)) {
+            Log.d("AssignmentAct", "Fetching assignment by ID: " + cachedId);
+            showLoading();
             presenter.getById(new ErrorsAwareSubscriber<AssignmentDto>() {
                 @Override
+                public void onCacheHit(AssignmentDto response) {
+                    setFetchRequired(false);
+                    executeOnSuccess(response);
+                }
+                @Override
                 public void onSuccess(AssignmentDto response) {
-                    show(response);
+                    runOnUiThread(() -> show(response));
                 }
             }, cachedId);
         }
@@ -140,6 +154,16 @@ public class AssignmentActivity extends BaseActivity implements AssignmentMvpVie
         dto.setDescription(getFields().getDescription());
 
         return dto;
+    }
+
+    @OnClick(R.id.btn_assignment_comments)
+    public void showComments() {
+        showComments("ASSIGNMENT", getFields().getId());
+    }
+
+    @OnClick(R.id.btn_assignment_comments_add)
+    public void addComment() {
+        createComment("ASSIGNMENT", getFields().getId());
     }
 
     @Override
@@ -200,6 +224,10 @@ public class AssignmentActivity extends BaseActivity implements AssignmentMvpVie
         EditText dueDate;
         @BindView(R.id.txt_edit_assignment_due_time)
         EditText dueTime;
+        @BindView(R.id.btn_assignment_comments)
+        Button comments;
+        @BindView(R.id.btn_assignment_comments_add)
+        ImageButton addComment;
 
         LectureDto lecture;
         DisciplineDto discipline;

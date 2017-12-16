@@ -4,8 +4,10 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.InputType;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.netikras.studies.studentbuddy.api.client.android.R;
@@ -83,16 +85,25 @@ public class TestInfoActivity extends BaseActivity implements TestMvpView {
 
     private void handleIntent() {
         Intent intent = getIntent();
+        Log.d("TestAct", "Intent: " + intent);
         if (intent == null) {
             return;
         }
 
         String cachedId = intent.getStringExtra("cached_id");
+        Log.d("", "Fetching test by ID: " + cachedId);
         if (!isNullOrEmpty(cachedId)) {
+            showLoading();
             presenter.getById(new ErrorsAwareSubscriber<DisciplineTestDto>() {
                 @Override
+                public void onCacheHit(DisciplineTestDto response) {
+                    setFetchRequired(false);
+                    executeOnSuccess(response);
+                }
+
+                @Override
                 public void onSuccess(DisciplineTestDto response) {
-                    show(response);
+                    runOnUiThread(() -> show(response));
                 }
             }, cachedId);
         }
@@ -157,6 +168,17 @@ public class TestInfoActivity extends BaseActivity implements TestMvpView {
         });
     }
 
+
+    @OnClick(R.id.btn_test_comments)
+    public void showComments() {
+        showComments("TEST", getFields().getId());
+    }
+
+    @OnClick(R.id.btn_test_comments_add)
+    public void addComment() {
+        createComment("TEST", getFields().getId());
+    }
+
     @Override
     protected void menuOnClickCreate() {
         DisciplineTestDto dto = collect();
@@ -200,7 +222,6 @@ public class TestInfoActivity extends BaseActivity implements TestMvpView {
     }
 
 
-
     public class ViewFields extends BaseViewFields {
         @BindView(R.id.txt_edit_test_id)
         EditText id;
@@ -212,6 +233,10 @@ public class TestInfoActivity extends BaseActivity implements TestMvpView {
         EditText startTime;
         @BindView(R.id.btn_test_lecture)
         Button lecture;
+        @BindView(R.id.btn_test_comments)
+        Button comments;
+        @BindView(R.id.btn_test_comments_add)
+        ImageButton addComment;
 
         DisciplineDto discipline;
         boolean exam;
