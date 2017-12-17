@@ -115,7 +115,8 @@ public class LoginActivity extends BaseActivity implements LoginMvpView {
 
         @Override
         public void enableEdit(boolean enable) {
-
+            setEditable(username, true);
+            setEditable(password, true);
         }
 
 

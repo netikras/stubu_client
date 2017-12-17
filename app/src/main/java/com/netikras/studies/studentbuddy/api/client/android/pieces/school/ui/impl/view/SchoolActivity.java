@@ -44,7 +44,6 @@ public class SchoolActivity extends BaseActivity implements SchoolMvpView {
     @Inject
     SchoolMvpPresenter<SchoolMvpView> presenter;
 
-    Result<Boolean> fetched = new Result<>(Boolean.FALSE);
     private static SchoolDto lastEntry = null;
 
     @Override
@@ -68,7 +67,6 @@ public class SchoolActivity extends BaseActivity implements SchoolMvpView {
     @Override
     protected void onStart() {
         super.onStart();
-        fetched.setValue(Boolean.FALSE);
     }
 
     @Override
@@ -121,21 +119,32 @@ public class SchoolActivity extends BaseActivity implements SchoolMvpView {
             return true;
         }
         Object item = coalesce(dto.getDepartments());
-        return item == null && !fetched.getValue();
+        return item == null;
     }
 
     private void prepare(SchoolDto entity) {
+        if (hasTriedToFetch()) {
+            setTriedToFetch(false);
+            return;
+        }
         if (entity == null || isNullOrEmpty(entity.getId())) {
             return;
         }
         if (isPartial()) {
             showLoading();
+            setTriedToFetch(true);
             presenter.getById(new ErrorsAwareSubscriber<SchoolDto>() {
                 @Override
+                public void onCacheHit(SchoolDto response) {
+                    if (response != null && !isNullOrEmpty(response.getTitle())) {
+                        setFetchRequired(false);
+                        executeOnSuccess(response);
+                    }
+                }
+
+                @Override
                 public void onSuccess(SchoolDto response) {
-//                    show(response);
                     runOnUiThread(() -> show(response));
-                    fetched.setValue(Boolean.TRUE);
                 }
             }, entity.getId());
         }
@@ -193,6 +202,38 @@ public class SchoolActivity extends BaseActivity implements SchoolMvpView {
                 }
             }
         });
+    }
+
+    @Override
+    protected void menuOnClickRefresh() {
+        showLoading();
+        presenter.getById(new ErrorsAwareSubscriber<SchoolDto>(){
+            @Override
+            public void onSuccess(SchoolDto response) {
+                if (response != null) {
+                    runOnUiThread(() -> show(response));
+                }
+            }
+        }, getFields().getId());
+    }
+
+    @Override
+    protected void menuOnClickEdit() {
+        getFields().enableEdit(true);
+    }
+
+    @Override
+    protected void menuOnClickSave() {
+        SchoolDto dto = collect();
+        showLoading();
+        presenter.update(new ErrorsAwareSubscriber<SchoolDto>() {
+            @Override
+            public void onSuccess(SchoolDto response) {
+                if (response != null) {
+                    runOnUiThread(() -> show(response));
+                }
+            }
+        }, dto);
     }
 
     public class ViewFields extends BaseViewFields {

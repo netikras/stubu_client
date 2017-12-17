@@ -4,7 +4,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:fillViewport="true">
 
     <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -193,7 +194,6 @@
             android:text="@string/minutes_short"
             app:layout_constraintBaseline_toBaselineOf="@+id/txt_edit_settings_notify_event_before"
             app:layout_constraintStart_toEndOf="@+id/txt_edit_settings_notify_event_before" />
-
 
 
         <TextView

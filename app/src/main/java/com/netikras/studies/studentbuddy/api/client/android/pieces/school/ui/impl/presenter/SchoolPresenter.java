@@ -31,4 +31,10 @@ public class SchoolPresenter<V extends SchoolMvpView> extends BasePresenter<V> i
         getDataStore().getById(id, subscriber);
         getDataStore().processOrders(getContext());
     }
+
+    @Override
+    public void update(Subscriber<SchoolDto> subscriber, SchoolDto dto) {
+        getDataStore().update(dto, subscriber);
+        getDataStore().processOrders(getContext());
+    }
 }

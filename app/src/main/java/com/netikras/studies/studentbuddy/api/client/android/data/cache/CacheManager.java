@@ -2,8 +2,6 @@ package com.netikras.studies.studentbuddy.api.client.android.data.cache;
 
 import android.content.Context;
 
-import com.netikras.studies.studentbuddy.api.client.android.data.cache.db.dao.GenericDao;
-
 import java.lang.reflect.Constructor;
 import java.util.HashMap;
 import java.util.Map;

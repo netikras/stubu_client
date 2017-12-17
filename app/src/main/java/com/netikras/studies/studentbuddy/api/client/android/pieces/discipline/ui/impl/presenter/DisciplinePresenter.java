@@ -36,4 +36,10 @@ public class DisciplinePresenter<V extends DisciplineMvpView> extends BasePresen
         getDataStore().getById(id, subscriber);
         getDataStore().processOrders(getContext());
     }
+
+    @Override
+    public void update(Subscriber<DisciplineDto> subscriber, DisciplineDto dto) {
+        getDataStore().update(dto, subscriber);
+        getDataStore().processOrders(getContext());
+    }
 }

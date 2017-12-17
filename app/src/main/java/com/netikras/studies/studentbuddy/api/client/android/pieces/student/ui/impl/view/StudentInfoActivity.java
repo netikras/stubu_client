@@ -12,7 +12,6 @@ import com.netikras.studies.studentbuddy.api.client.android.pieces.base.BaseView
 import com.netikras.studies.studentbuddy.api.client.android.pieces.person.ui.impl.view.PersonInfoActivity;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.student.ui.presenter.StudentMvpPresenter;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.student.ui.view.StudentMvpView;
-import com.netikras.studies.studentbuddy.api.client.android.service.ServiceRequest.Result;
 import com.netikras.studies.studentbuddy.core.data.api.dto.PersonDto;
 import com.netikras.studies.studentbuddy.core.data.api.dto.school.SchoolDepartmentDto;
 import com.netikras.studies.studentbuddy.core.data.api.dto.school.SchoolDto;
@@ -21,7 +20,7 @@ import com.netikras.studies.studentbuddy.core.data.api.dto.school.StudentsGroupD
 
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.concurrent.TimeUnit;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -39,6 +38,12 @@ public class StudentInfoActivity extends BaseActivity implements StudentMvpView 
     @Inject
     StudentMvpPresenter<StudentMvpView> presenter;
     private static StudentDto lastEntry = null;
+
+
+    @Override
+    protected List<Integer> excludeMenuItems() {
+        return Arrays.asList(R.id.main_menu_create, R.id.main_menu_edit, R.id.main_menu_save, R.id.main_menu_delete);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -112,17 +117,30 @@ public class StudentInfoActivity extends BaseActivity implements StudentMvpView 
         if (dto == null) {
             return true;
         }
-        Object item = coalesce(dto.getGroup(), dto.getPerson(), dto.getSchool());
-        return item == null;
+        Object item = coalesce(dto.getGroup(), dto.getSchool());
+        return item == null || dto.getPerson() == null;
     }
 
     private void prepare(StudentDto studentDto) {
+        if (hasTriedToFetch()) {
+            setTriedToFetch(false);
+            return;
+        }
         if (studentDto == null || isNullOrEmpty(studentDto.getId())) {
             return;
         }
         if (isPartial()) {
             showLoading();
+            setTriedToFetch(true);
             presenter.getById(new ErrorsAwareSubscriber<StudentDto>() {
+                @Override
+                public void onCacheHit(StudentDto response) {
+                    if (response != null && response.getPerson() != null && !isNullOrEmpty(response.getPerson().getFirstName())) {
+                        setFetchRequired(false);
+                        executeOnSuccess(response);
+                    }
+                }
+
                 @Override
                 public void onSuccess(StudentDto response) {
                     runOnUiThread(() -> show(response));
@@ -147,6 +165,19 @@ public class StudentInfoActivity extends BaseActivity implements StudentMvpView 
                 getActivity().showPerson(getFields().getPerson());
             }
         });
+    }
+
+    @Override
+    protected void menuOnClickRefresh() {
+        showLoading();
+        presenter.getById(new ErrorsAwareSubscriber<StudentDto>(){
+            @Override
+            public void onSuccess(StudentDto response) {
+                if (response != null) {
+                    runOnUiThread(() -> show(response));
+                }
+            }
+        }, getFields().getId());
     }
 
     public class ViewFields extends BaseViewFields {

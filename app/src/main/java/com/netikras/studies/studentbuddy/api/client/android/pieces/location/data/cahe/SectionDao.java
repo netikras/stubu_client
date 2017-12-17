@@ -1,13 +1,11 @@
-package com.netikras.studies.studentbuddy.api.client.android.data.cache.db.dao;
+package com.netikras.studies.studentbuddy.api.client.android.pieces.location.data.cahe;
 
 import android.content.ContentValues;
-import android.icu.util.BuddhistCalendar;
 
 import com.netikras.studies.studentbuddy.api.client.android.data.cache.CacheManager;
-import com.netikras.studies.studentbuddy.api.client.android.pieces.location.data.BuildingDataStore;
+import com.netikras.studies.studentbuddy.api.client.android.data.cache.GenericDao;
 import com.netikras.studies.studentbuddy.core.data.api.dto.location.AddressDto;
 import com.netikras.studies.studentbuddy.core.data.api.dto.location.BuildingDto;
-import com.netikras.studies.studentbuddy.core.data.api.dto.location.BuildingFloorDto;
 import com.netikras.studies.studentbuddy.core.data.api.dto.location.BuildingSectionDto;
 
 import java.util.List;

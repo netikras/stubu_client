@@ -16,7 +16,7 @@ import com.netikras.studies.studentbuddy.api.client.android.R;
 import com.netikras.studies.studentbuddy.api.client.android.conf.di.DepInjector;
 import com.netikras.studies.studentbuddy.api.client.android.data.DataManager;
 import com.netikras.studies.studentbuddy.api.client.android.data.cache.CacheManager;
-import com.netikras.studies.studentbuddy.api.client.android.data.cache.db.dao.LectureDao;
+import com.netikras.studies.studentbuddy.api.client.android.pieces.lecture.data.cahe.LectureDao;
 import com.netikras.studies.studentbuddy.api.client.android.data.prefs.PreferencesHelper;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.base.BaseActivity.ViewTask;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.base.MvpView;
@@ -129,11 +129,17 @@ public class ScheduledUpdateService extends IntentService {
         Log.d(TAG, "handling intent...");
 
         boolean autostarted = intent.getBooleanExtra("autostart", false);
+        String lectureId = intent.getStringExtra("LECTURE");
         if (autostarted) {
-            if (preferencesHelper.isAutostartEnabled()) {
+            if (!preferencesHelper.isAutostartEnabled()) {
                 stopSelf();
                 return;
             }
+        }
+
+        if (!isNullOrEmpty(lectureId)) {
+            notifyLectureStartsSoon(lectureId);
+            return;
         }
 
         update();
@@ -158,33 +164,47 @@ public class ScheduledUpdateService extends IntentService {
         Log.d(TAG, "going for update() @ " + new Date());
 
         final Map<String, String> entitiesComments = new ConcurrentHashMap<>();
+        final Map<String, LectureDto> lectures = new ConcurrentHashMap<>();
 
         final SubscribersMonitor monitor = new SubscribersMonitor() {
             @Override
             public void onAllFinished() {
                 Log.d(TAG, "FINISHED UPDATING. Comments: " + entitiesComments);
                 super.onAllFinished();
-                if (entitiesComments.isEmpty()) {
-                    return;
+                if (!entitiesComments.isEmpty()) {
+                    for (Map.Entry<String, String> entry : entitiesComments.entrySet()) {
+                        if (isNullOrEmpty(entry.getValue())) {
+                            continue;
+                        }
+
+                        switch (entry.getValue()) {
+                            case "LECTURE":
+                                notifyCommentsForLecture(entry.getKey());
+                                break;
+                            case "ASSIGNMENT":
+                                notifyCommentsForAssignment(entry.getKey());
+                                break;
+                            case "TEST":
+                                notifyCommentsForTest(entry.getKey());
+                                break;
+                            default:
+                                break;
+                        }
+                    }
                 }
 
-                for (Map.Entry<String, String> entry : entitiesComments.entrySet()) {
-                    if (isNullOrEmpty(entry.getValue())) {
-                        continue;
-                    }
+                if (!isNullOrEmpty(lectures)) {
 
-                    switch (entry.getValue()) {
-                        case "LECTURE":
-                            notifyCommentsForLecture(entry.getKey());
-                            break;
-                        case "ASSIGNMENT":
-                            notifyCommentsForAssignment(entry.getKey());
-                            break;
-                        case "TEST":
-                            notifyCommentsForTest(entry.getKey());
-                            break;
-                        default:
-                            break;
+                    long notifyLecturesBefore = TimeUnit.MINUTES.toMillis(preferencesHelper.getNotifyBeforePeriod());
+
+                    for (Map.Entry<String, LectureDto> entry : lectures.entrySet()) {
+                        LectureDto dto = entry.getValue();
+
+                        Intent intent = new Intent(getApplicationContext(), getClass());
+                        intent.putExtra("LECTURE", dto.getId());
+                        long notifyTime = dto.getStartsOn().getTime() - notifyLecturesBefore;
+                        Log.d(TAG, "onAllFinished: Scheduling lecture id:" + dto.getId() + " start notification @" + notifyTime + " [" + new Date(notifyTime) + "]");
+                        reschedule(notifyTime, dto.getId().hashCode(), intent);
                     }
                 }
             }
@@ -284,6 +304,7 @@ public class ScheduledUpdateService extends IntentService {
                                 List<String> assignmentsIds = new ArrayList<>();
                                 List<String> testsIds = new ArrayList<>();
                                 for (LectureDto dto : response) {
+                                    lectures.put(dto.getId(), dto);
                                     lecturesIds.add(dto.getId());
                                     if (!isNullOrEmpty(dto.getTests())) {
                                         for (DisciplineTestDto disciplineTestDto : dto.getTests()) {
@@ -372,13 +393,36 @@ public class ScheduledUpdateService extends IntentService {
         Log.d(TAG, "Rescheduling. Next run: " + new Date(nextRun));
 
         Intent intent = new Intent(getApplicationContext(), getClass());
-
-        PendingIntent pendingIntent = PendingIntent.getService(getApplicationContext(), SVC_ID, intent, PendingIntent.FLAG_CANCEL_CURRENT);
-
-        AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
-        alarmManager.set(AlarmManager.RTC_WAKEUP, nextRun, pendingIntent);
+        reschedule(nextRun, SVC_ID, intent);
     }
 
+    private void reschedule(long runAt, int wakeupId, Intent intent) {
+
+        PendingIntent pendingIntent = PendingIntent.getService(getApplicationContext(), wakeupId, intent, PendingIntent.FLAG_CANCEL_CURRENT);
+
+        AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+        alarmManager.set(AlarmManager.RTC_WAKEUP, runAt, pendingIntent);
+    }
+
+    private void notifyLectureStartsSoon(String id) {
+        getLectureDataStore().getById(id, new Subscriber<LectureDto>(){
+            @Override
+            public void onCacheHit(LectureDto response) {
+                setFetchRequired(false);
+                executeOnSuccess(response);
+            }
+
+            @Override
+            public void onSuccess(LectureDto response) {
+                startView(LectureInfoActivity.class, new ViewTask<LectureInfoActivity>() {
+                    @Override
+                    public void execute() {
+                        getActivity().show(response);
+                    }
+                });
+            }
+        });
+    }
 
     private void notifyCommentsForLecture(String id) {
         showNotification("Lecture has new comments", "Click to see more", LectureInfoActivity.class, id);
@@ -430,5 +474,6 @@ public class ScheduledUpdateService extends IntentService {
         NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         notificationManager.notify(1, notificationBuilder.build());
     }
+
 
 }

@@ -52,9 +52,11 @@ import com.netikras.studies.studentbuddy.api.client.android.pieces.student.data.
 import com.netikras.studies.studentbuddy.api.client.android.pieces.student.data.impl.StudentDataStoreApiImpl;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.student.data.impl.StudentsGroupDataStoreApiImpl;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.sys.data.PasswordReqDataStore;
+import com.netikras.studies.studentbuddy.api.client.android.pieces.sys.data.RoleDataStore;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.sys.data.StatusDataStore;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.sys.data.SystemSettingsDataStore;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.sys.data.impl.PasswordReqDataStoreApiImpl;
+import com.netikras.studies.studentbuddy.api.client.android.pieces.sys.data.impl.RoleDataStoreApiImpl;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.sys.data.impl.StatusDataStoreApiImpl;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.sys.data.impl.SystemSettingsDataStoreApiImpl;
 
@@ -234,6 +236,11 @@ public class DataModule {
 
     @Provides
     CommentsDataStore commentsDataStore(CommentsDataStoreApiImpl store) {
+        return store;
+    }
+
+    @Provides
+    RoleDataStore roleDataStore(RoleDataStoreApiImpl store) {
         return store;
     }
 }

@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:fillViewport="true">
 
     <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -28,11 +29,11 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
             android:layout_marginStart="24dp"
+            android:labelFor="@+id/txt_edit_comment_title"
             android:text="@string/title_comment"
             android:textColor="@android:color/black"
             android:textSize="24sp"
             android:textStyle="bold"
-            android:labelFor="@+id/txt_edit_comment_title"
             app:layout_constraintBottom_toBottomOf="@+id/img_comment_banner"
             app:layout_constraintStart_toStartOf="parent" />
 
@@ -41,8 +42,8 @@
             android:layout_width="90dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
-            android:text="@string/lbl_comment_id"
             android:labelFor="@+id/txt_edit_comment_id"
+            android:text="@string/lbl_comment_id"
             app:layout_constraintBaseline_toBaselineOf="@+id/txt_edit_comment_id"
             app:layout_constraintStart_toStartOf="parent" />
 
@@ -66,8 +67,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
-            android:text="@string/lbl_comment_title"
             android:labelFor="@+id/txt_edit_comment_title"
+            android:text="@string/lbl_comment_title"
             app:layout_constraintBaseline_toBaselineOf="@+id/txt_edit_comment_title"
             app:layout_constraintStart_toStartOf="parent" />
 
@@ -89,8 +90,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
-            android:text="@string/lbl_comment_text"
             android:labelFor="@+id/txt_edit_comment_text"
+            android:text="@string/lbl_comment_text"
             app:layout_constraintBaseline_toBaselineOf="@+id/txt_edit_comment_text"
             app:layout_constraintStart_toStartOf="parent" />
 
@@ -111,8 +112,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
-            android:text="@string/lbl_comment_author"
             android:labelFor="@+id/btn_comment_author"
+            android:text="@string/lbl_comment_author"
             app:layout_constraintBaseline_toBaselineOf="@+id/btn_comment_author"
             app:layout_constraintStart_toStartOf="parent" />
 
@@ -135,8 +136,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
-            android:text="@string/lbl_comment_create_datetime"
             android:labelFor="@+id/txt_edit_comment_create_datetime"
+            android:text="@string/lbl_comment_create_datetime"
             app:layout_constraintBaseline_toBaselineOf="@+id/txt_edit_comment_create_datetime"
             app:layout_constraintStart_toStartOf="parent" />
 
@@ -182,8 +183,8 @@
             app:layout_constraintStart_toEndOf="@+id/txt_lbl_comment_id"
             app:layout_constraintTop_toBottomOf="@+id/txt_edit_comment_text" />
 
-        <include layout="@layout/include_main_menu_button"/>
+        <include layout="@layout/include_main_menu_button" />
         <!-- Progress bar overlay; shown while login is in progress -->
-        <include layout="@layout/include_progress_overlay"/>
+        <include layout="@layout/include_progress_overlay" />
     </android.support.constraint.ConstraintLayout>
 </ScrollView>

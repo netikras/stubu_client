@@ -29,6 +29,7 @@ import com.netikras.tools.common.exception.ErrorsCollection;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -61,7 +62,7 @@ public class MainActivity extends BaseActivity implements MainMvpView {
 
     @Override
     protected List<Integer> excludeMenuItems() {
-        return Arrays.asList(R.id.main_menu_create, R.id.main_menu_delete, R.id.main_menu_edit);
+        return Arrays.asList(R.id.main_menu_create, R.id.main_menu_delete, R.id.main_menu_edit, R.id.main_menu_save);
     }
 
 
@@ -72,17 +73,18 @@ public class MainActivity extends BaseActivity implements MainMvpView {
 
     private void fetch() {
 
-        presenter.fetchLecturesForGuest(new Subscriber<Collection<LectureDto>>() {
-            @Override
-            public void onCacheHit(Collection<LectureDto> response) {
-                onSuccess(response);
-            }
-
-            @Override
-            public void onSuccess(Collection<LectureDto> response) {
-                runOnUiThread(() -> guestHandler.updateData((List<LectureDto>) response));
-            }
-        }, getCurrentUser().getPerson());
+//        showLoading();
+//        presenter.fetchLecturesForGuest(new Subscriber<Collection<LectureDto>>() {
+//            @Override
+//            public void onCacheHit(Collection<LectureDto> response) {
+//                onSuccess(response);
+//            }
+//
+//            @Override
+//            public void onSuccess(Collection<LectureDto> response) {
+//                runOnUiThread(() -> guestHandler.updateData((List<LectureDto>) response));
+//            }
+//        }, getCurrentUser().getPerson());
 
         presenter.fetchLecturesForStudent(new Subscriber<Collection<LectureDto>>() {
             @Override
@@ -163,7 +165,7 @@ public class MainActivity extends BaseActivity implements MainMvpView {
         executeTask();
 
         studentHandler = new WatchedLecturesListHandler(this);
-        guestHandler = new WatchedLecturesListHandler(this);
+//        guestHandler = new WatchedLecturesListHandler(this);
         lecturerHandler = new WatchedLecturesListHandler(this);
 
         adapter = new SectionsPageAdapter(getSupportFragmentManager());
@@ -175,7 +177,7 @@ public class MainActivity extends BaseActivity implements MainMvpView {
         if (coalesce(studentLectures, lecturerLectures, guestLectures) != null) {
             studentHandler.updateData(studentLectures);
             lecturerHandler.updateData(lecturerLectures);
-            guestHandler.updateData(guestLectures);
+//            guestHandler.updateData(guestLectures);
 
             studentLectures = null;
             lecturerLectures = null;
@@ -198,20 +200,20 @@ public class MainActivity extends BaseActivity implements MainMvpView {
 
     private void setupPager(ViewPager pager) {
 
-        LecturerLectures lecturerLectures = new LecturerLectures();
-        lecturerLectures.setContext(this);
-        lecturerLectures.setListHandler(lecturerHandler);
-        adapter.addTabFragment(lecturerLectures);
-
         StudentLectures studentLectures = new StudentLectures();
         studentLectures.setContext(this);
         studentLectures.setListHandler(studentHandler);
         adapter.addTabFragment(studentLectures);
 
-        GuestLectures guestLectures = new GuestLectures();
-        guestLectures.setContext(this);
-        guestLectures.setListHandler(guestHandler);
-        adapter.addTabFragment(guestLectures);
+        LecturerLectures lecturerLectures = new LecturerLectures();
+        lecturerLectures.setContext(this);
+        lecturerLectures.setListHandler(lecturerHandler);
+        adapter.addTabFragment(lecturerLectures);
+
+//        GuestLectures guestLectures = new GuestLectures();
+//        guestLectures.setContext(this);
+//        guestLectures.setListHandler(guestHandler);
+//        adapter.addTabFragment(guestLectures);
 
 
         pager.setAdapter(adapter);
@@ -236,6 +238,7 @@ public class MainActivity extends BaseActivity implements MainMvpView {
             data.clear();
             if (!isNullOrEmpty(newData)) {
                 data.addAll(newData);
+                data.sort(Comparator.comparing(LectureDto::getStartsOn));
             }
             onDataSetChanged();
         }

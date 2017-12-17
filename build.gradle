@@ -12,6 +12,13 @@
 * App state is saved in private static fields of Activities. onSaveInstanceState methods are left out hence occasionally
 *   after returning to app activity data will be gone (assuming Android had to stop the app).
 *
+* Guests concept is not entirely implemented. Wel it's there, but there's no way to create a guest yet via the app.
+*   At least not until Search ir implemented.
+*
+* Search is not yet implemented. Search is supposed to be a component acting as a service for other activities.
+*   I.e. if a lecturer desires to create a lecture guest, all (s)he has to do is hit on the PLUS button, type in
+*   student's person's info and look the person up. If there is a match - select the person from the list and use further.
+*
 * */
 
 buildscript {

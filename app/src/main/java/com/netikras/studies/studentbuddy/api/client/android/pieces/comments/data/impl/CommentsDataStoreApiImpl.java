@@ -1,7 +1,7 @@
 package com.netikras.studies.studentbuddy.api.client.android.pieces.comments.data.impl;
 
 import com.netikras.studies.studentbuddy.api.client.android.data.cache.CacheManager;
-import com.netikras.studies.studentbuddy.api.client.android.data.cache.db.dao.CommentDao;
+import com.netikras.studies.studentbuddy.api.client.android.pieces.comments.data.cache.CommentDao;
 import com.netikras.studies.studentbuddy.api.client.android.data.stores.ApiBasedDataStore;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.comments.data.CommentsDataStore;
 import com.netikras.studies.studentbuddy.api.client.android.service.ServiceRequest;

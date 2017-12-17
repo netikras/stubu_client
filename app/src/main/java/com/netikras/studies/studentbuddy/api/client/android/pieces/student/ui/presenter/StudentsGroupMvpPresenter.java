@@ -17,4 +17,8 @@ public interface StudentsGroupMvpPresenter<V extends StudentsGroupMvpView> exten
     void getById(Subscriber<StudentsGroupDto> subscriber, String id);
 
     void getStudentsByGroupId(Subscriber<Collection<StudentDto>> subscriber, String id);
+
+    void create(Subscriber<StudentsGroupDto> subscriber, StudentsGroupDto dto);
+
+    void update(Subscriber<StudentsGroupDto> subscriber, StudentsGroupDto dto);
 }

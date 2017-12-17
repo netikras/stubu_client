@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:fillViewport="true">
 
     <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -211,15 +212,15 @@
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
             android:ems="10"
+            android:focusable="false"
             android:inputType="date"
             android:text="@string/dummy_txt_person_date_created"
-            android:focusable="false"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/txt_lbl_person_id"
             app:layout_constraintTop_toBottomOf="@+id/txt_edit_person_identificator" />
 
-        <include layout="@layout/include_main_menu_button"/>
+        <include layout="@layout/include_main_menu_button" />
         <!-- Progress bar overlay; shown while login is in progress -->
-        <include layout="@layout/include_progress_overlay"/>
+        <include layout="@layout/include_progress_overlay" />
     </android.support.constraint.ConstraintLayout>
 </ScrollView>

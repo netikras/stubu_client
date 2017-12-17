@@ -16,7 +16,6 @@ import com.netikras.studies.studentbuddy.api.client.android.pieces.base.list.Lis
 import com.netikras.studies.studentbuddy.api.client.android.pieces.location.ui.impl.view.BuildingActivity;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.school.ui.presenter.SchoolDepartmentMvpPresenter;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.school.ui.view.SchoolDepartmentMvpView;
-import com.netikras.studies.studentbuddy.api.client.android.service.ServiceRequest.Result;
 import com.netikras.studies.studentbuddy.core.data.api.dto.location.BuildingDto;
 import com.netikras.studies.studentbuddy.core.data.api.dto.school.SchoolDepartmentDto;
 import com.netikras.studies.studentbuddy.core.data.api.dto.school.SchoolDto;
@@ -24,7 +23,6 @@ import com.netikras.studies.studentbuddy.core.data.api.dto.school.SchoolDto;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
@@ -121,16 +119,28 @@ public class SchoolDepartmentActivity extends BaseActivity implements SchoolDepa
     }
 
     private void prepare(SchoolDepartmentDto entity) {
+        if (hasTriedToFetch()) {
+            setTriedToFetch(false);
+            return;
+        }
         if (entity == null || isNullOrEmpty(entity.getId())) {
             return;
         }
         if (isPartial()) {
             showLoading();
+            setTriedToFetch(true);
             presenter.getById(new ErrorsAwareSubscriber<SchoolDepartmentDto>() {
+                @Override
+                public void onCacheHit(SchoolDepartmentDto response) {
+                    if (response != null && !isNullOrEmpty(response.getBuildings())) {
+                        setFetchRequired(false);
+                        executeOnSuccess(response);
+                    }
+                }
+
                 @Override
                 public void onSuccess(SchoolDepartmentDto response) {
                     runOnUiThread(() -> show(response));
-//                    show(response);
                 }
             }, entity.getId());
         }

@@ -5,6 +5,7 @@ import com.netikras.studies.studentbuddy.api.client.android.pieces.base.BasePres
 import com.netikras.studies.studentbuddy.api.client.android.pieces.person.data.PersonDataStore;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.person.ui.presenter.PersonMvpPresenter;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.person.ui.view.PersonMvpView;
+import com.netikras.studies.studentbuddy.api.client.android.service.ServiceRequest;
 import com.netikras.studies.studentbuddy.api.client.android.service.ServiceRequest.Subscriber;
 import com.netikras.studies.studentbuddy.core.data.api.dto.PersonDto;
 
@@ -31,6 +32,12 @@ public class PersonPresenter<V extends PersonMvpView> extends BasePresenter<V> i
     @Override
     public void createPerson(Subscriber<PersonDto> subscriber, PersonDto personDto) {
         getDataStore().create(personDto, subscriber);
+        getDataStore().processOrders(getContext());
+    }
+
+    @Override
+    public void getById(Subscriber<PersonDto> subscriber, String id) {
+        getDataStore().getById(id, subscriber);
         getDataStore().processOrders(getContext());
     }
 

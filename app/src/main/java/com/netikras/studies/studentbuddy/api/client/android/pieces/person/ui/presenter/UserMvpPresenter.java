@@ -3,6 +3,7 @@ package com.netikras.studies.studentbuddy.api.client.android.pieces.person.ui.pr
 import com.netikras.studies.studentbuddy.api.client.android.pieces.base.MvpPresenter;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.person.ui.view.UserMvpView;
 import com.netikras.studies.studentbuddy.api.client.android.service.ServiceRequest.Subscriber;
+import com.netikras.studies.studentbuddy.core.data.api.dto.meta.RoleDto;
 import com.netikras.studies.studentbuddy.core.data.api.dto.meta.UserDto;
 
 /**
@@ -22,4 +23,6 @@ public interface UserMvpPresenter<V extends UserMvpView> extends MvpPresenter<V>
     void fetchPerson(Subscriber<UserDto> subscriber, UserDto userDto);
 
     void getById(Subscriber<UserDto> subscriber, String id);
+
+    void getRoleByName(Subscriber<RoleDto> subscriber, String name);
 }

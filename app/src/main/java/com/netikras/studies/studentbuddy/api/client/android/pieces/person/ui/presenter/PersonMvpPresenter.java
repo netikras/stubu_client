@@ -14,4 +14,6 @@ public interface PersonMvpPresenter<V extends PersonMvpView> extends MvpPresente
     void updatePerson(Subscriber<PersonDto> subscriber, PersonDto personDto);
 
     void createPerson(Subscriber<PersonDto> subscriber, PersonDto personDto);
+
+    void getById(Subscriber<PersonDto> subscriber, String id);
 }

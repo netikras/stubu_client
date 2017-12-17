@@ -2,8 +2,7 @@ package com.netikras.studies.studentbuddy.api.client.android.pieces.person.data.
 
 import com.netikras.studies.studentbuddy.api.client.android.App;
 import com.netikras.studies.studentbuddy.api.client.android.data.cache.CacheManager;
-import com.netikras.studies.studentbuddy.api.client.android.data.cache.db.dao.GenericDao;
-import com.netikras.studies.studentbuddy.api.client.android.data.cache.db.dao.UserDao;
+import com.netikras.studies.studentbuddy.api.client.android.pieces.person.data.cahe.UserDao;
 import com.netikras.studies.studentbuddy.api.client.android.data.stores.ApiBasedDataStore;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.person.data.UserDataStore;
 import com.netikras.studies.studentbuddy.api.client.android.service.ServiceRequest;
@@ -11,8 +10,6 @@ import com.netikras.studies.studentbuddy.api.client.android.service.ServiceReque
 import com.netikras.studies.studentbuddy.api.user.generated.UserApiConsumer;
 import com.netikras.studies.studentbuddy.api.user.mgmt.generated.AdminUserApiConsumer;
 import com.netikras.studies.studentbuddy.core.data.api.dto.meta.UserDto;
-import com.netikras.tools.common.exception.ErrorBody;
-import com.netikras.tools.common.exception.FriendlyUncheckedException;
 import com.netikras.tools.common.remote.AuthenticationDetail;
 
 import java.util.Collection;

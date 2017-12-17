@@ -1,8 +1,9 @@
-package com.netikras.studies.studentbuddy.api.client.android.data.cache.db.dao;
+package com.netikras.studies.studentbuddy.api.client.android.pieces.person.data.cahe;
 
 import android.content.ContentValues;
 
 import com.netikras.studies.studentbuddy.api.client.android.data.cache.CacheManager;
+import com.netikras.studies.studentbuddy.api.client.android.data.cache.GenericDao;
 import com.netikras.studies.studentbuddy.core.data.api.dto.PersonDto;
 
 import java.util.Collection;

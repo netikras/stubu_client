@@ -1,7 +1,7 @@
 package com.netikras.studies.studentbuddy.api.client.android.pieces.person.data.impl;
 
 import com.netikras.studies.studentbuddy.api.client.android.data.cache.CacheManager;
-import com.netikras.studies.studentbuddy.api.client.android.data.cache.db.dao.PersonDao;
+import com.netikras.studies.studentbuddy.api.client.android.pieces.person.data.cahe.PersonDao;
 import com.netikras.studies.studentbuddy.api.client.android.data.stores.ApiBasedDataStore;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.person.data.PersonDataStore;
 import com.netikras.studies.studentbuddy.api.client.android.service.ServiceRequest;
@@ -43,7 +43,6 @@ public class PersonDataStoreApiImpl extends ApiBasedDataStore<String, PersonDto>
             PersonDto cached = getCached(id);
             if (cached != null) {
                 respondCacheHit(cached, subscribers);
-                return;
             }
         }
         orderData(new ServiceRequest<PersonDto>() {

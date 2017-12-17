@@ -1,10 +1,8 @@
 package com.netikras.studies.studentbuddy.api.client.android.pieces.base;
 
-import android.text.InputType;
+import android.content.Context;
 import android.view.View;
 import android.widget.TextView;
-
-import com.netikras.studies.studentbuddy.api.client.android.R;
 
 import java.util.Collection;
 import java.util.Date;
@@ -14,8 +12,6 @@ import java.util.Map;
 import static com.netikras.studies.studentbuddy.api.client.android.util.AppConstants.DATE_FORMAT;
 import static com.netikras.studies.studentbuddy.api.client.android.util.AppConstants.TIME_FORMAT;
 import static com.netikras.studies.studentbuddy.api.client.android.util.CommonUtils.parseDatetime;
-import static com.netikras.tools.common.security.IntegrityUtils.ensureValue;
-import static com.netikras.tools.common.security.IntegrityUtils.isNullOrEmpty;
 
 /**
  * Created by netikras on 17.10.31.
@@ -24,6 +20,8 @@ import static com.netikras.tools.common.security.IntegrityUtils.isNullOrEmpty;
 public abstract class BaseViewFields {
 
     protected static final String ZERO = "Ø";
+
+    private Context context;
 
     protected String getString(TextView view) {
         if (view == null) {
@@ -116,6 +114,18 @@ public abstract class BaseViewFields {
         } else {
             view.setVisibility(View.INVISIBLE);
         }
+    }
+
+    public Context getContext() {
+        return context;
+    }
+
+    public void setContext(Context context) {
+        this.context = context;
+    }
+
+    public void postInit() {
+
     }
 
 }

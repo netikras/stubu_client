@@ -1,7 +1,7 @@
 package com.netikras.studies.studentbuddy.api.client.android.pieces.lecturer.data.impl;
 
 import com.netikras.studies.studentbuddy.api.client.android.data.cache.CacheManager;
-import com.netikras.studies.studentbuddy.api.client.android.data.cache.db.dao.LecturerDao;
+import com.netikras.studies.studentbuddy.api.client.android.pieces.lecturer.data.cahe.LecturerDao;
 import com.netikras.studies.studentbuddy.api.client.android.data.stores.ApiBasedDataStore;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.lecturer.data.LecturerDataStore;
 import com.netikras.studies.studentbuddy.api.client.android.service.ServiceRequest;

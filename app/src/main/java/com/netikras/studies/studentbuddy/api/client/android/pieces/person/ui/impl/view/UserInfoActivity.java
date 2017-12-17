@@ -4,22 +4,31 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.InputType;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.netikras.studies.studentbuddy.api.client.android.R;
 import com.netikras.studies.studentbuddy.api.client.android.conf.di.DepInjector;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.base.BaseActivity;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.base.BaseViewFields;
+import com.netikras.studies.studentbuddy.api.client.android.pieces.base.list.CustomListAdapter;
+import com.netikras.studies.studentbuddy.api.client.android.pieces.base.list.ListHandler;
+import com.netikras.studies.studentbuddy.api.client.android.pieces.base.list.ListRow;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.person.ui.presenter.UserMvpPresenter;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.person.ui.view.UserMvpView;
 import com.netikras.studies.studentbuddy.api.client.android.service.ServiceRequest.Subscriber;
 import com.netikras.studies.studentbuddy.core.data.api.dto.PersonDto;
+import com.netikras.studies.studentbuddy.core.data.api.dto.meta.RoleDto;
+import com.netikras.studies.studentbuddy.core.data.api.dto.meta.RolePermissionDto;
 import com.netikras.studies.studentbuddy.core.data.api.dto.meta.UserDto;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
@@ -70,6 +79,7 @@ public class UserInfoActivity extends BaseActivity implements UserMvpView {
         DepInjector.inject(this);
         fields = initFields(new ViewFields());
         onAttach(this);
+        getFields().postInit();
         presenter.onAttach(this);
         addMenu();
         if (lastEntry != null) {
@@ -143,6 +153,7 @@ public class UserInfoActivity extends BaseActivity implements UserMvpView {
 
         getFields().setUsername(userDto.getName());
         getFields().setId(userDto.getId());
+        getFields().setRoles(userDto.getRoles());
 
         if (lastEntry != null) {
             lastEntry = null;
@@ -162,16 +173,28 @@ public class UserInfoActivity extends BaseActivity implements UserMvpView {
     }
 
     private void prepare(UserDto entity) {
+        if (hasTriedToFetch()) {
+            setTriedToFetch(false);
+            return;
+        }
         if (entity == null || isNullOrEmpty(entity.getId())) {
             return;
         }
         if (isPartial()) {
             showLoading();
+            setTriedToFetch(true);
             presenter.getById(new ErrorsAwareSubscriber<UserDto>() {
+                @Override
+                public void onCacheHit(UserDto response) {
+                    if (response != null && !isNullOrEmpty(response.getName())) {
+                        setFetchRequired(false);
+                        executeOnSuccess(response);
+                    }
+                }
+
                 @Override
                 public void onSuccess(UserDto response) {
                     runOnUiThread(() -> showUser(response));
-//                    showUser(response);
                 }
             }, entity.getId());
         }
@@ -192,7 +215,7 @@ public class UserInfoActivity extends BaseActivity implements UserMvpView {
             @Override
             public void onCacheHit(UserDto response) {
                 setFetchRequired(false); // let's trust cached data, shall we
-                onSuccess(response);
+                executeOnSuccess(response);
             }
 
             @Override
@@ -213,7 +236,26 @@ public class UserInfoActivity extends BaseActivity implements UserMvpView {
         user.setName(getFields().getUsername());
         user.setPassword(getFields().getPassword());
         user.setPerson(getFields().getPerson());
+        user.setRoles(getFields().getRoles());
         return user;
+    }
+
+    @Override
+    protected void menuOnClickRefresh() {
+        showLoading();
+        presenter.getById(new ErrorsAwareSubscriber<UserDto>() {
+            @Override
+            public void onSuccess(UserDto response) {
+                if (response != null) {
+                    runOnUiThread(() -> showUser(response));
+                }
+            }
+        }, getFields().getId());
+    }
+
+    @Override
+    protected void menuOnClickEdit() {
+        getFields().enableEdit(true);
     }
 
     public class ViewFields extends BaseViewFields {
@@ -229,8 +271,93 @@ public class UserInfoActivity extends BaseActivity implements UserMvpView {
         @BindView(R.id.txt_edit_user_password)
         EditText password;
 
+        @BindView(R.id.list_user_roles)
+        ListView roles;
+
         @BindView(R.id.txt_lbl_user_id)
         TextView labelId;
+
+
+        private ListHandler<String> listHandler = new ListHandler<String>() {
+            @Override
+            public List<String> getListData() {
+                return getRoles();
+            }
+
+            @Override
+            public void onRowClick(String item) {
+                showLoading();
+                presenter.getRoleByName(new ErrorsAwareSubscriber<RoleDto>() {
+                    @Override
+                    public void onSuccess(RoleDto role) {
+                        if (role == null) {
+                            return;
+                        }
+
+                        if (isNullOrEmpty(role.getPermissions())) {
+                            role.setPermissions(new ArrayList<>());
+                        } else {
+                            role.getPermissions().sort(Comparator
+                                    .comparing(RolePermissionDto::getResource)
+                                    .thenComparing(RolePermissionDto::getAction)
+                                    .thenComparing(RolePermissionDto::isStrict)
+                            );
+                        }
+
+                        showList(UserInfoActivity.this, new ListHandler<RolePermissionDto>() {
+                            @Override
+                            public ListRow getNewRow(View convertView) {
+                                return new RolesPermissionsListRow(convertView);
+                            }
+
+                            @Override
+                            public List<RolePermissionDto> getListData() {
+                                return role.getPermissions();
+                            }
+
+                            @Override
+                            public String getToolbarText() {
+                                return role.getName();
+                            }
+
+                            class RolesPermissionsListRow extends ListRow<RolePermissionDto> {
+                                TextView text;
+
+                                public RolesPermissionsListRow(View rowView) {
+                                    super(null);
+                                    text = getDefaultListTextView(rowView);
+                                    rowView.setTag(this);
+                                }
+
+                                @Override
+                                public void assign(RolePermissionDto item) {
+                                    if (item == null) {
+                                        text.setText("<???>");
+                                        return;
+                                    }
+
+                                    StringBuilder builder = new StringBuilder();
+                                    builder.append(item.getResource()).append(" : ").append(item.getAction());
+                                    if (item.isStrict()) {
+                                        builder.append(" <!>");
+                                    }
+
+                                    text.setText(builder.toString());
+                                }
+                            }
+                        });
+
+                    }
+                }, item);
+            }
+        };
+
+        @Override
+        public void postInit() {
+            roles.setTag(new ArrayList<String>());
+            CustomListAdapter adapter = new CustomListAdapter();
+            adapter.bind(UserInfoActivity.this, roles, listHandler);
+        }
 
         @Override
         protected Collection<TextView> getAllFields() {
@@ -298,6 +425,18 @@ public class UserInfoActivity extends BaseActivity implements UserMvpView {
 
         public PersonDto getPerson() {
             return (PersonDto) getTag(personName);
+        }
+
+        public void setRoles(List<String> roles) {
+            getRoles().clear();
+            if (roles != null) {
+                getRoles().addAll(roles);
+            }
+            listHandler.onDataSetChanged();
+        }
+
+        public List<String> getRoles() {
+            return (List<String>) getTag(roles);
         }
 
         @Override

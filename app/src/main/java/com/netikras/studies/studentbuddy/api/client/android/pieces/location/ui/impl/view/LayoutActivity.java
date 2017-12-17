@@ -30,8 +30,6 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 
-import static com.netikras.tools.common.security.IntegrityUtils.isNullOrEmpty;
-
 /**
  * Created by netikras on 17.11.10.
  */
@@ -69,7 +67,7 @@ public class LayoutActivity extends BaseActivity implements LayoutMvpView, View.
 
     @Override
     protected List<Integer> excludeMenuItems() {
-        return Arrays.asList(R.id.main_menu_create, R.id.main_menu_delete);
+        return Arrays.asList(R.id.main_menu_create, R.id.main_menu_delete, R.id.main_menu_edit, R.id.main_menu_save);
     }
 
     public ViewFields getFields() {
@@ -241,6 +239,20 @@ public class LayoutActivity extends BaseActivity implements LayoutMvpView, View.
 
         sb.append("]");
         Log.d("Touch Events ---------", sb.toString());
+    }
+
+    @Override
+    protected void menuOnClickRefresh() {
+        showLoading();
+        presenter.getById(new ErrorsAwareSubscriber<FloorLayoutDto>() {
+            @Override
+            public void onSuccess(FloorLayoutDto response) {
+                if (response == null) {
+                    return;
+                }
+                runOnUiThread(() -> show(response));
+            }
+        }, getFields().getId());
     }
 
     class ViewFields extends BaseViewFields {

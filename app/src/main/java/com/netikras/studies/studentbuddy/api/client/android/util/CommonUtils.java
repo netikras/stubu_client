@@ -35,6 +35,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 import java.util.regex.Matcher;
@@ -158,6 +159,37 @@ public final class CommonUtils {
         return parseDatetime(AppConstants.TIMESTAMP_FORMAT, timestamp);
     }
 
+    public static String datetimeToTimestampShort(Date date) {
+        return formatDatetime(AppConstants.TIMESTAMP_SHORT_FORMAT, date);
+    }
+
+    public static String datetimeToTimestampNoSeconds(Date date) {
+        return formatDatetime(AppConstants.TIMESTAMPNSEC_FORMAT, date);
+    }
+
+    public static String datetimeToTimestampShortNoSeconds(Date date) {
+        return formatDatetime(AppConstants.TIMESTAMPNSEC_SHORT_FORMAT, date);
+    }
+
+    public static String datetimeToTimestampAutoShortNoSeconds(Date date) {
+        if (date == null) {
+            return "";
+        }
+
+        Calendar calendar = Calendar.getInstance();
+        Calendar now = Calendar.getInstance();
+        calendar.setTime(date);
+        now.setTime(new Date());
+
+        if (calendar.get(Calendar.YEAR) != now.get(Calendar.YEAR)) {
+            return formatDatetime(AppConstants.TIMESTAMP_FORMAT, date);
+        }
+
+        if (calendar.get(Calendar.DAY_OF_YEAR) != now.get(Calendar.DAY_OF_YEAR)) {
+            return formatDatetime(AppConstants.TIMESTAMPNSEC_SHORT_FORMAT, date);
+        }
+        return formatDatetime(AppConstants.TIME_FORMAT, date);
+    }
 
 
     public static String datetimeToDate(Date date) {

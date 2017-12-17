@@ -137,6 +137,8 @@ public class TestInfoActivity extends BaseActivity implements TestMvpView {
         if (createNew) {
             getFields().setId(null);
             getFields().enableEdit(true);
+        } else {
+            getFields().setCommentsCount("" + getCommentsCount("TEST", dto.getId()));
         }
 
         if (lastEntry != null) {
@@ -182,6 +184,7 @@ public class TestInfoActivity extends BaseActivity implements TestMvpView {
     @Override
     protected void menuOnClickCreate() {
         DisciplineTestDto dto = collect();
+        showLoading();
         presenter.create(new ErrorsAwareSubscriber<DisciplineTestDto>() {
             @Override
             public void onSuccess(DisciplineTestDto response) {
@@ -193,16 +196,20 @@ public class TestInfoActivity extends BaseActivity implements TestMvpView {
     @Override
     protected void menuOnClickSave() {
         DisciplineTestDto dto = collect();
+        showLoading();
         presenter.update(new ErrorsAwareSubscriber<DisciplineTestDto>() {
             @Override
             public void onSuccess(DisciplineTestDto response) {
-                runOnUiThread(() -> show(response));
+                if (response != null) {
+                    runOnUiThread(() -> show(response));
+                }
             }
         }, dto);
     }
 
     @Override
     protected void menuOnClickDelete() {
+        showLoading();
         presenter.delete(new ErrorsAwareSubscriber<Boolean>() {
             @Override
             public void onSuccess(Boolean su) {
@@ -213,10 +220,13 @@ public class TestInfoActivity extends BaseActivity implements TestMvpView {
 
     @Override
     protected void menuOnClickRefresh() {
+        showLoading();
         presenter.getById(new ErrorsAwareSubscriber<DisciplineTestDto>() {
             @Override
             public void onSuccess(DisciplineTestDto response) {
-                runOnUiThread(() -> show(response));
+                if (response != null) {
+                    runOnUiThread(() -> show(response));
+                }
             }
         }, getFields().getId());
     }
@@ -320,9 +330,17 @@ public class TestInfoActivity extends BaseActivity implements TestMvpView {
             this.exam = exam;
         }
 
+        public String getCommentsCount() {
+            return getString(comments);
+        }
+
+        public void setCommentsCount(String count) {
+            setString(comments, count);
+        }
+
         @Override
         protected Collection<TextView> getAllFields() {
-            return Arrays.asList(id, description, startDate, startTime, lecture);
+            return Arrays.asList(id, description, startDate, startTime, lecture, comments);
         }
 
         @Override

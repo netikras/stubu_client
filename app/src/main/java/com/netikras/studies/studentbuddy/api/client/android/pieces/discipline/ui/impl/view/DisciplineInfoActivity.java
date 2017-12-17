@@ -112,7 +112,7 @@ public class DisciplineInfoActivity extends BaseActivity implements DisciplineMv
 
         return dto;
     }
-    
+
     @Override
     protected boolean isPartial() {
         DisciplineDto dto = collect();
@@ -199,6 +199,33 @@ public class DisciplineInfoActivity extends BaseActivity implements DisciplineMv
                 }
             }
         });
+    }
+
+    @Override
+    protected void menuOnClickSave() {
+        DisciplineDto dto = collect();
+        showLoading();
+        presenter.update(new ErrorsAwareSubscriber<DisciplineDto>() {
+            @Override
+            public void onSuccess(DisciplineDto response) {
+                if (response != null) {
+                    runOnUiThread(() -> show(response));
+                }
+            }
+        }, dto);
+    }
+
+    @Override
+    protected void menuOnClickRefresh() {
+        showLoading();
+        presenter.getById(new ErrorsAwareSubscriber<DisciplineDto>() {
+            @Override
+            public void onSuccess(DisciplineDto response) {
+                if (response != null) {
+                    runOnUiThread(() -> show(response));
+                }
+            }
+        }, getFields().getId());
     }
 
     public class ViewFields extends BaseViewFields {

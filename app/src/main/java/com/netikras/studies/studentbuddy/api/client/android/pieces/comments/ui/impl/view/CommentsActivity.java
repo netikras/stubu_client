@@ -200,6 +200,14 @@ public class CommentsActivity extends BaseActivity implements CommentsMvpView {
         showLoading();
         presenter.getById(new ErrorsAwareSubscriber<CommentDto>() {
             @Override
+            public void onCacheHit(CommentDto response) {
+                if (response != null && !isNullOrEmpty(response.getText())) {
+                    setFetchRequired(false);
+                    executeOnSuccess(response);
+                }
+            }
+
+            @Override
             public void onSuccess(CommentDto response) {
                 result.setValue(response);
             }
@@ -255,21 +263,52 @@ public class CommentsActivity extends BaseActivity implements CommentsMvpView {
 
     @Override
     protected void menuOnClickCreate() {
+        showLoading();
         presenter.createComment(new ErrorsAwareSubscriber<CommentDto>() {
             @Override
             public void executeOnSuccess(CommentDto response) {
-                runOnUiThread(() -> showComment(response));
+                if (response != null) {
+                    runOnUiThread(() -> showComment(response));
+                }
             }
         }, collect());
     }
 
     @Override
+    protected void menuOnClickSave() {
+        showLoading();
+        CommentDto dto = collect();
+        presenter.update(new ErrorsAwareSubscriber<CommentDto>() {
+            @Override
+            public void onSuccess(CommentDto response) {
+                if (response != null) {
+                    runOnUiThread(() -> showComment(response));
+                }
+            }
+        }, dto);
+    }
+
+    @Override
     protected void menuOnClickDelete() {
+        showLoading();
         presenter.deleteComment(new ErrorsAwareSubscriber<Boolean>() {
             @Override
             public void onSuccess(Boolean response) {
                 if (Boolean.TRUE.equals(response)) {
                     runOnUiThread(() -> finish());
+                }
+            }
+        }, getFields().getId());
+    }
+
+    @Override
+    protected void menuOnClickRefresh() {
+        showLoading();
+        presenter.getById(new ErrorsAwareSubscriber<CommentDto>() {
+            @Override
+            public void onSuccess(CommentDto response) {
+                if (response != null) {
+                    showComment(response);
                 }
             }
         }, getFields().getId());

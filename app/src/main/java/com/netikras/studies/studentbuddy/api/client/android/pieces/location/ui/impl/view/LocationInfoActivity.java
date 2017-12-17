@@ -12,15 +12,13 @@ import com.netikras.studies.studentbuddy.api.client.android.pieces.base.BaseActi
 import com.netikras.studies.studentbuddy.api.client.android.pieces.base.BaseViewFields;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.location.ui.presenter.LocationMvpPresenter;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.location.ui.view.LocationMvpView;
-import com.netikras.studies.studentbuddy.api.client.android.service.ServiceRequest;
 import com.netikras.studies.studentbuddy.api.client.android.service.ServiceRequest.Result;
+import com.netikras.studies.studentbuddy.api.client.android.service.ServiceRequest.SubscribersMonitor;
 import com.netikras.studies.studentbuddy.core.data.api.dto.location.AddressDto;
 import com.netikras.studies.studentbuddy.core.data.api.dto.location.BuildingDto;
 import com.netikras.studies.studentbuddy.core.data.api.dto.location.BuildingFloorDto;
 import com.netikras.studies.studentbuddy.core.data.api.dto.location.BuildingSectionDto;
-import com.netikras.studies.studentbuddy.core.data.api.dto.location.FloorLayoutDto;
 import com.netikras.studies.studentbuddy.core.data.api.dto.location.LectureRoomDto;
-import com.netikras.studies.studentbuddy.core.data.api.dto.meta.UserDto;
 import com.netikras.tools.common.exception.ErrorBody;
 
 import java.util.Arrays;
@@ -48,7 +46,7 @@ public class LocationInfoActivity extends BaseActivity implements LocationMvpVie
 
     @Override
     protected List<Integer> excludeMenuItems() {
-        return Arrays.asList(R.id.main_menu_create, R.id.main_menu_delete);
+        return Arrays.asList(R.id.main_menu_create, R.id.main_menu_delete, R.id.main_menu_edit, R.id.main_menu_save);
     }
 
     @Override
@@ -249,7 +247,7 @@ public class LocationInfoActivity extends BaseActivity implements LocationMvpVie
                 public void onCacheHit(BuildingFloorDto response) {
                     if (response != null && !isNullOrEmpty(response.getLayouts())) {
                         setFetchRequired(false);
-                        onSuccess(response);
+                        executeOnSuccess(response);
                     }
                 }
 
@@ -278,6 +276,125 @@ public class LocationInfoActivity extends BaseActivity implements LocationMvpVie
     public void showRoom() {
 
         onError("Not implemented yet");
+    }
+
+
+    @Override
+    protected void menuOnClickRefresh() {
+        showLoading();
+        Result<LectureRoomDto> room = new Result<>();
+        Result<BuildingDto> building = new Result<>();
+        Result<BuildingSectionDto> section = new Result<>();
+        Result<BuildingFloorDto> floor = new Result<>();
+        Result<AddressDto> address = new Result<>();
+
+        final SubscribersMonitor monitor = new SubscribersMonitor() {
+            @Override
+            public void onAllFinished() {
+                runOnUiThread(() -> show(address.get(), building.get(), section.get(), floor.get(), room.get()));
+            }
+        };
+        presenter.getRoom(new ErrorsAwareSubscriber<LectureRoomDto>() {
+            public void animate() {
+                runOnUiThread(() -> showLoading());
+            }
+
+            public void fetchAddress(String id) {
+                animate();
+                presenter.getAddress(new ErrorsAwareSubscriber<AddressDto>() {
+                    @Override
+                    protected SubscribersMonitor getMonitor() {
+                        return monitor;
+                    }
+
+                    @Override
+                    public void onSuccess(AddressDto addrResp) {
+                        if (addrResp != null) {
+                            address.setValue(addrResp);
+                        }
+                    }
+                }, id);
+            }
+
+            @Override
+            protected SubscribersMonitor getMonitor() {
+                return monitor;
+            }
+
+            @Override
+            public void onSuccess(LectureRoomDto roomResp) {
+                if (roomResp == null) {
+                    return;
+                }
+                room.setValue(roomResp);
+
+                if (roomResp.getFloor() != null) {
+                    floor.setValue(roomResp.getFloor());
+                    animate();
+                    presenter.getFloor(new ErrorsAwareSubscriber<BuildingFloorDto>() {
+                        @Override
+                        protected SubscribersMonitor getMonitor() {
+                            return monitor;
+                        }
+
+                        @Override
+                        public void onSuccess(BuildingFloorDto floorResp) {
+                            if (floorResp == null) {
+                                return;
+                            }
+                            floor.setValue(floorResp);
+
+                            if (floorResp.getBuildingSection() != null) {
+                                section.setValue(floorResp.getBuildingSection());
+                                animate();
+                                presenter.getSection(new ErrorsAwareSubscriber<BuildingSectionDto>() {
+                                    @Override
+                                    protected SubscribersMonitor getMonitor() {
+                                        return monitor;
+                                    }
+
+                                    @Override
+                                    public void onSuccess(BuildingSectionDto sectionResp) {
+                                        if (sectionResp == null) {
+                                            return;
+                                        }
+                                        section.setValue(sectionResp);
+                                        if (sectionResp.getAddress() != null) {
+                                            fetchAddress(sectionResp.getAddress().getId());
+                                        }
+
+                                    }
+                                }, floorResp.getBuildingSection().getId());
+                            }
+
+                            if (floorResp.getBuilding() != null) {
+                                building.setValue(floorResp.getBuilding());
+                                animate();
+                                presenter.getBuilding(new ErrorsAwareSubscriber<BuildingDto>() {
+                                    @Override
+                                    protected SubscribersMonitor getMonitor() {
+                                        return monitor;
+                                    }
+
+                                    @Override
+                                    public void onSuccess(BuildingDto buildingResp) {
+                                        if (buildingResp == null) {
+                                            return;
+                                        }
+                                        building.setValue(buildingResp);
+                                        if (buildingResp.getAddress() != null) {
+                                            fetchAddress(buildingResp.getAddress().getId());
+                                        }
+
+                                    }
+                                }, floorResp.getBuilding().getId());
+                            }
+
+                        }
+                    }, roomResp.getFloor().getId());
+                }
+            }
+        }, getFields().getRoomId());
     }
 
     public class ViewFields extends BaseViewFields {

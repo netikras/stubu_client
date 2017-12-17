@@ -6,16 +6,21 @@ import android.text.InputType;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.netikras.studies.studentbuddy.api.client.android.R;
 import com.netikras.studies.studentbuddy.api.client.android.conf.di.DepInjector;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.base.BaseActivity;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.base.BaseViewFields;
+import com.netikras.studies.studentbuddy.api.client.android.pieces.base.list.CustomListAdapter;
+import com.netikras.studies.studentbuddy.api.client.android.pieces.base.list.ListHandler;
+import com.netikras.studies.studentbuddy.api.client.android.pieces.base.list.ListRow;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.person.ui.presenter.PersonMvpPresenter;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.person.ui.view.PersonMvpView;
 import com.netikras.studies.studentbuddy.api.client.android.service.ServiceRequest.Subscriber;
 import com.netikras.studies.studentbuddy.core.data.api.dto.PersonDto;
+import com.netikras.studies.studentbuddy.core.data.api.dto.meta.RoleDto;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -80,8 +85,6 @@ public class PersonInfoActivity extends BaseActivity implements PersonMvpView {
     }
 
 
-
-
     @Override
     public ViewFields getFields() {
         return fields;
@@ -94,13 +97,13 @@ public class PersonInfoActivity extends BaseActivity implements PersonMvpView {
         if (personDto == null) {
             personDto = new PersonDto(); // display empty fields. Replace this with 'return;' to display default dummy values
         }
-        fields.setId(personDto.getId());
-        fields.setIdentificator(personDto.getIdentification());
-        fields.setName(personDto.getFirstName());
-        fields.setSurname(personDto.getLastName());
-        fields.setEmail(personDto.getEmail());
-        fields.setPhoneNo(personDto.getPhoneNo());
-        fields.setDateCreated(personDto.getCreatedOn());
+        getFields().setId(personDto.getId());
+        getFields().setIdentificator(personDto.getIdentification());
+        getFields().setName(personDto.getFirstName());
+        getFields().setSurname(personDto.getLastName());
+        getFields().setEmail(personDto.getEmail());
+        getFields().setPhoneNo(personDto.getPhoneNo());
+        getFields().setDateCreated(personDto.getCreatedOn());
 
         if (lastEntry != null) {
             lastEntry = null;
@@ -123,31 +126,32 @@ public class PersonInfoActivity extends BaseActivity implements PersonMvpView {
     }
 
 
-
     @Override
     protected void menuOnClickSave() {
-        getFields().enableEdit(false);
 
+        PersonDto dto = collect();
         showLoading();
-        Subscriber<PersonDto> subscriber = new ErrorsAwareSubscriber<PersonDto>() {
+        presenter.updatePerson(new ErrorsAwareSubscriber<PersonDto>() {
             @Override
             public void onSuccess(PersonDto response) {
-                showPerson(response);
+                if (response != null) {
+                    runOnUiThread(() -> showPerson(response));
+                }
             }
-        };
-
-        if (isNullOrEmpty(getFields().getId())) {
-            presenter.createPerson(subscriber, collect());
-        } else {
-            presenter.updatePerson(subscriber, collect());
-        }
+        }, dto);
     }
 
     @Override
-    protected void menuOnClickCreate() {
-        getFields().reset();
-        getFields().setId("");
-        getFields().enableEdit(true);
+    protected void menuOnClickRefresh() {
+        showLoading();
+        presenter.getById(new ErrorsAwareSubscriber<PersonDto>() {
+            @Override
+            public void onSuccess(PersonDto response) {
+                if (response != null) {
+                    runOnUiThread(() -> showPerson(response));
+                }
+            }
+        }, getFields().getId());
     }
 
     public class ViewFields extends BaseViewFields {
@@ -166,6 +170,9 @@ public class PersonInfoActivity extends BaseActivity implements PersonMvpView {
         EditText phoneNo;
         @BindView(R.id.txt_edit_person_date_created)
         EditText dateCreated;
+
+        @BindView(R.id.list_person_roles)
+        ListView roles;
 
         @BindView(R.id.txt_lbl_person_id)
         TextView labelId;
@@ -254,6 +261,14 @@ public class PersonInfoActivity extends BaseActivity implements PersonMvpView {
             setString(this.dateCreated, datetimeToDate(dateCreated));
         }
 
+        public void setRoles(List<String> roles) {
+
+        }
+
+        public List<String> getRoles() {
+            return null;
+        }
+
         @Override
         public void enableEdit(boolean enable) {
             super.enableEdit(enable);
@@ -261,10 +276,23 @@ public class PersonInfoActivity extends BaseActivity implements PersonMvpView {
                 setVisible(labelId, true);
                 setVisible(id, true);
             } else {
-//                labelId.setVisibility(View.INVISIBLE);
                 setVisible(labelId, false);
                 setVisible(id, null);
             }
         }
     }
+
+
+    private ListHandler<String> rolesListHandler = new ListHandler<String>() {
+        @Override
+        public List<String> getData() {
+            return super.getData();
+        }
+
+        @Override
+        public void onRowClick(String item) {
+            super.onRowClick(item);
+        }
+    };
+
 }

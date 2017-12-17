@@ -58,4 +58,10 @@ public class CommentsPresenter<V extends CommentsMvpView> extends BasePresenter<
         getDataStore().delete(id, subscriber);
         getDataStore().processOrders(getContext());
     }
+
+    @Override
+    public void update(Subscriber<CommentDto> subscriber, CommentDto dto) {
+        getDataStore().update(dto, subscriber);
+        getDataStore().processOrders(getContext());
+    }
 }

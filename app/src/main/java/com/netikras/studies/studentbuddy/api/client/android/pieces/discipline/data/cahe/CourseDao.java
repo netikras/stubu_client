@@ -1,12 +1,15 @@
-package com.netikras.studies.studentbuddy.api.client.android.data.cache.db.dao;
+package com.netikras.studies.studentbuddy.api.client.android.pieces.discipline.data.cahe;
 
 import android.content.ContentValues;
 
 import com.netikras.studies.studentbuddy.api.client.android.data.cache.CacheManager;
+import com.netikras.studies.studentbuddy.api.client.android.data.cache.GenericDao;
+import com.netikras.studies.studentbuddy.api.client.android.pieces.student.data.cahe.GroupDao;
+import com.netikras.studies.studentbuddy.api.client.android.pieces.lecture.data.cahe.LectureDao;
+import com.netikras.studies.studentbuddy.api.client.android.pieces.lecturer.data.cahe.LecturerDao;
 import com.netikras.studies.studentbuddy.core.data.api.dto.school.CourseDto;
 import com.netikras.studies.studentbuddy.core.data.api.dto.school.DisciplineDto;
 import com.netikras.studies.studentbuddy.core.data.api.dto.school.LectureDto;
-import com.netikras.studies.studentbuddy.core.data.api.dto.school.LecturerDto;
 import com.netikras.studies.studentbuddy.core.data.api.dto.school.StudentsGroupDto;
 
 import java.util.List;

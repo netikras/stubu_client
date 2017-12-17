@@ -19,4 +19,6 @@ public interface CommentsMvpPresenter<V extends CommentsMvpView> extends MvpPres
     void getComments(Subscriber<List<CommentDto>> subscriber, String entityType, String entityId);
 
     void deleteComment(Subscriber<Boolean> subscriber, String id);
+
+    void update(Subscriber<CommentDto> subscriber, CommentDto dto);
 }

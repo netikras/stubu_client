@@ -10,7 +10,11 @@ import com.netikras.studies.studentbuddy.api.client.android.pieces.lecture.data.
 import com.netikras.studies.studentbuddy.api.client.android.pieces.lecture.data.LectureDataStore;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.lecture.data.TestDataStore;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.lecturer.data.LecturerDataStore;
+import com.netikras.studies.studentbuddy.api.client.android.pieces.location.data.AddressDataStore;
+import com.netikras.studies.studentbuddy.api.client.android.pieces.location.data.BuildingDataStore;
+import com.netikras.studies.studentbuddy.api.client.android.pieces.location.data.BuildingSectionDataStore;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.location.data.FloorDataStore;
+import com.netikras.studies.studentbuddy.api.client.android.pieces.location.data.LayoutDataStore;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.location.data.RoomDataStore;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.person.data.PersonDataStore;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.person.data.UserDataStore;
@@ -19,6 +23,7 @@ import com.netikras.studies.studentbuddy.api.client.android.pieces.school.data.S
 import com.netikras.studies.studentbuddy.api.client.android.pieces.student.data.GuestDataStore;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.student.data.StudentDataStore;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.student.data.StudentsGroupDataStore;
+import com.netikras.studies.studentbuddy.api.client.android.pieces.sys.data.RoleDataStore;
 
 import org.apache.commons.lang3.ClassUtils;
 
@@ -97,6 +102,11 @@ public class DataManagerImpl implements DataManager {
         addStore(assignmentDataStore);
         addStore(testDataStore);
         addStore(commentsDataStore);
+        addStore(buildingDataStore);
+        addStore(sectionDataStore);
+        addStore(addressDataStore);
+        addStore(layoutDataStore);
+        addStore(roleDataStore);
     }
 
 
@@ -132,5 +142,14 @@ public class DataManagerImpl implements DataManager {
     TestDataStore testDataStore;
     @Inject
     CommentsDataStore commentsDataStore;
-
+    @Inject
+    BuildingDataStore buildingDataStore;
+    @Inject
+    BuildingSectionDataStore sectionDataStore;
+    @Inject
+    AddressDataStore addressDataStore;
+    @Inject
+    LayoutDataStore layoutDataStore;
+    @Inject
+    RoleDataStore roleDataStore;
 }

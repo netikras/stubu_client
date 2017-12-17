@@ -1,11 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".pieces.main.ui.impl.view.MainActivity"
-    >
+    android:fillViewport="true"
+    tools:context=".pieces.main.ui.impl.view.MainActivity">
+
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
 
         <ImageView
@@ -31,7 +35,7 @@
         <android.support.v4.view.ViewPager
             android:id="@+id/pager_main_act"
             android:layout_width="0dp"
-            android:layout_height="0dp"
+            android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
             android:layout_marginEnd="16dp"
             android:layout_marginStart="16dp"
@@ -41,9 +45,11 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tabs_main_act" />
+            app:layout_constraintTop_toBottomOf="@+id/tabs_main_act"
+            app:layout_constraintVertical_bias="0.0" />
 
         <include layout="@layout/include_main_menu_button" />
         <!-- Progress bar overlay; shown while login is in progress -->
         <include layout="@layout/include_progress_overlay" />
-</android.support.constraint.ConstraintLayout>
+    </android.support.constraint.ConstraintLayout>
+</ScrollView>

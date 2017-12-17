@@ -89,7 +89,7 @@ public abstract class LecturesListFragment extends Fragment {
                 }
 
                 StringBuilder title = new StringBuilder();
-                title.append("(").append(CommonUtils.datetimeToTime(item.getStartsOn())).append(") ");
+                title.append("(").append(CommonUtils.datetimeToTimestampAutoShortNoSeconds(item.getStartsOn())).append(") ");
                 title.append(item.getDiscipline().getTitle()).append("");
                 if (!isNullOrEmpty(item.getTests())) {
                     title.append(", [").append("T:").append(item.getTests().size()).append("]");

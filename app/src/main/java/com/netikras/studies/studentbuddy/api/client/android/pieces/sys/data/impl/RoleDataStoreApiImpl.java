@@ -49,6 +49,16 @@ public class RoleDataStoreApiImpl extends ApiBasedDataStore<String, RoleDto> imp
     }
 
     @Override
+    public void getByName(String name, Subscriber<RoleDto>... subscribers) {
+        orderData(new ServiceRequest<RoleDto>() {
+            @Override
+            public RoleDto request() {
+                return adminApiConsumer.getRoleDtoByName(name);
+            }
+        }, subscribers);
+    }
+
+    @Override
     public void update(RoleDto item, Subscriber<RoleDto>... subscribers) {
         notifyNotImplemented(subscribers);
     }

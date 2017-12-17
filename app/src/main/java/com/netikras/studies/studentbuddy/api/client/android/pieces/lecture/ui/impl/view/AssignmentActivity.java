@@ -100,6 +100,7 @@ public class AssignmentActivity extends BaseActivity implements AssignmentMvpVie
                     setFetchRequired(false);
                     executeOnSuccess(response);
                 }
+
                 @Override
                 public void onSuccess(AssignmentDto response) {
                     runOnUiThread(() -> show(response));
@@ -136,6 +137,8 @@ public class AssignmentActivity extends BaseActivity implements AssignmentMvpVie
         if (createNew) {
             getFields().setId(null);
             getFields().enableEdit(true);
+        } else {
+            getFields().setCommentsCount("" + getCommentsCount("ASSIGNMENT", dto.getId()));
         }
 
         if (lastEntry != null) {
@@ -169,10 +172,13 @@ public class AssignmentActivity extends BaseActivity implements AssignmentMvpVie
     @Override
     protected void menuOnClickCreate() {
         AssignmentDto assignmentDto = collect();
+        showLoading();
         presenter.create(new ErrorsAwareSubscriber<AssignmentDto>() {
             @Override
             public void onSuccess(AssignmentDto response) {
-                runOnUiThread(() -> show(response));
+                if (response != null) {
+                    runOnUiThread(() -> show(response));
+                }
             }
         }, assignmentDto);
     }
@@ -180,16 +186,20 @@ public class AssignmentActivity extends BaseActivity implements AssignmentMvpVie
     @Override
     protected void menuOnClickSave() {
         AssignmentDto dto = collect();
+        showLoading();
         presenter.update(new ErrorsAwareSubscriber<AssignmentDto>() {
             @Override
             public void onSuccess(AssignmentDto response) {
-                runOnUiThread(() -> show(response));
+                if (response != null) {
+                    runOnUiThread(() -> show(response));
+                }
             }
         }, dto);
     }
 
     @Override
     protected void menuOnClickDelete() {
+        showLoading();
         presenter.delete(new ErrorsAwareSubscriber<Boolean>() {
             @Override
             public void onSuccess(Boolean su) {
@@ -200,10 +210,13 @@ public class AssignmentActivity extends BaseActivity implements AssignmentMvpVie
 
     @Override
     protected void menuOnClickRefresh() {
+        showLoading();
         presenter.getById(new ErrorsAwareSubscriber<AssignmentDto>() {
             @Override
             public void onSuccess(AssignmentDto response) {
-                runOnUiThread(() -> show(response));
+                if (response != null) {
+                    runOnUiThread(() -> show(response));
+                }
             }
         }, getFields().getId());
     }
@@ -318,9 +331,19 @@ public class AssignmentActivity extends BaseActivity implements AssignmentMvpVie
             this.lecture = lecture;
         }
 
+
+        public String getCommentsCount() {
+            return getString(comments);
+        }
+
+        public void setCommentsCount(String count) {
+            setString(comments, count);
+        }
+
+
         @Override
         protected Collection<TextView> getAllFields() {
-            return Arrays.asList(id, title, description, announcedDate, announcedTime, dueDate, dueTime, announcedDate, announcedTime);
+            return Arrays.asList(id, title, description, announcedDate, announcedTime, dueDate, dueTime, announcedDate, announcedTime, comments);
         }
 
         @Override

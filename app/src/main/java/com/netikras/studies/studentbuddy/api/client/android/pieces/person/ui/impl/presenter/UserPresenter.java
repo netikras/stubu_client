@@ -5,8 +5,10 @@ import com.netikras.studies.studentbuddy.api.client.android.pieces.base.BasePres
 import com.netikras.studies.studentbuddy.api.client.android.pieces.person.data.UserDataStore;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.person.ui.presenter.UserMvpPresenter;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.person.ui.view.UserMvpView;
+import com.netikras.studies.studentbuddy.api.client.android.pieces.sys.data.RoleDataStore;
 import com.netikras.studies.studentbuddy.api.client.android.service.ServiceRequest;
 import com.netikras.studies.studentbuddy.api.client.android.service.ServiceRequest.Subscriber;
+import com.netikras.studies.studentbuddy.core.data.api.dto.meta.RoleDto;
 import com.netikras.studies.studentbuddy.core.data.api.dto.meta.UserDto;
 import com.netikras.tools.common.exception.ErrorBody;
 import com.netikras.tools.common.exception.ErrorsCollection;
@@ -80,6 +82,12 @@ public class UserPresenter<V extends UserMvpView> extends BasePresenter<V> imple
     public void getById(Subscriber<UserDto> subscriber, String id) {
         getDataStore().getById(id, subscriber);
         getDataStore().processOrders(getContext());
+    }
+
+    @Override
+    public void getRoleByName(Subscriber<RoleDto> subscriber, String name) {
+        getDataManager().getStore(RoleDataStore.class).getByName(name, subscriber);
+        getDataManager().getStore(RoleDataStore.class).processOrders(getContext());
     }
 
 

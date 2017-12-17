@@ -8,6 +8,7 @@ import com.netikras.studies.studentbuddy.api.client.android.pieces.location.data
 import com.netikras.studies.studentbuddy.api.client.android.pieces.location.ui.impl.view.LayoutActivity;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.location.ui.presenter.LayoutMvpPresenter;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.location.ui.view.LayoutMvpView;
+import com.netikras.studies.studentbuddy.api.client.android.service.ServiceRequest;
 import com.netikras.studies.studentbuddy.core.data.api.dto.location.FloorLayoutDto;
 
 import javax.inject.Inject;
@@ -32,4 +33,9 @@ public class LayoutPresenter<V extends LayoutMvpView> extends BasePresenter<V> i
     }
 
 
+    @Override
+    public void getById(ServiceRequest.Subscriber<FloorLayoutDto> subscriber, String id) {
+        getDataStore().getById(id, subscriber);
+        getDataStore().processOrders(getContext());
+    }
 }

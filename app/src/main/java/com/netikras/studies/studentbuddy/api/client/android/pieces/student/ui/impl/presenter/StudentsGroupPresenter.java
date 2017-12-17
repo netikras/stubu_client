@@ -46,4 +46,16 @@ public class StudentsGroupPresenter<V extends StudentsGroupMvpView> extends Base
         getDataManager().getStore(StudentDataStore.class).getAllByGroup(id, subscriber);
         getDataManager().getStore(StudentDataStore.class).processOrders(getContext());
     }
+
+    @Override
+    public void create(Subscriber<StudentsGroupDto> subscriber, StudentsGroupDto dto) {
+        getDataStore().create(dto, subscriber);
+        getDataStore().processOrders(getContext());
+    }
+
+    @Override
+    public void update(Subscriber<StudentsGroupDto> subscriber, StudentsGroupDto dto) {
+        getDataStore().update(dto, subscriber);
+        getDataStore().processOrders(getContext());
+    }
 }

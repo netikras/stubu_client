@@ -29,16 +29,15 @@ import com.netikras.studies.studentbuddy.api.client.android.App;
 import com.netikras.studies.studentbuddy.api.client.android.R;
 import com.netikras.studies.studentbuddy.api.client.android.conf.di.DepInjector;
 import com.netikras.studies.studentbuddy.api.client.android.conf.di.component.ActivityComponent;
+import com.netikras.studies.studentbuddy.api.client.android.data.cache.CacheManager;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.SearchActivity;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.base.list.ListHandler;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.base.list.SimpleListActivity;
+import com.netikras.studies.studentbuddy.api.client.android.pieces.comments.data.cache.CommentDao;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.comments.ui.impl.view.CommentsActivity;
-import com.netikras.studies.studentbuddy.api.client.android.pieces.comments.ui.presenter.CommentsMvpPresenter;
-import com.netikras.studies.studentbuddy.api.client.android.pieces.comments.ui.view.CommentsMvpView;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.login.ui.impl.view.LoginActivity;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.person.ui.impl.view.UserInfoActivity;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.settings.ui.impl.view.SettingsActivity;
-import com.netikras.studies.studentbuddy.api.client.android.service.ServiceRequest;
 import com.netikras.studies.studentbuddy.api.client.android.service.ServiceRequest.Subscriber;
 import com.netikras.studies.studentbuddy.api.client.android.util.CommonUtils;
 import com.netikras.studies.studentbuddy.api.client.android.util.Exchange;
@@ -50,7 +49,6 @@ import com.netikras.tools.common.exception.ErrorBody;
 import com.netikras.tools.common.exception.ErrorsCollection;
 
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -77,10 +75,14 @@ public abstract class BaseActivity extends AppCompatActivity
 
     private BaseViewFields fields;
 
+    private boolean triedToFetch = false;
+
     @Inject
     App app;
     @Inject
     Exchange exchange;
+    @Inject
+    CacheManager cacheManager;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -202,6 +204,15 @@ public abstract class BaseActivity extends AppCompatActivity
         return textView;
     }
 
+
+    protected boolean hasTriedToFetch() {
+        return triedToFetch;
+    }
+
+    protected void setTriedToFetch(boolean tried) {
+        triedToFetch = tried;
+    }
+
     @Override
     public void onFragmentAttached() {
 
@@ -237,6 +248,9 @@ public abstract class BaseActivity extends AppCompatActivity
         if (Activity.class.isAssignableFrom(view.getClass())) {
             setUnBinder(ButterKnife.bind((Activity) view));
 //            DepInjector.inject(view);
+        }
+        if (fields != null) {
+            fields.setContext(this);
         }
 //        executeTask();
     }
@@ -350,6 +364,8 @@ public abstract class BaseActivity extends AppCompatActivity
     private void removeUnavailableItems(Menu menu) {
 
         Set<Integer> excluded = new HashSet<>(excludeMenuItems());
+
+        excluded.add(R.id.main_menu_search);
 
         if (getCurrentUser() == null) {
             excluded.add(R.id.main_menu_user);
@@ -482,6 +498,10 @@ public abstract class BaseActivity extends AppCompatActivity
                 getActivity().finish();
             }
         });
+    }
+
+    protected int getCommentsCount(String entityType, String entityId) {
+        return cacheManager.getDao(CommentDao.class).getCountByEntity(entityType, entityId);
     }
 
     public abstract static class ViewTask<A extends MvpView> {

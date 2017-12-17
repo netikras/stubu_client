@@ -1,6 +1,6 @@
 package com.netikras.studies.studentbuddy.api.client.android.data.stores;
 
-import com.netikras.studies.studentbuddy.api.client.android.data.cache.db.dao.GenericDao;
+import com.netikras.studies.studentbuddy.api.client.android.data.cache.GenericDao;
 
 import java.util.Collection;
 

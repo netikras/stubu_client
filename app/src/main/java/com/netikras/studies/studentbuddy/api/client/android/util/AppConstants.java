@@ -9,6 +9,9 @@ public final class AppConstants {
     public static final String NULL_ID = "nil";
 
     public static final String TIMESTAMP_FORMAT = "yyyy-MM-dd HH:mm:ss";
+    public static final String TIMESTAMP_SHORT_FORMAT = "MM-dd HH:mm:ss";
+    public static final String TIMESTAMPNSEC_FORMAT = "yyyy-MM-dd HH:mm";
+    public static final String TIMESTAMPNSEC_SHORT_FORMAT = "MM-dd HH:mm";
     public static final String DATE_FORMAT = "yyyy-MM-dd";
     public static final String TIME_FORMAT = "HH:mm";
 

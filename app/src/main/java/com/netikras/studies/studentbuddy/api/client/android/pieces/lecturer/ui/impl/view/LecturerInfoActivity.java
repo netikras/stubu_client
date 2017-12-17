@@ -2,28 +2,37 @@ package com.netikras.studies.studentbuddy.api.client.android.pieces.lecturer.ui.
 
 import android.os.Bundle;
 import android.text.InputType;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.netikras.studies.studentbuddy.api.client.android.R;
 import com.netikras.studies.studentbuddy.api.client.android.conf.di.DepInjector;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.base.BaseActivity;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.base.BaseViewFields;
+import com.netikras.studies.studentbuddy.api.client.android.pieces.base.list.CustomListAdapter;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.base.list.ListHandler;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.base.list.ListRow;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.discipline.ui.impl.view.DisciplineInfoActivity;
+import com.netikras.studies.studentbuddy.api.client.android.pieces.lecture.ui.impl.view.LectureInfoActivity;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.lecturer.ui.presenter.LecturerMvpPresenter;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.lecturer.ui.view.LecturerMvpView;
+import com.netikras.studies.studentbuddy.api.client.android.pieces.main.ui.impl.fragments.LecturesListFragment;
+import com.netikras.studies.studentbuddy.api.client.android.pieces.main.ui.impl.fragments.LecturesListFragment.LecturesListHandler;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.person.ui.impl.view.PersonInfoActivity;
 import com.netikras.studies.studentbuddy.core.data.api.dto.PersonDto;
 import com.netikras.studies.studentbuddy.core.data.api.dto.school.DisciplineDto;
+import com.netikras.studies.studentbuddy.core.data.api.dto.school.LectureDto;
 import com.netikras.studies.studentbuddy.core.data.api.dto.school.LecturerDto;
 import com.netikras.studies.studentbuddy.core.data.api.dto.school.SchoolDto;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
@@ -69,6 +78,7 @@ public class LecturerInfoActivity extends BaseActivity implements LecturerMvpVie
         onAttach(this);
         presenter.onAttach(this);
         fields = initFields(new ViewFields());
+        getFields().postInit();
         addMenu();
         if (lastEntry != null) {
             show(lastEntry);
@@ -121,10 +131,15 @@ public class LecturerInfoActivity extends BaseActivity implements LecturerMvpVie
     }
 
     private void prepare(LecturerDto entity) {
+        if (hasTriedToFetch()) {
+            setTriedToFetch(false);
+            return;
+        }
         if (entity == null || isNullOrEmpty(entity.getId())) {
             return;
         }
         if (isPartial()) {
+            setTriedToFetch(true);
             showLoading();
             presenter.getById(new ErrorsAwareSubscriber<LecturerDto>() {
                 @Override
@@ -135,6 +150,26 @@ public class LecturerInfoActivity extends BaseActivity implements LecturerMvpVie
                 }
             }, entity.getId());
         }
+
+        showLoading();
+        presenter.getUpcomingLectures(new ErrorsAwareSubscriber<Collection<LectureDto>>(){
+            @Override
+            public void onCacheHit(Collection<LectureDto> response) {
+                setFetchRequired(true);
+                onSuccess(response);
+            }
+
+            @Override
+            public void onSuccess(Collection<LectureDto> response) {
+                if (!isNullOrEmpty(response)) {
+                    LecturerDto lecturerDto = collect();
+                    for (LectureDto lectureDto : response) {
+                        lectureDto.setLecturer(lecturerDto);
+                    }
+                }
+                runOnUiThread(() -> getFields().setLectures(new ArrayList<>(response)));
+            }
+        }, getFields().getId());
     }
 
     @OnClick(R.id.btn_lecturer_name)
@@ -201,6 +236,34 @@ public class LecturerInfoActivity extends BaseActivity implements LecturerMvpVie
         });
     }
 
+
+    @Override
+    protected void menuOnClickSave() {
+        LecturerDto dto = collect();
+        showLoading();
+        presenter.update(new ErrorsAwareSubscriber<LecturerDto>(){
+            @Override
+            public void onSuccess(LecturerDto response) {
+                if (response != null) {
+                    runOnUiThread(() -> show(response));
+                }
+            }
+        }, dto);
+    }
+
+    @Override
+    protected void menuOnClickRefresh() {
+        showLoading();
+        presenter.getById(new ErrorsAwareSubscriber<LecturerDto>(){
+            @Override
+            public void onSuccess(LecturerDto response) {
+                if (response != null) {
+                    runOnUiThread(() -> show(response));
+                }
+            }
+        }, getFields().getId());
+    }
+
     public class ViewFields extends BaseViewFields {
         @BindView(R.id.txt_edit_lecturer_id)
         EditText id;
@@ -211,10 +274,38 @@ public class LecturerInfoActivity extends BaseActivity implements LecturerMvpVie
         @BindView(R.id.btn_lecturer_name)
         Button name;
 
+        @BindView(R.id.list_lecturer_upcoming_lectures)
+        ListView lectures;
+
         @BindView(R.id.txt_lbl_lecturer_id)
         TextView lblId;
 
         SchoolDto school;
+
+
+        private LecturesListHandler listHandler = new LecturesListHandler() {
+            @Override
+            public List<LectureDto> getListData() {
+                return getLectures();
+            }
+
+            @Override
+            public void onRowClick(LectureDto item) {
+                startView(LectureInfoActivity.class, new ViewTask<LectureInfoActivity>() {
+                    @Override
+                    public void execute() {
+                        getActivity().show(item);
+                    }
+                });
+            }
+        };
+
+        @Override
+        public void postInit() {
+            lectures.setTag(new ArrayList<LectureDto>());
+            CustomListAdapter adapter = new CustomListAdapter();
+            adapter.bind(LecturerInfoActivity.this, lectures, listHandler);
+        }
 
         public String getId() {
             return getString(id);
@@ -276,6 +367,20 @@ public class LecturerInfoActivity extends BaseActivity implements LecturerMvpVie
 
         public void setSchool(SchoolDto school) {
             this.school = school;
+        }
+
+        public List<LectureDto> getLectures() {
+            return (List<LectureDto>) getTag(lectures);
+        }
+
+        public void setLectures(List<LectureDto> dtos) {
+            getLectures().clear();
+            if (!isNullOrEmpty(dtos)) {
+                dtos.sort(Comparator.comparing(LectureDto::getStartsOn));
+                getLectures().addAll(dtos);
+            }
+            Log.d("LecturesList", "Triggering onDataSetChanged()");
+            listHandler.onDataSetChanged();
         }
 
 

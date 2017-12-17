@@ -64,7 +64,7 @@ public class LectureInfoActivity extends BaseActivity implements LectureMvpView 
 
     @Override
     protected List<Integer> excludeMenuItems() {
-        return Arrays.asList(R.id.main_menu_create, R.id.main_menu_delete);
+        return Arrays.asList(R.id.main_menu_create, R.id.main_menu_delete, R.id.main_menu_edit, R.id.main_menu_save);
     }
 
     @Override
@@ -130,10 +130,14 @@ public class LectureInfoActivity extends BaseActivity implements LectureMvpView 
         getFields().setTests(lectureDto.getTests());
         getFields().setStudentsGroup(lectureDto.getStudentsGroup());
         getFields().setLecturer(lectureDto.getLecturer());
-        getFields().setComments(lectureDto.getComments());
         getFields().setStartDatetime(lectureDto.getStartsOn());
         getFields().setLocation(lectureDto.getRoom());
         getFields().setDiscipline(lectureDto.getDiscipline());
+        if (isNullOrEmpty(lectureDto.getComments())) {
+            getFields().setCommentsCount("" + getCommentsCount("LECTURE", lectureDto.getId()));
+        } else {
+            getFields().setComments(lectureDto.getComments());
+        }
 
         if (lastEntry != null) {
             lastEntry = null;
@@ -487,10 +491,13 @@ public class LectureInfoActivity extends BaseActivity implements LectureMvpView 
 
     @Override
     protected void menuOnClickRefresh() {
+        showLoading();
         presenter.getById(new ErrorsAwareSubscriber<LectureDto>() {
             @Override
             public void onSuccess(LectureDto response) {
-                runOnUiThread(() -> show(response));
+                if (response != null) {
+                    runOnUiThread(() -> show(response));
+                }
             }
         }, getFields().getId());
     }

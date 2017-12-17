@@ -45,7 +45,6 @@ public class StudentsGroupInfoActivity extends BaseActivity implements StudentsG
     @Inject
     StudentsGroupMvpPresenter<StudentsGroupMvpView> presenter;
 
-    private Result<Boolean> triedToFetch = new Result<>(Boolean.FALSE);
     private static StudentsGroupDto lastEntry = null;
 
     @Override
@@ -53,6 +52,11 @@ public class StudentsGroupInfoActivity extends BaseActivity implements StudentsG
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_students_group_info);
         setUp();
+    }
+
+    @Override
+    protected List<Integer> excludeMenuItems() {
+        return Arrays.asList(R.id.main_menu_delete, R.id.main_menu_create);
     }
 
     @Override
@@ -124,8 +128,8 @@ public class StudentsGroupInfoActivity extends BaseActivity implements StudentsG
     }
 
     private void prepare(StudentsGroupDto entity) {
-        if (triedToFetch.getValue()) {
-            triedToFetch.setValue(Boolean.FALSE);
+        if (hasTriedToFetch()) {
+            setTriedToFetch(false);
             return;
         }
         if (entity == null || isNullOrEmpty(entity.getId())) {
@@ -133,15 +137,21 @@ public class StudentsGroupInfoActivity extends BaseActivity implements StudentsG
         }
         if (isPartial()) {
             showLoading();
-            triedToFetch.setValue(Boolean.TRUE);
+            setTriedToFetch(true);
             presenter.getById(new ErrorsAwareSubscriber<StudentsGroupDto>() {
+                @Override
+                public void onCacheHit(StudentsGroupDto response) {
+                    if (response != null) {
+                        setFetchRequired(false);
+                        executeOnSuccess(response);
+                    }
+                }
+
                 @Override
                 public void onSuccess(StudentsGroupDto response) {
                     runOnUiThread(() -> show(response));
-//                    show(response);
                 }
             }, entity.getId());
-            triedToFetch.setValue(Boolean.TRUE);
         }
     }
 
@@ -169,6 +179,14 @@ public class StudentsGroupInfoActivity extends BaseActivity implements StudentsG
 
         showLoading();
         presenter.getStudentsByGroupId(new ErrorsAwareSubscriber<Collection<StudentDto>>() {
+            @Override
+            public void onCacheHit(Collection<StudentDto> response) {
+                if (!isNullOrEmpty(response)) {
+//                    setFetchRequired(false);
+                    executeOnSuccess(response);
+                }
+            }
+
             @Override
             public void onSuccess(Collection<StudentDto> response) {
                 runOnUiThread(() -> {
@@ -233,6 +251,41 @@ public class StudentsGroupInfoActivity extends BaseActivity implements StudentsG
         }
     }
 
+
+    @Override
+    protected void menuOnClickRefresh() {
+        showLoading();
+        presenter.getById(new ErrorsAwareSubscriber<StudentsGroupDto>() {
+            @Override
+            public void onSuccess(StudentsGroupDto response) {
+                if (response != null) {
+                    runOnUiThread(() -> show(response));
+                }
+            }
+        }, getFields().getId());
+    }
+
+    @Override
+    protected void menuOnClickEdit() {
+        getFields().enableEdit(true);
+    }
+
+    @Override
+    protected void menuOnClickSave() {
+        StudentsGroupDto dto = collect();
+        showLoading();
+        presenter.update(new ErrorsAwareSubscriber<StudentsGroupDto>(){
+            @Override
+            public void onSuccess(StudentsGroupDto response) {
+                if (response != null) {
+                    runOnUiThread(() -> {
+                        getFields().enableEdit(false);
+                        show(response);
+                    });
+                }
+            }
+        }, dto);
+    }
 
     class ViewFields extends BaseViewFields {
         @BindView(R.id.txt_edit_students_group_id)

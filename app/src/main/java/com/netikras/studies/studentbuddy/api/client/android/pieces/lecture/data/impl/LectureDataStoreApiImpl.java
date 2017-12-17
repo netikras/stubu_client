@@ -1,13 +1,11 @@
 package com.netikras.studies.studentbuddy.api.client.android.pieces.lecture.data.impl;
 
-import android.util.Log;
-
 import com.netikras.studies.studentbuddy.api.client.android.data.cache.CacheManager;
-import com.netikras.studies.studentbuddy.api.client.android.data.cache.db.dao.AssignmentDao;
-import com.netikras.studies.studentbuddy.api.client.android.data.cache.db.dao.LectureDao;
-import com.netikras.studies.studentbuddy.api.client.android.data.cache.db.dao.LecturerDao;
-import com.netikras.studies.studentbuddy.api.client.android.data.cache.db.dao.StudentDao;
-import com.netikras.studies.studentbuddy.api.client.android.data.cache.db.dao.TestDao;
+import com.netikras.studies.studentbuddy.api.client.android.pieces.lecture.data.cahe.AssignmentDao;
+import com.netikras.studies.studentbuddy.api.client.android.pieces.lecture.data.cahe.LectureDao;
+import com.netikras.studies.studentbuddy.api.client.android.pieces.lecturer.data.cahe.LecturerDao;
+import com.netikras.studies.studentbuddy.api.client.android.pieces.student.data.cahe.StudentDao;
+import com.netikras.studies.studentbuddy.api.client.android.pieces.lecture.data.cahe.TestDao;
 import com.netikras.studies.studentbuddy.api.client.android.data.stores.ApiBasedDataStore;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.lecture.data.LectureDataStore;
 import com.netikras.studies.studentbuddy.api.client.android.service.ServiceRequest;

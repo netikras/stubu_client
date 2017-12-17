@@ -1,13 +1,13 @@
 package com.netikras.studies.studentbuddy.api.client.android.pieces.location.data.impl;
 
 import com.netikras.studies.studentbuddy.api.client.android.data.cache.CacheManager;
-import com.netikras.studies.studentbuddy.api.client.android.data.cache.db.dao.AddressDao;
-import com.netikras.studies.studentbuddy.api.client.android.data.cache.db.dao.BuildingDao;
-import com.netikras.studies.studentbuddy.api.client.android.data.cache.db.dao.FloorDao;
-import com.netikras.studies.studentbuddy.api.client.android.data.cache.db.dao.LayoutDao;
-import com.netikras.studies.studentbuddy.api.client.android.data.cache.db.dao.RoomDao;
-import com.netikras.studies.studentbuddy.api.client.android.data.cache.db.dao.SchoolDao;
-import com.netikras.studies.studentbuddy.api.client.android.data.cache.db.dao.SectionDao;
+import com.netikras.studies.studentbuddy.api.client.android.pieces.location.data.cahe.AddressDao;
+import com.netikras.studies.studentbuddy.api.client.android.pieces.location.data.cahe.BuildingDao;
+import com.netikras.studies.studentbuddy.api.client.android.pieces.location.data.cahe.FloorDao;
+import com.netikras.studies.studentbuddy.api.client.android.pieces.location.data.cahe.LayoutDao;
+import com.netikras.studies.studentbuddy.api.client.android.pieces.location.data.cahe.RoomDao;
+import com.netikras.studies.studentbuddy.api.client.android.pieces.school.data.cahe.SchoolDao;
+import com.netikras.studies.studentbuddy.api.client.android.pieces.location.data.cahe.SectionDao;
 import com.netikras.studies.studentbuddy.api.client.android.data.stores.ApiBasedDataStore;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.location.data.RoomDataStore;
 import com.netikras.studies.studentbuddy.api.client.android.service.ServiceRequest;

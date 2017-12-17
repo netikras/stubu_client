@@ -1,12 +1,9 @@
-package com.netikras.studies.studentbuddy.api.client.android.data.cache.db.dao;
+package com.netikras.studies.studentbuddy.api.client.android.data.cache;
 
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-
-import com.netikras.studies.studentbuddy.api.client.android.data.cache.CacheManager;
-import com.netikras.studies.studentbuddy.core.data.api.dto.meta.CommentDto;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -216,10 +213,10 @@ public abstract class GenericDao<E> extends SQLiteOpenHelper {
         return results;
     }
 
-    public int getCountWhere(String whereClause) {
+    public int getCountWhere(String whereClause, String... args) {
         Cursor cursor = null;
         try {
-            cursor = getReadableDatabase().rawQuery("select count(*) from " + getTableName() + " where " + whereClause, null);
+            cursor = getReadableDatabase().rawQuery("select count(*) from " + getTableName() + " where " + whereClause, args);
 
             if (cursor.moveToFirst()) {
                 return cursor.getInt(0);

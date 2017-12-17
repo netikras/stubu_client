@@ -12,4 +12,6 @@ import com.netikras.studies.studentbuddy.core.data.api.dto.school.SchoolDto;
 public interface SchoolMvpPresenter<V extends SchoolMvpView> extends MvpPresenter<V> {
 
     void getById(Subscriber<SchoolDto> subscriber, String id);
+
+    void update(Subscriber<SchoolDto> subscriber, SchoolDto dto);
 }

@@ -3,7 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:fillViewport="true">
 
     <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -132,8 +133,8 @@
             app:layout_constraintStart_toEndOf="@+id/txt_lbl_school_department_id"
             app:layout_constraintTop_toBottomOf="@+id/btn_school_departments" />
 
-        <include layout="@layout/include_main_menu_button"/>
+        <include layout="@layout/include_main_menu_button" />
         <!-- Progress bar overlay; shown while login is in progress -->
-        <include layout="@layout/include_progress_overlay"/>
+        <include layout="@layout/include_progress_overlay" />
     </android.support.constraint.ConstraintLayout>
 </ScrollView>

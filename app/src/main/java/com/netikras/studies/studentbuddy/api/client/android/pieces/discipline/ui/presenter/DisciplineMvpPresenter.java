@@ -12,4 +12,6 @@ import com.netikras.studies.studentbuddy.core.data.api.dto.school.DisciplineDto;
 public interface DisciplineMvpPresenter<V extends DisciplineMvpView> extends MvpPresenter<V> {
 
     void getById(Subscriber<DisciplineDto> subscriber, String id);
+
+    void update(Subscriber<DisciplineDto> subscriber, DisciplineDto dto);
 }
