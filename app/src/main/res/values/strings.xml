@@ -237,6 +237,7 @@
     <string name="lbl_settings_autostart">Autom. paleid.</string>
     <string name="lbl_assignment_comments">Komentarai</string>
     <string name="lbl_test_comments">Komentarai</string>
+    <string name="notif_lecture_will_start_shortly">Netrukus prasidės paskaita</string>
 
 
 </resources>

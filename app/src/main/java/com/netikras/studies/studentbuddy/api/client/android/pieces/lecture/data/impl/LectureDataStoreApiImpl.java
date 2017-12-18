@@ -54,6 +54,11 @@ public class LectureDataStoreApiImpl extends ApiBasedDataStore<String, LectureDt
         return super.getCache();
     }
 
+
+    private long getOffset() {
+        return -2;
+    }
+
     @Override
     protected LectureDto fillFromCache(LectureDto item) {
         super.fillFromCache(item);
@@ -267,7 +272,7 @@ public class LectureDataStoreApiImpl extends ApiBasedDataStore<String, LectureDt
     public void getAllByGroup(String id, TimeUnit unit, Long amount, Subscriber<Collection<LectureDto>>... subscribers) {
 
         if (isCacheEnabled()) {
-            List<LectureDto> cached = getCache().getAllByGroupStartingBetween(id, "" + now(), "" + now() + unit.convert(amount, MILLISECONDS));
+            List<LectureDto> cached = getCache().getAllByGroupStartingBetween(id, "" + now() + unit.convert(getOffset(), MILLISECONDS), "" + now() + unit.convert(amount, MILLISECONDS));
             if (!isNullOrEmpty(cached)) {
                 fillFromCache(cached);
                 respondCacheHit(cached, subscribers);
@@ -277,7 +282,7 @@ public class LectureDataStoreApiImpl extends ApiBasedDataStore<String, LectureDt
         orderData(new ServiceRequest<Collection<LectureDto>>() {
             @Override
             public Collection<LectureDto> request() {
-                return updateCache(lecturesApiConsumer.getLectureDtoAllByGroupIdStartingIn(id, unit.getText(), amount));
+                return updateCache(lecturesApiConsumer.getLectureDtoAllByGroupIdStartingIn(id, unit.getText(), amount, getOffset()));
             }
         }, subscribers);
     }
@@ -285,7 +290,7 @@ public class LectureDataStoreApiImpl extends ApiBasedDataStore<String, LectureDt
     @Override
     public void getAllByLecturer(String id, TimeUnit unit, Long amount, Subscriber<Collection<LectureDto>>... subscribers) {
         if (isCacheEnabled()) {
-            List<LectureDto> cached = getCache().getAllByLecturerStartingBetween(id, "" + now(), "" + now() + unit.convert(amount, MILLISECONDS));
+            List<LectureDto> cached = getCache().getAllByLecturerStartingBetween(id, "" + now() + unit.convert(getOffset(), MILLISECONDS), "" + now() + unit.convert(amount, MILLISECONDS));
             if (!isNullOrEmpty(cached)) {
                 fillFromCache(cached);
                 respondCacheHit(cached, subscribers);
@@ -295,7 +300,7 @@ public class LectureDataStoreApiImpl extends ApiBasedDataStore<String, LectureDt
         orderData(new ServiceRequest<Collection<LectureDto>>() {
             @Override
             public Collection<LectureDto> request() {
-                return updateCache(lecturesApiConsumer.getLectureDtoAllByLecturerIdStartingIn(id, unit.getText(), amount));
+                return updateCache(lecturesApiConsumer.getLectureDtoAllByLecturerIdStartingIn(id, unit.getText(), amount, getOffset()));
             }
         }, subscribers);
     }
@@ -303,7 +308,7 @@ public class LectureDataStoreApiImpl extends ApiBasedDataStore<String, LectureDt
     @Override
     public void getAllByRoom(String id, TimeUnit unit, Long amount, Subscriber<Collection<LectureDto>>... subscribers) {
         if (isCacheEnabled()) {
-            List<LectureDto> cached = getCache().getAllByRoomStartingBetween(id, "" + now(), "" + now() + unit.convert(amount, MILLISECONDS));
+            List<LectureDto> cached = getCache().getAllByRoomStartingBetween(id, "" + now() + unit.convert(getOffset(), MILLISECONDS), "" + now() + unit.convert(amount, MILLISECONDS));
             if (!isNullOrEmpty(cached)) {
                 fillFromCache(cached);
                 respondCacheHit(cached, subscribers);
@@ -313,7 +318,7 @@ public class LectureDataStoreApiImpl extends ApiBasedDataStore<String, LectureDt
         orderData(new ServiceRequest<Collection<LectureDto>>() {
             @Override
             public Collection<LectureDto> request() {
-                return updateCache(lecturesApiConsumer.getLectureDtoAllByRoomIdStartingIn(id, unit.getText(), amount));
+                return updateCache(lecturesApiConsumer.getLectureDtoAllByRoomIdStartingIn(id, unit.getText(), amount, getOffset()));
             }
         }, subscribers);
     }
@@ -323,7 +328,7 @@ public class LectureDataStoreApiImpl extends ApiBasedDataStore<String, LectureDt
         if (isCacheEnabled()) {
             StudentDto studentDto = studentCache.get(id);
             if (studentDto != null && studentDto.getGroup() != null && !isNullOrEmpty(studentDto.getGroup().getId())) {
-                List<LectureDto> cached = getCache().getAllByGroupStartingBetween( studentDto.getGroup().getId(), "" + now(), "" + now() + unit.convert(amount, MILLISECONDS));
+                List<LectureDto> cached = getCache().getAllByGroupStartingBetween( studentDto.getGroup().getId(), "" + now() + unit.convert(getOffset(), MILLISECONDS), "" + now() + unit.convert(amount, MILLISECONDS));
                 if (!isNullOrEmpty(cached)) {
                     fillFromCache(cached);
                     respondCacheHit(cached, subscribers);
@@ -334,7 +339,7 @@ public class LectureDataStoreApiImpl extends ApiBasedDataStore<String, LectureDt
         orderData(new ServiceRequest<Collection<LectureDto>>() {
             @Override
             public Collection<LectureDto> request() {
-                return updateCache(lecturesApiConsumer.getLectureDtoAllByStudentIdStartingIn(id, unit.getText(), amount));
+                return updateCache(lecturesApiConsumer.getLectureDtoAllByStudentIdStartingIn(id, unit.getText(), amount, getOffset()));
             }
         }, subscribers);
     }
@@ -351,7 +356,7 @@ public class LectureDataStoreApiImpl extends ApiBasedDataStore<String, LectureDt
         orderData(new ServiceRequest<Collection<LectureDto>>() {
             @Override
             public Collection<LectureDto> request() {
-                return updateCache(lecturesApiConsumer.getLectureDtoAllByGuestIdStartingIn(id, unit.getText(), amount));
+                return updateCache(lecturesApiConsumer.getLectureDtoAllByGuestIdStartingIn(id, unit.getText(), amount, getOffset()));
             }
         }, subscribers);
     }

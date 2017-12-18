@@ -19,6 +19,7 @@ import com.netikras.tools.common.remote.http.RequestListener;
 import com.netikras.tools.common.remote.http.RestClient;
 import com.netikras.tools.common.remote.http.RestServiceProvider;
 import com.netikras.tools.common.remote.http.SessionContext;
+import com.netikras.tools.common.remote.http.SslAttributes;
 import com.netikras.tools.common.remote.http.impl.json.HttpResponseJsonImpl;
 
 import javax.inject.Singleton;
@@ -35,6 +36,9 @@ import static com.netikras.tools.common.security.IntegrityUtils.isNullOrEmpty;
 @Module
 @Singleton
 public class ApiHttpModule {
+
+
+    private static SslAttributes ignorantSslAttributes = null;
 
     @Provides
     public RemoteEndpointServer server() {
@@ -77,6 +81,8 @@ public class ApiHttpModule {
 
         return new RequestListener(){
 
+            private final String TAG = "RequestListener";
+
             private void onError(Object response) {
                 ErrorsCollection errors = new ErrorsCollection();
                 if (response == null) {
@@ -91,11 +97,27 @@ public class ApiHttpModule {
             }
 
             @Override
+            public Object onBeforeSend(HttpRequest request, HttpResponse response) {
+                if (HttpRequest.Protocol.HTTPS.equals(request.getProtocol())) {
+                    if (ignorantSslAttributes == null) {
+                        ignorantSslAttributes = SslAttributes.getWithoutAnyValidation();
+                    }
+                    if (request.getSslAttributes() == null) {
+                        request.setSslAttributes(new SslAttributes());
+                    }
+                    request.getSslAttributes().setHostnameVerifier(ignorantSslAttributes.getHostnameVerifier());
+                    request.getSslAttributes().setSslSocketFactory(ignorantSslAttributes.getSslSocketFactory());
+                }
+
+                return null;
+            }
+
+            @Override
             public Object onServerErrorResponse(HttpRequest request, HttpResponse response) {
                 if (HttpResponseJsonImpl.class.isAssignableFrom(response.getClass())) {
-                    Log.w("RequestListener", "Error status code: " + response.getStatus());
-                    Log.w("RequestListener", "Error message: " + ((HttpResponseJsonImpl)response).getErrorMessage());
-                    Log.w("RequestListener", "Error body: " + ((HttpResponseJsonImpl)response).getErrorBody());
+                    Log.w(TAG, "Error status code: " + response.getStatus());
+                    Log.w(TAG, "Error message: " + ((HttpResponseJsonImpl)response).getErrorMessage());
+                    Log.w(TAG, "Error body: " + ((HttpResponseJsonImpl)response).getErrorBody());
                 }
                 onError(response.getObject());
                 return super.onServerErrorResponse(request, response);
@@ -105,6 +127,15 @@ public class ApiHttpModule {
             public Object onClientErrorResponse(HttpRequest request, HttpResponse response) {
                 onError(((HttpResponseJsonImpl)response).getErrorBody());
                 return super.onClientErrorResponse(request, response);
+            }
+
+            @Override
+            public Object onGeneralError(HttpRequest request, HttpResponse response) {
+                Log.w(TAG, String.format("onGeneralError: url:%s, status:%d", request.getUrl(), response.getStatus()));
+                if (response.getException() != null) {
+                    Log.w(TAG, "onGeneralError: Exception: " + response.getException().getLocalizedMessage());
+                }
+                return super.onGeneralError(request, response);
             }
         };
     }

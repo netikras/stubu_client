@@ -33,6 +33,7 @@ import com.netikras.studies.studentbuddy.api.client.android.pieces.student.data.
 import com.netikras.studies.studentbuddy.api.client.android.pieces.student.data.StudentDataStore;
 import com.netikras.studies.studentbuddy.api.client.android.service.ServiceRequest.Subscriber;
 import com.netikras.studies.studentbuddy.api.client.android.service.ServiceRequest.SubscribersMonitor;
+import com.netikras.studies.studentbuddy.api.client.android.util.CommonUtils;
 import com.netikras.studies.studentbuddy.api.client.android.util.Exchange;
 import com.netikras.studies.studentbuddy.api.misc.TimeUnit;
 import com.netikras.studies.studentbuddy.core.data.api.dto.PersonDto;
@@ -130,6 +131,12 @@ public class ScheduledUpdateService extends IntentService {
 
         boolean autostarted = intent.getBooleanExtra("autostart", false);
         String lectureId = intent.getStringExtra("LECTURE");
+        String testVal = intent.getStringExtra("TESTVAL");
+
+        if (!isNullOrEmpty(testVal)) {
+            Log.d(TAG, "onHandleIntent: TESTVAL PRESENT!!!!");
+        }
+
         if (autostarted) {
             if (!preferencesHelper.isAutostartEnabled()) {
                 stopSelf();
@@ -138,7 +145,9 @@ public class ScheduledUpdateService extends IntentService {
         }
 
         if (!isNullOrEmpty(lectureId)) {
+            Log.d(TAG, "onHandleIntent: Lecture ID: " + lectureId);
             notifyLectureStartsSoon(lectureId);
+            stopSelf();
             return;
         }
 
@@ -200,11 +209,18 @@ public class ScheduledUpdateService extends IntentService {
                     for (Map.Entry<String, LectureDto> entry : lectures.entrySet()) {
                         LectureDto dto = entry.getValue();
 
-                        Intent intent = new Intent(getApplicationContext(), getClass());
-                        intent.putExtra("LECTURE", dto.getId());
                         long notifyTime = dto.getStartsOn().getTime() - notifyLecturesBefore;
-                        Log.d(TAG, "onAllFinished: Scheduling lecture id:" + dto.getId() + " start notification @" + notifyTime + " [" + new Date(notifyTime) + "]");
-                        reschedule(notifyTime, dto.getId().hashCode(), intent);
+                        if (notifyTime <= System.currentTimeMillis() + 10000 // basically all old lectures are matched by this.
+                                && dto.getStartsOn().getTime() + 10000 > System.currentTimeMillis()) { // narrows results down to only lectures that have not started yet
+                            Log.d(TAG, "onAllFinished: Notifying lecture is to start soon");
+                            notifyLectureStartsSoon(dto.getId());
+                        } else {
+                            Log.d(TAG, "onAllFinished: Scheduling lecture id:" + dto.getId() + " start notification @" + notifyTime + " [" + new Date(notifyTime) + "]");
+                            Intent intent = new Intent(ScheduledUpdateService.this, ScheduledUpdateService.this.getClass());
+                            intent.putExtra("LECTURE", dto.getId());
+
+                            reschedule(notifyTime, dto.getId().hashCode(), intent);
+                        }
                     }
                 }
             }
@@ -240,11 +256,12 @@ public class ScheduledUpdateService extends IntentService {
                 preferencesHelper.setCurrentUser(response);
 
                 if (response == null || isNullOrEmpty(response.getId())) {
-                    executeOnError(new ErrorBody().setMessage1("Unauthorized").setMessage2("Currently logged-in user is unknown"));
+                    Log.d(TAG, "onSuccess: apparently app did not receive any user info from the server. App might be cut off the network");
+                    // https://stackoverflow.com/questions/45522784/why-i-am-getting-sokettimeoutexception-in-sleep-mode-of-device
                     return;
                 }
                 if ("guest".equalsIgnoreCase(response.getName())) {
-                    executeOnError(new ErrorBody().setMessage1("Unauthorized").setMessage2("Not logged in"));
+                    executeOnError(new ErrorBody().setMessage1("Unauthorized").setMessage2("Not logged in (guest)"));
                     return;
                 }
                 getUserDataStore().getById(response.getId(), new Subscriber<UserDto>() {
@@ -392,14 +409,17 @@ public class ScheduledUpdateService extends IntentService {
 
         Log.d(TAG, "Rescheduling. Next run: " + new Date(nextRun));
 
-        Intent intent = new Intent(getApplicationContext(), getClass());
+        Intent intent = new Intent(this, getClass());
         reschedule(nextRun, SVC_ID, intent);
     }
 
     private void reschedule(long runAt, int wakeupId, Intent intent) {
+        intent.putExtra("TESTVAL", "ABC");
 
-        PendingIntent pendingIntent = PendingIntent.getService(getApplicationContext(), wakeupId, intent, PendingIntent.FLAG_CANCEL_CURRENT);
+        wakeupId = Math.abs(wakeupId);
 
+        PendingIntent pendingIntent = PendingIntent.getService(this, wakeupId, intent, PendingIntent.FLAG_CANCEL_CURRENT);
+        Log.d(TAG, "reschedule: wakeUpId:" + wakeupId + ", wakeUpTime: " + new Date(runAt));
         AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
         alarmManager.set(AlarmManager.RTC_WAKEUP, runAt, pendingIntent);
     }
@@ -413,13 +433,21 @@ public class ScheduledUpdateService extends IntentService {
             }
 
             @Override
-            public void onSuccess(LectureDto response) {
-                startView(LectureInfoActivity.class, new ViewTask<LectureInfoActivity>() {
-                    @Override
-                    public void execute() {
-                        getActivity().show(response);
-                    }
-                });
+            public void onSuccess(LectureDto lecture) {
+
+                StringBuilder bodyBuilder = new StringBuilder();
+                bodyBuilder.append("(").append(CommonUtils.datetimeToTime(lecture.getStartsOn())).append(") ");
+                if (lecture.getDiscipline() != null) {
+                    bodyBuilder.append(lecture.getDiscipline().getTitle());
+                }
+                if (!isNullOrEmpty(lecture.getAssignments())) {
+                    bodyBuilder.append(" [A:").append(lecture.getAssignments().size()).append("]");
+                }
+                if (!isNullOrEmpty(lecture.getTests())) {
+                    bodyBuilder.append(" [T:").append(lecture.getTests().size()).append("]");
+                }
+
+                showNotification(getString(R.string.notif_lecture_will_start_shortly), bodyBuilder.toString() , LectureInfoActivity.class, id);
             }
         });
     }
@@ -438,16 +466,17 @@ public class ScheduledUpdateService extends IntentService {
 
     private void showNotification(String title, String text, Class view, String entityId) {
         PendingIntent pendingIntent = null;
+        int requestId = entityId.hashCode();
         if (view != null) {
             Intent intent = new Intent(ScheduledUpdateService.this, view);
             intent.putExtra("cached_id", entityId);
-            pendingIntent = PendingIntent.getActivity(ScheduledUpdateService.this, entityId.hashCode(), intent, PendingIntent.FLAG_CANCEL_CURRENT);
+            pendingIntent = PendingIntent.getActivity(ScheduledUpdateService.this, requestId, intent, PendingIntent.FLAG_CANCEL_CURRENT);
         }
         Log.d(TAG, "Popping notification for entity " + view + " w/ ID: " + entityId);
-        showNotification(ScheduledUpdateService.this, title, text, pendingIntent);
+        showNotification(ScheduledUpdateService.this, title, text, requestId, pendingIntent);
     }
 
-    public static void showNotification(Context context, String title, String text, PendingIntent intent) {
+    public static void showNotification(Context context, String title, String text, int id, PendingIntent intent) {
 //        NotificationCompat.Builder notification = new NotificationCompat.Builder(context, "")
         NotificationCompat.Builder notification = null;
 
@@ -466,13 +495,13 @@ public class ScheduledUpdateService extends IntentService {
                 .setContentTitle(title)
                 .setContentText(text)
                 .setContentIntent(intent);
-        showNotification(notification, context);
+        showNotification(notification, id, context);
     }
 
 
-    public static void showNotification(NotificationCompat.Builder notificationBuilder, Context context) {
+    public static void showNotification(NotificationCompat.Builder notificationBuilder, int id, Context context) {
         NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-        notificationManager.notify(1, notificationBuilder.build());
+        notificationManager.notify("com.netikras.studies.studentbuddy.api.client.android", 1, notificationBuilder.build());
     }
 
 

@@ -106,7 +106,7 @@ public class LectureInfoActivity extends BaseActivity implements LectureMvpView 
             presenter.getById(new ErrorsAwareSubscriber<LectureDto>() {
                 @Override
                 public void onSuccess(LectureDto response) {
-                    show(response);
+                    runOnUiThread(() -> show(response));
                 }
             }, cachedId);
         }
