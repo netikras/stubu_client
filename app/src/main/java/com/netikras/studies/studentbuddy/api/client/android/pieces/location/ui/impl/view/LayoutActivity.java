@@ -328,7 +328,12 @@ public class LayoutActivity extends BaseActivity implements LayoutMvpView, View.
                 setVisible(id, null);
                 setVisible(lblId, false);
             }
+        }
 
+        @Override
+        public void clean() {
+            super.clean();
+            imageView.setImageBitmap(null);
         }
     }
 

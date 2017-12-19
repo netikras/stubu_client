@@ -40,7 +40,7 @@ public class FloorDao extends GenericDao<BuildingFloorDto> {
 
     @Override
     protected String getCreateQuery() {
-        return "create table if not exists " + getTableName() + " (id text, title text, number text, building_id text)";
+        return "create table if not exists " + getTableName() + " (id text, title text, number integer, building_id text)";
     }
 
     @Override
@@ -61,7 +61,7 @@ public class FloorDao extends GenericDao<BuildingFloorDto> {
 
         floor.setId(results.getString("id"));
         floor.setTitle(results.getString("title"));
-        floor.setNumber(results.getString("number"));
+        floor.setNumber(results.getInt("number"));
 
         String id = results.getString("building_id");
         if (!isNullOrEmpty(id)) {
@@ -102,7 +102,15 @@ public class FloorDao extends GenericDao<BuildingFloorDto> {
 
         buildingCache.put(entity.getBuilding());
         sectionCache.put(entity.getBuildingSection());
-        layoutCache.putAll(entity.getLayouts());
+        if (!isNullOrEmpty(entity.getLayouts())) {
+            BuildingFloorDto floorDto = get(entity.getId());
+            for (FloorLayoutDto dto : entity.getLayouts()) {
+                if (dto != null) {
+                    dto.setFloor(floorDto);
+                }
+            }
+            layoutCache.putAll(entity.getLayouts());
+        }
         roomCache.putAll(entity.getLectureRooms());
 
         return entity;

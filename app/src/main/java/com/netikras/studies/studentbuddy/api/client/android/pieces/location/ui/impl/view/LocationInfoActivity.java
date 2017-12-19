@@ -1,6 +1,7 @@
 package com.netikras.studies.studentbuddy.api.client.android.pieces.location.ui.impl.view;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -34,6 +35,7 @@ import static com.netikras.tools.common.security.IntegrityUtils.isNullOrEmpty;
 
 public class LocationInfoActivity extends BaseActivity implements LocationMvpView {
 
+    private static final String TAG = "LocationActivity";
 
     @Inject
     LocationMvpPresenter<LocationMvpView> presenter;
@@ -253,16 +255,18 @@ public class LocationInfoActivity extends BaseActivity implements LocationMvpVie
 
                 @Override
                 public void onSuccess(BuildingFloorDto response) {
-                    startView(LayoutActivity.class, new ViewTask<LayoutActivity>() {
-                        @Override
-                        public void execute() {
-                            if (response != null && !isNullOrEmpty(response.getLayouts())) {
+                    Log.d(TAG, "onSuccess: Layout: " + response);
+
+                    if (response != null && !isNullOrEmpty(response.getLayouts())) {
+                        startView(LayoutActivity.class, new ViewTask<LayoutActivity>() {
+                            @Override
+                            public void execute() {
                                 getActivity().show(response.getLayouts().get(0));
-                            } else {
-                                executeOnError(new ErrorBody().setMessage1("Floor layout not found"));
                             }
-                        }
-                    });
+                        });
+                    } else {
+                        executeOnError(new ErrorBody().setMessage1("Floor layout not found"));
+                    }
                 }
             }, getFields().getFloorId());
         } else {
@@ -569,9 +573,7 @@ public class LocationInfoActivity extends BaseActivity implements LocationMvpVie
             if (floor != null) {
                 setFloorId(floor.getId());
                 StringBuilder floorTitle = new StringBuilder();
-                if (!isNullOrEmpty(floor.getNumber())) {
-                    floorTitle.append(floor.getNumber()).append(" ");
-                }
+                floorTitle.append(floor.getNumber()).append(" ");
                 if (!isNullOrEmpty(floor.getTitle())) {
                     floorTitle.append("(").append(floor.getTitle()).append(")");
                 }
