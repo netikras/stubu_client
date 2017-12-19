@@ -101,8 +101,8 @@
     <string name="title_settings">Nustatymai</string>
     <string name="lbl_settings_url">Adresas</string>
     <string name="dummy_txt_settings_url">http://netikras-s7e:8080/stubu</string>
-    <string name="lbl_settings_notifications_enable">Pranešimai</string>
-    <string name="lbl_settings_notifications_time_before_event">Praneš. prieš</string>
+    <string name="lbl_settings_lecture_notifications_enable">Pask. praneš.</string>
+    <string name="lbl_settings_notifications_time_before_event">Pask. pran. likus</string>
     <string name="title_student">Studentas</string>
     <string name="lbl_student_name">Vardas</string>
     <string name="lbl_student_group">Grupė</string>
@@ -232,12 +232,19 @@
     <string name="minutes_short">min.</string>
     <string name="hours_short">val.</string>
     <string name="lbl_settings_update_period">Atnaujinti kas</string>
-    <string name="lbl_settings_notify_comments_enable">Praneš. koment.</string>
+    <string name="lbl_settings_notify_comments_enable">Koment. praneš</string>
     <string name="lbl_settings_lectures_ahead_period">Aktualus laikas</string>
     <string name="lbl_settings_autostart">Autom. paleid.</string>
     <string name="lbl_assignment_comments">Komentarai</string>
     <string name="lbl_test_comments">Komentarai</string>
     <string name="notif_lecture_will_start_shortly">Netrukus prasidės paskaita</string>
+    <string name="lbl_settings_notifications_enable">Pranešimai</string>
+    <string name="notif_click_to_see_more">Rodyti daugiau informacijos</string>
+    <string name="notif_lecture_has_new_comments">Paskaita buvo pakomentuota</string>
+    <string name="notif_assignment_has_new_comments">Užduotis buvo pakomentuota</string>
+    <string name="notif_test_has_new_comments">Atsiskaitymas buvo pakomentuotas</string>
+    <string name="template_assignments_count">[Užd.: %d]</string>
+    <string name="template_tests_count">[Ats.: %d]</string>
 
 
 </resources>

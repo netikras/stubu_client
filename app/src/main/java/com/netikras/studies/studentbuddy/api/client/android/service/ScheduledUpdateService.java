@@ -16,12 +16,12 @@ import com.netikras.studies.studentbuddy.api.client.android.R;
 import com.netikras.studies.studentbuddy.api.client.android.conf.di.DepInjector;
 import com.netikras.studies.studentbuddy.api.client.android.data.DataManager;
 import com.netikras.studies.studentbuddy.api.client.android.data.cache.CacheManager;
-import com.netikras.studies.studentbuddy.api.client.android.pieces.lecture.data.cahe.LectureDao;
 import com.netikras.studies.studentbuddy.api.client.android.data.prefs.PreferencesHelper;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.base.BaseActivity.ViewTask;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.base.MvpView;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.comments.data.CommentsDataStore;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.lecture.data.LectureDataStore;
+import com.netikras.studies.studentbuddy.api.client.android.pieces.lecture.data.cahe.LectureDao;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.lecture.ui.impl.view.AssignmentActivity;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.lecture.ui.impl.view.LectureInfoActivity;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.lecture.ui.impl.view.TestInfoActivity;
@@ -131,11 +131,6 @@ public class ScheduledUpdateService extends IntentService {
 
         boolean autostarted = intent.getBooleanExtra("autostart", false);
         String lectureId = intent.getStringExtra("LECTURE");
-        String testVal = intent.getStringExtra("TESTVAL");
-
-        if (!isNullOrEmpty(testVal)) {
-            Log.d(TAG, "onHandleIntent: TESTVAL PRESENT!!!!");
-        }
 
         if (autostarted) {
             if (!preferencesHelper.isAutostartEnabled()) {
@@ -175,12 +170,15 @@ public class ScheduledUpdateService extends IntentService {
         final Map<String, String> entitiesComments = new ConcurrentHashMap<>();
         final Map<String, LectureDto> lectures = new ConcurrentHashMap<>();
 
+        boolean lectureNotificationsEnabled = preferencesHelper.isLectureNotificationsEnabled();
+        boolean commentsNotificationsEnabled = preferencesHelper.isCommentNotificationsEnabled();
+
         final SubscribersMonitor monitor = new SubscribersMonitor() {
             @Override
             public void onAllFinished() {
                 Log.d(TAG, "FINISHED UPDATING. Comments: " + entitiesComments);
                 super.onAllFinished();
-                if (!entitiesComments.isEmpty()) {
+                if (commentsNotificationsEnabled && !entitiesComments.isEmpty()) {
                     for (Map.Entry<String, String> entry : entitiesComments.entrySet()) {
                         if (isNullOrEmpty(entry.getValue())) {
                             continue;
@@ -202,7 +200,7 @@ public class ScheduledUpdateService extends IntentService {
                     }
                 }
 
-                if (!isNullOrEmpty(lectures)) {
+                if (lectureNotificationsEnabled && !isNullOrEmpty(lectures)) {
 
                     long notifyLecturesBefore = TimeUnit.MINUTES.toMillis(preferencesHelper.getNotifyBeforePeriod());
 
@@ -239,6 +237,7 @@ public class ScheduledUpdateService extends IntentService {
                 if (isNullOrEmpty(errors)) {
                     return;
                 }
+
                 for (ErrorBody error : errors) {
                     if (error == null) {
                         continue;
@@ -249,6 +248,7 @@ public class ScheduledUpdateService extends IntentService {
                     }
                     showNotification(error.getMessage1(), error.getMessage2(), MainActivity.class, "");
                 }
+
             }
 
             @Override
@@ -414,7 +414,6 @@ public class ScheduledUpdateService extends IntentService {
     }
 
     private void reschedule(long runAt, int wakeupId, Intent intent) {
-        intent.putExtra("TESTVAL", "ABC");
 
         wakeupId = Math.abs(wakeupId);
 
@@ -425,7 +424,7 @@ public class ScheduledUpdateService extends IntentService {
     }
 
     private void notifyLectureStartsSoon(String id) {
-        getLectureDataStore().getById(id, new Subscriber<LectureDto>(){
+        getLectureDataStore().getById(id, new Subscriber<LectureDto>() {
             @Override
             public void onCacheHit(LectureDto response) {
                 setFetchRequired(false);
@@ -441,27 +440,27 @@ public class ScheduledUpdateService extends IntentService {
                     bodyBuilder.append(lecture.getDiscipline().getTitle());
                 }
                 if (!isNullOrEmpty(lecture.getAssignments())) {
-                    bodyBuilder.append(" [A:").append(lecture.getAssignments().size()).append("]");
+                    bodyBuilder.append(" ").append(String.format(getString(R.string.template_assignments_count), lecture.getAssignments().size()));
                 }
                 if (!isNullOrEmpty(lecture.getTests())) {
-                    bodyBuilder.append(" [T:").append(lecture.getTests().size()).append("]");
+                    bodyBuilder.append(" ").append(String.format(getString(R.string.template_tests_count), lecture.getTests().size()));
                 }
 
-                showNotification(getString(R.string.notif_lecture_will_start_shortly), bodyBuilder.toString() , LectureInfoActivity.class, id);
+                showNotification(getString(R.string.notif_lecture_will_start_shortly), bodyBuilder.toString(), LectureInfoActivity.class, id);
             }
         });
     }
 
     private void notifyCommentsForLecture(String id) {
-        showNotification("Lecture has new comments", "Click to see more", LectureInfoActivity.class, id);
+        showNotification(getString(R.string.notif_lecture_has_new_comments), getString(R.string.notif_click_to_see_more), LectureInfoActivity.class, id);
     }
 
     private void notifyCommentsForAssignment(String id) {
-        showNotification("Assignment has new comments", "Click to see more", AssignmentActivity.class, id);
+        showNotification(getString(R.string.notif_assignment_has_new_comments), getString(R.string.notif_click_to_see_more), AssignmentActivity.class, id);
     }
 
     private void notifyCommentsForTest(String id) {
-        showNotification("Test has new comments", "Click to see more", TestInfoActivity.class, id);
+        showNotification(getString(R.string.notif_test_has_new_comments), getString(R.string.notif_click_to_see_more), TestInfoActivity.class, id);
     }
 
     private void showNotification(String title, String text, Class view, String entityId) {
@@ -476,7 +475,7 @@ public class ScheduledUpdateService extends IntentService {
         showNotification(ScheduledUpdateService.this, title, text, requestId, pendingIntent);
     }
 
-    public static void showNotification(Context context, String title, String text, int id, PendingIntent intent) {
+    public void showNotification(Context context, String title, String text, int id, PendingIntent intent) {
 //        NotificationCompat.Builder notification = new NotificationCompat.Builder(context, "")
         NotificationCompat.Builder notification = null;
 
@@ -499,9 +498,13 @@ public class ScheduledUpdateService extends IntentService {
     }
 
 
-    public static void showNotification(NotificationCompat.Builder notificationBuilder, int id, Context context) {
+    public void showNotification(NotificationCompat.Builder notificationBuilder, int id, Context context) {
+        if (!preferencesHelper.isNotificationsEnabled()) {
+            Log.d(TAG, "showNotification: Notifications are disabled by the user.");
+            return;
+        }
         NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-        notificationManager.notify("com.netikras.studies.studentbuddy.api.client.android", 1, notificationBuilder.build());
+        notificationManager.notify("com.netikras.studies.studentbuddy.api.client.android", id, notificationBuilder.build());
     }
 
 

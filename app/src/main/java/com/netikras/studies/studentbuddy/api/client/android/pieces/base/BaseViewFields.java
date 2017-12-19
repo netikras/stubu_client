@@ -19,7 +19,7 @@ import static com.netikras.studies.studentbuddy.api.client.android.util.CommonUt
 
 public abstract class BaseViewFields {
 
-    protected static final String ZERO = "Ø";
+    protected static final String ZERO = "0";
 
     private Context context;
 

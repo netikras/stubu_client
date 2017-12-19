@@ -63,24 +63,25 @@
             app:layout_constraintTop_toBottomOf="@+id/img_settings_banner" />
 
         <TextView
-            android:id="@+id/txt_lbl_settings_notifications_enable"
+            android:id="@+id/txt_lbl_settings_lecture_notifications_enable"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
-            android:text="@string/lbl_settings_notifications_enable"
-            app:layout_constraintBaseline_toBaselineOf="@+id/switch_settings_notifications_enable"
+            android:text="@string/lbl_settings_lecture_notifications_enable"
+            app:layout_constraintBaseline_toBaselineOf="@+id/switch_settings_lecture_notifications_enable"
             app:layout_constraintStart_toStartOf="parent" />
 
         <Switch
-            android:id="@+id/switch_settings_notifications_enable"
+            android:id="@+id/switch_settings_lecture_notifications_enable"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginEnd="16dp"
             android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
             android:checked="true"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/txt_lbl_settings_url"
-            app:layout_constraintTop_toBottomOf="@+id/txt_edit_settings_url" />
+            app:layout_constraintTop_toBottomOf="@+id/switch_settings_notifications_enable" />
 
         <TextView
             android:id="@+id/txt_lbl_settings_notifications_time_before_event"
@@ -162,7 +163,7 @@
             android:splitTrack="false"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/txt_lbl_settings_url"
-            app:layout_constraintTop_toBottomOf="@+id/switch_settings_autostart_enable"
+            app:layout_constraintTop_toBottomOf="@+id/switch_settings_lecture_notifications_enable"
             tools:checked="true" />
 
         <TextView
@@ -215,13 +216,35 @@
             android:checked="false"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/txt_lbl_settings_url"
-            app:layout_constraintTop_toBottomOf="@+id/switch_settings_notifications_enable"
+            app:layout_constraintTop_toBottomOf="@+id/txt_edit_settings_url"
+            tools:checked="true" />
+
+        <TextView
+            android:id="@+id/txt_lbl_settings_notifications_enable"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:text="@string/lbl_settings_notifications_enable"
+            app:layout_constraintBaseline_toBaselineOf="@+id/switch_settings_notifications_enable"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <Switch
+            android:id="@+id/switch_settings_notifications_enable"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/txt_lbl_settings_url"
+            app:layout_constraintTop_toBottomOf="@+id/switch_settings_autostart_enable"
             tools:checked="true" />
 
 
         <include layout="@layout/include_main_menu_button" />
         <!-- Progress bar overlay; shown while login is in progress -->
         <include layout="@layout/include_progress_overlay" />
+
 
     </android.support.constraint.ConstraintLayout>
 </ScrollView>

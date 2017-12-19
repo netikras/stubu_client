@@ -28,8 +28,8 @@ public class SettingsPresenter<V extends SettingsMvpView> extends BasePresenter<
     }
 
     @Override
-    public void saveNotificationsSettings(boolean enabled) {
-        appPreferences.setNotificationsEnabled(enabled);
+    public void saveLectureNotificationsEnabled(boolean enabled) {
+        appPreferences.setLectureNotificationsEnabled(enabled);
     }
 
     @Override
@@ -38,8 +38,8 @@ public class SettingsPresenter<V extends SettingsMvpView> extends BasePresenter<
     }
 
     @Override
-    public boolean isNotificationsEnabled() {
-        return appPreferences.isNotificationsEnabled();
+    public boolean isLectureNotificationsEnabled() {
+        return appPreferences.isLectureNotificationsEnabled();
     }
 
     @Override
@@ -90,6 +90,16 @@ public class SettingsPresenter<V extends SettingsMvpView> extends BasePresenter<
     @Override
     public boolean getAutostartEnabled() {
         return appPreferences.isAutostartEnabled();
+    }
+
+    @Override
+    public boolean getNotificationsEnabled() {
+        return appPreferences.isNotificationsEnabled();
+    }
+
+    @Override
+    public void saveNotificationsEnabled(boolean notificationsEnabled) {
+        appPreferences.setNotificationsEnabled(notificationsEnabled);
     }
 
 }

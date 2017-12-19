@@ -34,6 +34,7 @@ public class AppPreferencesHelper implements PreferencesHelper {
     private static final String PREF_KEY_CURRENT_USER_NAME = "PREF_KEY_CURRENT_USER_NAME";
     private static final String PREF_KEY_API_SERVER_URL = "PREF_KEY_API_SERVER_URL";
     private static final String PREF_KEY_NOTIFICATIONS_ENABLED = "PREF_KEY_NOTIFICATIONS_ENABLED";
+    private static final String PREF_KEY_LECTURE_NOTIFICATIONS_ENABLED = "PREF_KEY_LECTURE_NOTIFICATIONS_ENABLED";
     private static final String PREF_KEY_COMMENT_NOTIFICATIONS_ENABLED = "PREF_KEY_COMMENT_NOTIFICATIONS_ENABLED";
     private static final String PREF_AUTOSTART_ENABLED = "PREF_AUTOSTART_ENABLED";
     private static final String PREF_KEY_LOGIN_USERNAME = "PREF_KEY_LOGIN_USERNAME";
@@ -130,13 +131,13 @@ public class AppPreferencesHelper implements PreferencesHelper {
     }
 
     @Override
-    public boolean isNotificationsEnabled() {
-        return getPreference(PREF_KEY_NOTIFICATIONS_ENABLED, false);
+    public boolean isLectureNotificationsEnabled() {
+        return getPreference(PREF_KEY_LECTURE_NOTIFICATIONS_ENABLED, false);
     }
 
     @Override
-    public void setNotificationsEnabled(boolean enabled) {
-        setPreference(PREF_KEY_NOTIFICATIONS_ENABLED, enabled);
+    public void setLectureNotificationsEnabled(boolean enabled) {
+        setPreference(PREF_KEY_LECTURE_NOTIFICATIONS_ENABLED, enabled);
     }
 
     @Override
@@ -213,6 +214,16 @@ public class AppPreferencesHelper implements PreferencesHelper {
     @Override
     public void setAutostartEnabled(boolean enabled) {
         setPreference(PREF_AUTOSTART_ENABLED, enabled);
+    }
+
+    @Override
+    public boolean isNotificationsEnabled() {
+        return getPreference(PREF_KEY_NOTIFICATIONS_ENABLED, true);
+    }
+
+    @Override
+    public void setNotificationsEnabled(boolean enabled) {
+        setPreference(PREF_KEY_NOTIFICATIONS_ENABLED, enabled);
     }
 
     private void setPreference(String key, String value) {

@@ -10,11 +10,11 @@ import com.netikras.studies.studentbuddy.api.client.android.pieces.settings.ui.v
 public interface SettingsMvpPresenter<V extends SettingsMvpView> extends MvpPresenter<V> {
     void saveApiUrl(String url);
 
-    void saveNotificationsSettings(boolean enabled);
+    void saveLectureNotificationsEnabled(boolean enabled);
 
     String getApiUrl();
 
-    boolean isNotificationsEnabled();
+    boolean isLectureNotificationsEnabled();
 
     long getUpdatePeriod();
 
@@ -35,4 +35,8 @@ public interface SettingsMvpPresenter<V extends SettingsMvpView> extends MvpPres
     void saveAutostartEnabled(boolean autostartEnabled);
 
     boolean getAutostartEnabled();
+
+    boolean getNotificationsEnabled();
+
+    void saveNotificationsEnabled(boolean notificationsEnabled);
 }

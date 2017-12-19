@@ -29,9 +29,9 @@ public interface PreferencesHelper {
     void setApiServerUrl(String url);
 
 
-    boolean isNotificationsEnabled();
+    boolean isLectureNotificationsEnabled();
 
-    void setNotificationsEnabled(boolean enabled);
+    void setLectureNotificationsEnabled(boolean enabled);
 
     void setLoginUsername(String username);
 
@@ -60,4 +60,8 @@ public interface PreferencesHelper {
     boolean isAutostartEnabled();
 
     void setAutostartEnabled(boolean enabled);
+
+    boolean isNotificationsEnabled();
+
+    void setNotificationsEnabled(boolean enabled);
 }

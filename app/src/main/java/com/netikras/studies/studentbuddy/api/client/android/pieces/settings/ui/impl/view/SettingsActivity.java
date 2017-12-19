@@ -24,6 +24,7 @@ import java.util.Map;
 import javax.inject.Inject;
 
 import butterknife.BindView;
+import butterknife.OnClick;
 
 import static com.netikras.tools.common.security.IntegrityUtils.isNullOrEmpty;
 
@@ -70,51 +71,43 @@ public class SettingsActivity extends BaseActivity implements SettingsMvpView {
 
     private void showSettings() {
         getFields().setUrl(presenter.getApiUrl());
-        getFields().setNotificationsEnabled(presenter.isNotificationsEnabled());
+        getFields().setLectureNotificationsEnabled(presenter.isLectureNotificationsEnabled());
         getFields().setCommentNotificationsEnabled(presenter.isCommentNotificationsEnabled());
         getFields().setLecturesAheadPeriod(presenter.getLecturesAheadPeriod());
         getFields().setNotifyEventBeforePeriod(presenter.getNotifyEventBeforePeriod());
         getFields().setUpdatePeriod(presenter.getUpdatePeriod());
         getFields().setAutostartEnabled(presenter.getAutostartEnabled());
+        getFields().setNotificationsEnabled(presenter.getNotificationsEnabled());
+
+        getFields().onNotificationsEnabledToggle();
     }
 
     @Override
     protected void menuOnClickSave() {
         presenter.saveApiUrl(getFields().getUrl());
-        presenter.saveNotificationsSettings(getFields().getNotificationsEnabled());
+        presenter.saveLectureNotificationsEnabled(getFields().getLectureNotificationsEnabled());
         presenter.saveCommentNotificationsSettings(getFields().getCommentNotificationsEnabled());
         presenter.saveLecturesAheadPeriod(getFields().getLecturesAheadPeriod());
         presenter.saveNotifyEventBeforePeriod(getFields().getNotifyEventsBeforePeriod());
         presenter.saveUpdatePeriod(getFields().getUpdatePeriod());
         presenter.saveAutostartEnabled(getFields().getAutostartEnabled());
+        presenter.saveNotificationsEnabled(getFields().getNotificationsEnabled());
         getFields().enableEdit(false);
     }
 
-    private String toString(RemoteEndpointServer server) {
-        if (server == null) {
-            server = new RemoteEndpointServer();
-        }
-        StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append(server.getProtocol().name().toLowerCase()).append("://");
-        stringBuilder.append(server.getAddress());
-        if (server.getPort() > 0) {
-            stringBuilder.append(":").append(server.getPort());
-        }
-        stringBuilder.append(server.getRootUrl());
-
-        return stringBuilder.toString();
-    }
 
     class ViewFields extends BaseViewFields {
 
         @BindView(R.id.txt_edit_settings_url)
         EditText url;
-        @BindView(R.id.switch_settings_notifications_enable)
-        Switch notificationsEnabled;
+        @BindView(R.id.switch_settings_lecture_notifications_enable)
+        Switch lectureNotificationsEnabled;
         @BindView(R.id.switch_settings_notify_comments_enable)
         Switch commentNotificationsEnabled;
         @BindView(R.id.switch_settings_autostart_enable)
         Switch autostartEnabled;
+        @BindView(R.id.switch_settings_notifications_enable)
+        Switch notificationsEnabled;
         @BindView(R.id.txt_edit_settings_lectures_ahead_period)
         EditText lecturesAheadPeriod; // hours
         @BindView(R.id.txt_edit_settings_update_period)
@@ -148,12 +141,20 @@ public class SettingsActivity extends BaseActivity implements SettingsMvpView {
             setString(this.url, url);
         }
 
+        public void setNotificationsEnabled(boolean enable) {
+            notificationsEnabled.setChecked(enable);
+        }
+
         public boolean getNotificationsEnabled() {
             return notificationsEnabled.isChecked();
         }
 
-        public void setNotificationsEnabled(boolean notificationsEnabled) {
-            this.notificationsEnabled.setChecked(notificationsEnabled);
+        public boolean getLectureNotificationsEnabled() {
+            return lectureNotificationsEnabled.isChecked();
+        }
+
+        public void setLectureNotificationsEnabled(boolean lectureNotificationsEnabled) {
+            this.lectureNotificationsEnabled.setChecked(lectureNotificationsEnabled);
         }
 
         public boolean getCommentNotificationsEnabled() {
@@ -194,6 +195,19 @@ public class SettingsActivity extends BaseActivity implements SettingsMvpView {
 
         public void setNotifyEventBeforePeriod(long minutes) {
             setString(notifyEventBefore, "" + minutes);
+        }
+
+        @OnClick(R.id.switch_settings_notifications_enable)
+        public void onNotificationsEnabledToggle() {
+            if (getNotificationsEnabled()) {
+                commentNotificationsEnabled.setEnabled(true);
+                lectureNotificationsEnabled.setEnabled(true);
+                notifyEventBefore.setEnabled(true);
+            } else {
+                commentNotificationsEnabled.setEnabled(false);
+                lectureNotificationsEnabled.setEnabled(false);
+                notifyEventBefore.setEnabled(false);
+            }
         }
 
         private long parseLong(String text) {

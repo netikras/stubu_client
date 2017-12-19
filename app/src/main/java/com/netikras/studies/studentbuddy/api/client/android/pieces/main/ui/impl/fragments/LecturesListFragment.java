@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.netikras.studies.studentbuddy.api.client.android.R;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.base.list.CustomListAdapter;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.base.list.ListHandler;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.base.list.ListRow;
@@ -15,6 +16,7 @@ import com.netikras.studies.studentbuddy.core.data.api.dto.school.LectureDto;
 
 import java.util.List;
 
+import static com.netikras.studies.studentbuddy.api.client.android.util.CommonUtils.datetimeToTimestampAutoShortNoSeconds;
 import static com.netikras.tools.common.security.IntegrityUtils.isNullOrEmpty;
 
 /**
@@ -89,13 +91,15 @@ public abstract class LecturesListFragment extends Fragment {
                 }
 
                 StringBuilder title = new StringBuilder();
-                title.append("(").append(CommonUtils.datetimeToTimestampAutoShortNoSeconds(item.getStartsOn())).append(") ");
+                title.append("(").append(datetimeToTimestampAutoShortNoSeconds(item.getStartsOn())).append(") ");
                 title.append(item.getDiscipline().getTitle()).append("");
                 if (!isNullOrEmpty(item.getTests())) {
-                    title.append(", [").append("T:").append(item.getTests().size()).append("]");
+                    title.append(", ").append(String.format(getListContext().getString(R.string.template_tests_count), item.getTests().size()));
+//                    title.append(", [").append("T:").append(item.getTests().size()).append("]");
                 }
                 if (!isNullOrEmpty(item.getAssignments())) {
-                    title.append(", [").append("A:").append(item.getAssignments().size()).append("]");
+                    title.append(", ").append(String.format(getListContext().getString(R.string.template_assignments_count), item.getAssignments().size()));
+//                    title.append(", [").append("A:").append(item.getAssignments().size()).append("]");
                 }
 
                 text.setText(title.toString());

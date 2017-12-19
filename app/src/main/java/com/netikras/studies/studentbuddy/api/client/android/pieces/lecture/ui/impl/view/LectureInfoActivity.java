@@ -103,7 +103,16 @@ public class LectureInfoActivity extends BaseActivity implements LectureMvpView 
 
         String cachedId = intent.getStringExtra("cached_id");
         if (!isNullOrEmpty(cachedId)) {
+            showLoading();
             presenter.getById(new ErrorsAwareSubscriber<LectureDto>() {
+                @Override
+                public void onCacheHit(LectureDto response) {
+                    if (response != null) {
+                        setFetchRequired(false);
+                        executeOnSuccess(response);
+                    }
+                }
+
                 @Override
                 public void onSuccess(LectureDto response) {
                     runOnUiThread(() -> show(response));
