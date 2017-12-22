@@ -66,13 +66,14 @@
             android:resource="@array/preloaded_fonts" />
 
 
-        <receiver android:enabled="true" android:name=".service.AutoStart"
-            android:permission="android.permission.RECEIVE_BOOT_COMPLETED">
-            <intent-filter>
-                <action android:name="android.intent.action.BOOT_COMPLETED" />
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </receiver>
+        <!--Oreo effectively prevents apps from autostarting in background-->
+
+        <!--<receiver android:enabled="true" android:name="com.netikras.studies.studentbuddy.api.client.android.service.AutoStart">-->
+            <!--<intent-filter>-->
+                <!--<action android:name="android.intent.action.BOOT_COMPLETED" />-->
+                <!--&lt;!&ndash;<category android:name="android.intent.category.DEFAULT" />&ndash;&gt;-->
+            <!--</intent-filter>-->
+        <!--</receiver>-->
 
     </application>
 

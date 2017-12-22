@@ -203,6 +203,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:text="@string/lbl_settings_autostart"
+            android:visibility="gone"
             app:layout_constraintBaseline_toBaselineOf="@+id/switch_settings_autostart_enable"
             app:layout_constraintStart_toStartOf="parent" />
 
@@ -214,6 +215,7 @@
             android:layout_marginStart="16dp"
             android:layout_marginTop="8dp"
             android:checked="false"
+            android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/txt_lbl_settings_url"
             app:layout_constraintTop_toBottomOf="@+id/txt_edit_settings_url"

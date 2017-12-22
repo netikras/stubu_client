@@ -147,7 +147,7 @@ public class ScheduledUpdateService extends IntentService {
         }
 
         update();
-        reschedule(TimeUnit.MINUTES.toMillis(preferencesHelper.getUpdatePeriod()));
+        reschedule(TimeUnit.MINUTES.toMillis(preferencesHelper.getUpdatePeriod()), getApplicationContext());
     }
 
     protected void setUp() {
@@ -217,7 +217,7 @@ public class ScheduledUpdateService extends IntentService {
                             Intent intent = new Intent(ScheduledUpdateService.this, ScheduledUpdateService.this.getClass());
                             intent.putExtra("LECTURE", dto.getId());
 
-                            reschedule(notifyTime, dto.getId().hashCode(), intent);
+                            reschedule(notifyTime, dto.getId().hashCode(), intent, getApplicationContext());
                         }
                     }
                 }
@@ -403,23 +403,23 @@ public class ScheduledUpdateService extends IntentService {
     }
 
 
-    private void reschedule(long runAfterMs) {
+    static void reschedule(long runAfterMs, Context context) {
 
         long nextRun = System.currentTimeMillis() + runAfterMs;
 
         Log.d(TAG, "Rescheduling. Next run: " + new Date(nextRun));
 
-        Intent intent = new Intent(this, getClass());
-        reschedule(nextRun, SVC_ID, intent);
+        Intent intent = new Intent(context, ScheduledUpdateService.class);
+        reschedule(nextRun, SVC_ID, intent, context);
     }
 
-    private void reschedule(long runAt, int wakeupId, Intent intent) {
+    static void reschedule(long runAt, int wakeupId, Intent intent, Context context) {
 
         wakeupId = Math.abs(wakeupId);
 
-        PendingIntent pendingIntent = PendingIntent.getService(this, wakeupId, intent, PendingIntent.FLAG_CANCEL_CURRENT);
+        PendingIntent pendingIntent = PendingIntent.getService(context, wakeupId, intent, PendingIntent.FLAG_CANCEL_CURRENT);
         Log.d(TAG, "reschedule: wakeUpId:" + wakeupId + ", wakeUpTime: " + new Date(runAt));
-        AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+        AlarmManager alarmManager = (AlarmManager) context.getSystemService(ALARM_SERVICE);
         alarmManager.set(AlarmManager.RTC_WAKEUP, runAt, pendingIntent);
     }
 

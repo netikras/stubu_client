@@ -42,6 +42,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:text="@string/lbl_location_name"
+            android:visibility="invisible"
             app:layout_constraintBaseline_toBaselineOf="@+id/txt_edit_location_name"
             app:layout_constraintStart_toStartOf="parent" />
 
@@ -55,6 +56,7 @@
             android:ems="10"
             android:inputType="textPersonName"
             android:text="@string/dummy_txt_location_name"
+            android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/txt_lbl_location_buildingid"
             app:layout_constraintTop_toBottomOf="@+id/txt_edit_location_roomid" />
@@ -101,6 +103,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:text="@string/lbl_location_comments"
+            android:visibility="gone"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@+id/list_location_comments" />
 
@@ -175,6 +178,7 @@
             android:layout_marginEnd="16dp"
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
+            android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/txt_lbl_location_buildingid"
             app:layout_constraintTop_toBottomOf="@+id/btn_location_room" />

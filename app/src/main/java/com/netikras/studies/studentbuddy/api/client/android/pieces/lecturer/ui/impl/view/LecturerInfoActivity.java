@@ -203,7 +203,7 @@ public class LecturerInfoActivity extends BaseActivity implements LecturerMvpVie
 
             @Override
             public void onRowClick(DisciplineDto item) {
-                onError(getListContext(), "Discipline selected: " + item.getTitle());
+//                onError(getListContext(), "Discipline selected: " + item.getTitle());
                 System.out.println("Discipline selected: " + item.getId());
                 startView(DisciplineInfoActivity.class, new ViewTask<DisciplineInfoActivity>() {
                     @Override

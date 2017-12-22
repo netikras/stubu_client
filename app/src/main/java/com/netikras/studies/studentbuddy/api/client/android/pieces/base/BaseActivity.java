@@ -374,7 +374,9 @@ public abstract class BaseActivity extends AppCompatActivity
             excluded.add(R.id.main_menu_delete);
 //            excluded.add(R.id.main_menu_edit);
 //            excluded.add(R.id.main_menu_save);
+            excluded.add(R.id.main_menu_logout);
             excluded.add(R.id.main_menu_search);
+            excluded.add(R.id.main_menu_refresh);
             setVisible(menu.findItem(R.id.main_menu_login), true);
         } else {
             setVisible(menu.findItem(R.id.main_menu_user), true);
