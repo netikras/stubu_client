@@ -5,16 +5,22 @@ import com.netikras.studies.studentbuddy.api.client.android.data.cache.CacheMana
 import com.netikras.studies.studentbuddy.api.client.android.pieces.person.data.cahe.UserDao;
 import com.netikras.studies.studentbuddy.api.client.android.data.stores.ApiBasedDataStore;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.person.data.UserDataStore;
+import com.netikras.studies.studentbuddy.api.client.android.pieces.sys.data.RoleDataStore;
 import com.netikras.studies.studentbuddy.api.client.android.service.ServiceRequest;
 import com.netikras.studies.studentbuddy.api.client.android.service.ServiceRequest.Subscriber;
 import com.netikras.studies.studentbuddy.api.user.generated.UserApiConsumer;
 import com.netikras.studies.studentbuddy.api.user.mgmt.generated.AdminUserApiConsumer;
+import com.netikras.studies.studentbuddy.core.data.api.dto.meta.RoleDto;
 import com.netikras.studies.studentbuddy.core.data.api.dto.meta.UserDto;
 import com.netikras.tools.common.remote.AuthenticationDetail;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import javax.inject.Inject;
+
+import static com.netikras.tools.common.security.IntegrityUtils.isNullOrEmpty;
 
 /**
  * Created by netikras on 17.10.31.
@@ -27,6 +33,9 @@ public class UserDataStoreApiImpl extends ApiBasedDataStore<String, UserDto> imp
 
     @Inject
     AdminUserApiConsumer adminApiConsumer;
+
+    @Inject
+    RoleDataStore roleDataStore;
 
     @Inject
     App app;
@@ -50,10 +59,33 @@ public class UserDataStoreApiImpl extends ApiBasedDataStore<String, UserDto> imp
                 UserDto userDto = updateCache(apiConsumer.getUserDtoCurrent());
                 if (userDto != null) {
                     app.setCurrentUser(userDto);
+                    pollUserRoles(userDto);
+                } else {
+                    app.setUserRoles(null);
                 }
                 return userDto;
             }
         }, subscribers);
+    }
+
+    private void pollUserRoles(UserDto userDto) {
+        if (userDto == null || isNullOrEmpty(userDto.getRoles())) {
+            return;
+        }
+
+        List<RoleDto> userRoles = new ArrayList<>();
+        if (!isNullOrEmpty(userDto.getRoles())) {
+            for (String roleName : userDto.getRoles()) {
+                roleDataStore.getByName(roleName, new Subscriber<RoleDto>() {
+                    @Override
+                    public void onSuccess(RoleDto roleDto) {
+                        userRoles.add(roleDto);
+                        super.onSuccess(roleDto);
+                    }
+                });
+            }
+        }
+        app.setUserRoles(userRoles);
     }
 
     @Override

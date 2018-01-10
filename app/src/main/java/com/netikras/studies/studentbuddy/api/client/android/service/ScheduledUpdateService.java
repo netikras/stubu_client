@@ -243,6 +243,7 @@ public class ScheduledUpdateService extends IntentService {
                         continue;
                     }
                     if (UNAUTHORIZED.getCode() == error.getStatus()) {
+                        getUserDataStore().refresh();
                         showNotification(error.getMessage1(), error.getMessage2(), LoginActivity.class, "");
                         continue;
                     }
@@ -261,7 +262,7 @@ public class ScheduledUpdateService extends IntentService {
                     return;
                 }
                 if ("guest".equalsIgnoreCase(response.getName())) {
-                    executeOnError(new ErrorBody().setMessage1("Unauthorized").setMessage2("Not logged in (guest)"));
+                    executeOnError(new ErrorBody().setMessage1("Unauthorized").setMessage2("Not logged in (guest)").setStatus(UNAUTHORIZED.getCode()));
                     return;
                 }
                 getUserDataStore().getById(response.getId(), new Subscriber<UserDto>() {

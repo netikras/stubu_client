@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.InputType;
 import android.util.Log;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -363,6 +364,14 @@ public class TestInfoActivity extends BaseActivity implements TestMvpView {
             } else {
                 setVisible(id, null);
                 setVisible(lblId, false);
+            }
+
+            if (!hasUserPermission("test", "comment_create", getId())) {
+                addComment.setVisibility(View.INVISIBLE);
+            }
+
+            if (!hasUserPermission("test", "comment_get", getId())) {
+                comments.setEnabled(false);
             }
         }
     }

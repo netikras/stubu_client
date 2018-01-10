@@ -6,6 +6,8 @@ import android.content.Intent;
 import com.netikras.studies.studentbuddy.api.client.android.conf.di.DepInjector;
 import com.netikras.studies.studentbuddy.api.client.android.conf.di.component.ApplicationComponent;
 import com.netikras.studies.studentbuddy.api.client.android.service.ScheduledUpdateService;
+import com.netikras.studies.studentbuddy.core.data.api.dto.meta.RoleDto;
+import com.netikras.studies.studentbuddy.core.data.api.dto.meta.RolePermissionDto;
 import com.netikras.studies.studentbuddy.core.data.api.dto.meta.UserDto;
 import com.netikras.studies.studentbuddy.core.data.api.dto.school.LectureGuestDto;
 import com.netikras.studies.studentbuddy.core.data.api.dto.school.LecturerDto;
@@ -13,6 +15,8 @@ import com.netikras.studies.studentbuddy.core.data.api.dto.school.StudentDto;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.netikras.tools.common.security.IntegrityUtils.isNullOrEmpty;
 
 /**
  * Created by netikras on 17.10.17.
@@ -24,6 +28,7 @@ public class App extends Application {
 
     private UserDto currentUser;
     private PersonRoles roles;
+    private List<RoleDto> userRoles;
 
     private ApplicationComponent mApplicationComponent;
 
@@ -60,6 +65,48 @@ public class App extends Application {
 
     public void setCurrentUser(UserDto currentUser) {
         this.currentUser = currentUser;
+    }
+
+    public void setUserRoles(List<RoleDto> userRoles) {
+        this.userRoles = userRoles;
+    }
+
+    public List<RoleDto> getUserRoles() {
+        return userRoles;
+    }
+
+    public boolean hasUserPermission(String resource, String action, String resourceId) {
+        if (isNullOrEmpty(resource) || isNullOrEmpty(action)) {
+            return false;
+        }
+
+        if (isNullOrEmpty(getUserRoles())) {
+            return false;
+        }
+
+        resource = resource.toUpperCase();
+        action = action.toUpperCase();
+
+        for (RoleDto userRole : userRoles) {
+            if (isNullOrEmpty(userRole.getPermissions())) {
+                continue;
+            }
+            for (RolePermissionDto rolePermissionDto : userRole.getPermissions()) {
+                if (resource.equals(rolePermissionDto.getResource())
+                        && action.equals(rolePermissionDto.getAction())) {
+                    if (rolePermissionDto.isStrict()) {
+                        if (!isNullOrEmpty(rolePermissionDto.getEntityId())
+                                && rolePermissionDto.getEntityId().equalsIgnoreCase(resourceId)) {
+                            return true;
+                        }
+                    } else {
+                        return true;
+                    }
+                }
+            }
+        }
+
+        return false;
     }
 
     public static class PersonRoles {

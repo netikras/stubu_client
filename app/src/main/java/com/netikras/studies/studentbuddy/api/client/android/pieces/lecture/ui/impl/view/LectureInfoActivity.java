@@ -825,6 +825,20 @@ public class LectureInfoActivity extends BaseActivity implements LectureMvpView 
                 setVisible(lblId, false);
                 setVisible(id, null);
             }
+
+            if (!hasUserPermission("test", "create", getId())) {
+                addTest.setVisibility(View.INVISIBLE);
+            }
+            if (!hasUserPermission("assignment", "create", getId())) {
+                addAssignment.setVisibility(View.INVISIBLE);
+            }
+            if (!hasUserPermission("lecture", "comment_create", getId())) {
+                addComment.setVisibility(View.INVISIBLE);
+            }
+
+            if (!hasUserPermission("lecture", "comment_get", getId())) {
+                comments.setEnabled(false);
+            }
         }
     }
 

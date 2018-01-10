@@ -27,6 +27,7 @@ import javax.inject.Singleton;
 import dagger.Module;
 import dagger.Provides;
 
+import static com.netikras.tools.common.remote.http.HttpStatus.UNAUTHORIZED;
 import static com.netikras.tools.common.security.IntegrityUtils.isNullOrEmpty;
 
 /**
@@ -39,6 +40,7 @@ public class ApiHttpModule {
 
 
     private static SslAttributes ignorantSslAttributes = null;
+    private SoftSessionContext sessionContext = null;
 
     @Provides
     public RemoteEndpointServer server() {
@@ -49,35 +51,14 @@ public class ApiHttpModule {
 
     @Provides
     public SessionContext context(PreferencesHelper preferencesHelper) {
-        return new SessionContext() {
-            @Override
-            public void updateContext(HttpResponse response) {
-                long cookiesHashBeforeUpdate = hashCookies();
-                super.updateContext(response);
-                long cookiesHashAfterUpdate = hashCookies();
-
-                if (cookiesHashBeforeUpdate != cookiesHashAfterUpdate) {
-                    preferencesHelper.setCookies(cookies);
-                }
-            }
-
-            @Override
-            public synchronized void applyContext(HttpRequest request) {
-                if (hashCookies() == 0) {
-                    cookies = preferencesHelper.getCookies();
-//                    Log.d("COOKIES:", "" + cookies);
-                }
-                super.applyContext(request);
-            }
-
-            private long hashCookies() {
-                return isNullOrEmpty(cookies) ? 0 : cookies.hashCode();
-            }
-        };
+        if (sessionContext == null) {
+            sessionContext = new SoftSessionContext(preferencesHelper);
+        }
+        return sessionContext;
     }
 
     @Provides
-    public RequestListener listener() {
+    public RequestListener listener(PreferencesHelper preferencesHelper) {
 
         return new RequestListener(){
 
@@ -125,6 +106,13 @@ public class ApiHttpModule {
 
             @Override
             public Object onClientErrorResponse(HttpRequest request, HttpResponse response) {
+
+                if (UNAUTHORIZED.getCode() == response.getStatus()) {
+                    if (sessionContext != null) {
+                        sessionContext.refreshCookie();
+                    }
+                }
+
                 onError(((HttpResponseJsonImpl)response).getErrorBody());
                 return super.onClientErrorResponse(request, response);
             }
@@ -174,5 +162,40 @@ public class ApiHttpModule {
         RemoteEndpointServer server = RemoteEndpointServer.parse(preferencesHelper.getApiServerUrl());
         config.addServer("default", server);
         return config;
+    }
+
+    private class SoftSessionContext extends SessionContext {
+        private PreferencesHelper preferencesHelper;
+        public SoftSessionContext(PreferencesHelper prefs) {
+            preferencesHelper = prefs;
+        }
+
+        @Override
+        public void updateContext(HttpResponse response) {
+            long cookiesHashBeforeUpdate = hashCookies();
+            super.updateContext(response);
+            long cookiesHashAfterUpdate = hashCookies();
+
+            if (cookiesHashBeforeUpdate != cookiesHashAfterUpdate) {
+                preferencesHelper.setCookies(cookies);
+            }
+        }
+
+        @Override
+        public synchronized void applyContext(HttpRequest request) {
+            if (hashCookies() == 0) {
+                refreshCookie();
+//                    Log.d("COOKIES:", "" + cookies);
+            }
+            super.applyContext(request);
+        }
+
+        private long hashCookies() {
+            return isNullOrEmpty(cookies) ? 0 : cookies.hashCode();
+        }
+
+        public void refreshCookie() {
+            cookies = preferencesHelper.getCookies();
+        }
     }
 }

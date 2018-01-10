@@ -14,12 +14,19 @@ import com.netikras.studies.studentbuddy.api.client.android.pieces.login.ui.pres
 import com.netikras.studies.studentbuddy.api.client.android.pieces.login.ui.view.LoginMvpView;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.person.ui.presenter.UserMvpPresenter;
 import com.netikras.studies.studentbuddy.api.client.android.pieces.person.ui.view.UserMvpView;
+import com.netikras.studies.studentbuddy.api.client.android.pieces.sys.data.RoleDataStore;
 import com.netikras.studies.studentbuddy.api.client.android.service.ServiceRequest;
 import com.netikras.studies.studentbuddy.api.client.android.service.ServiceRequest.Subscriber;
+import com.netikras.studies.studentbuddy.core.data.api.dto.meta.RoleDto;
 import com.netikras.studies.studentbuddy.core.data.api.dto.meta.UserDto;
 import com.netikras.tools.common.exception.ErrorsCollection;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.inject.Inject;
+
+import static com.netikras.tools.common.security.IntegrityUtils.isNullOrEmpty;
 
 /**
  * Created by netikras on 17.11.1.
@@ -53,6 +60,21 @@ public class LoginPresenter<V extends LoginMvpView> extends BasePresenter<V> imp
             @Override
             public void onSuccess(UserDto response) {
                 app.setCurrentUser(response);
+//                List<RoleDto> userRoles = new ArrayList<>();
+//
+//                if (!isNullOrEmpty(response.getRoles())) {
+//                    for (String roleName : response.getRoles()) {
+//                        getDataManager().getStore(RoleDataStore.class).getByName(roleName, new Subscriber<RoleDto>() {
+//                            @Override
+//                            public void onSuccess(RoleDto roleDto) {
+//                                userRoles.add(roleDto);
+//                                super.onSuccess(roleDto);
+//                            }
+//                        });
+//                    }
+//                }
+//
+//                app.setUserRoles(userRoles);
 //                getLandingPresenter().startView((Context) getMvpView());
                 if (subscriber != null) {
                     subscriber.onSuccess(response);

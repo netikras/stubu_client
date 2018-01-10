@@ -94,6 +94,10 @@ public abstract class BaseActivity extends AppCompatActivity
         return app.getCurrentUser();
     }
 
+    protected boolean hasUserPermission(String resource, String action, String entityId) {
+        return app.hasUserPermission(resource, action, entityId);
+    }
+
     public ActivityComponent getActivityComponent() {
         return DepInjector.getActivityComponent();
     }
